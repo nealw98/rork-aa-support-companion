@@ -118,22 +118,17 @@ export default function ChatInterface() {
     clearChat();
   };
 
-  const getSponsorName = () => {
-    return sponsorType === "salty" ? "Salty Sam" : "Supportive Sponsor";
-  };
-
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
-      <View style={styles.header}>
-        <View style={styles.disclaimer}>
-          <Text style={styles.disclaimerText}>
-            💬 <Text style={styles.saltyTitle}>Chatting with {getSponsorName()}</Text>
-          </Text>
-        </View>
+      <View style={styles.topContainer}>
+        <SponsorToggle 
+          sponsorType={sponsorType} 
+          onChange={changeSponsor}
+        />
         <TouchableOpacity
           style={styles.clearButton}
           onPress={handleClearChat}
@@ -142,11 +137,6 @@ export default function ChatInterface() {
           <RotateCcw size={18} color={Colors.light.muted} />
         </TouchableOpacity>
       </View>
-      
-      <SponsorToggle 
-        sponsorType={sponsorType} 
-        onChange={changeSponsor}
-      />
       
       <FlatList
         ref={flatListRef}
@@ -161,7 +151,9 @@ export default function ChatInterface() {
       {isLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={Colors.light.tint} />
-          <Text style={styles.loadingText}>{getSponsorName()} is thinking...</Text>
+          <Text style={styles.loadingText}>
+            {sponsorType === "salty" ? "Salty Sam" : "Supportive Sponsor"} is thinking...
+          </Text>
         </View>
       )}
       
@@ -170,7 +162,7 @@ export default function ChatInterface() {
           style={styles.input}
           value={inputText}
           onChangeText={setInputText}
-          placeholder={`Tell ${getSponsorName()} what's on your mind...`}
+          placeholder={`Tell ${sponsorType === "salty" ? "Salty Sam" : "Supportive Sponsor"} what's on your mind...`}
           placeholderTextColor={Colors.light.muted}
           multiline
           maxLength={500}
@@ -200,36 +192,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-  header: {
+  topContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF8E1",
+    backgroundColor: Colors.light.cardBackground,
     borderBottomWidth: 1,
-    borderBottomColor: "#FFE082",
-  },
-  disclaimer: {
-    flex: 1,
-    padding: 10,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    color: "#795548",
-    textAlign: "center",
-  },
-  saltyTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
+    borderBottomColor: Colors.light.divider,
   },
   clearButton: {
     padding: 12,
     marginRight: 4,
   },
   sponsorToggleContainer: {
+    flex: 1,
     flexDirection: "row",
     padding: 8,
-    backgroundColor: Colors.light.cardBackground,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.divider,
   },
   sponsorButton: {
     flex: 1,
