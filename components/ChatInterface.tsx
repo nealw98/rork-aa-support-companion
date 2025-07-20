@@ -188,11 +188,11 @@ const styles = StyleSheet.create({
     minWidth: 60,
   },
   userBubble: {
-    backgroundColor: "#7EB3F2", // Light blue from daily reflection
+    backgroundColor: "#7EB3F2", // Exact light blue from daily reflection
     borderBottomRightRadius: 4,
   },
   botBubble: {
-    backgroundColor: "#8CD68C", // Light green from daily reflection
+    backgroundColor: "#8CD68C", // Exact light green from daily reflection
     borderBottomLeftRadius: 4,
   },
   messageText: {
