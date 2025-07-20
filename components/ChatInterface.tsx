@@ -18,6 +18,23 @@ import { ChatMessage } from "@/types";
 
 const ChatBubble = ({ message }: { message: ChatMessage }) => {
   const isUser = message.sender === "user";
+  const { sponsorType } = useChatStore();
+  
+  // Get the appropriate bubble style based on sponsor type
+  const getBotBubbleStyle = () => {
+    if (isUser) return styles.userBubble;
+    
+    switch (sponsorType) {
+      case "supportive":
+        return styles.supportiveBubble;
+      case "grace":
+        return styles.graceBubble;
+      case "salty":
+        return styles.saltyBubble;
+      default:
+        return styles.supportiveBubble;
+    }
+  };
   
   return (
     <View
@@ -30,7 +47,7 @@ const ChatBubble = ({ message }: { message: ChatMessage }) => {
       <View
         style={[
           styles.bubble,
-          isUser ? styles.userBubble : styles.botBubble,
+          getBotBubbleStyle(),
         ]}
       >
         <Text style={styles.messageText}>{message.text}</Text>
@@ -299,8 +316,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(74, 144, 226, 0.3)", // Exact light blue from daily reflection gradient
     borderBottomRightRadius: 4,
   },
-  botBubble: {
+  supportiveBubble: {
     backgroundColor: "rgba(92, 184, 92, 0.1)", // Exact light green from daily reflection gradient
+    borderBottomLeftRadius: 4,
+  },
+  graceBubble: {
+    backgroundColor: "rgba(186, 85, 211, 0.1)", // Light lavender for Grace
+    borderBottomLeftRadius: 4,
+  },
+  saltyBubble: {
+    backgroundColor: "rgba(255, 191, 0, 0.1)", // Light amber for Salty Sam
     borderBottomLeftRadius: 4,
   },
   messageText: {
