@@ -20,7 +20,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Colors from "@/constants/colors";
-import { bigBookData, keyExcerpts } from "@/constants/bigbook";
+import { bigBookData, aaPrayers } from "@/constants/bigbook";
 import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store";
 import { BigBookCategory, BigBookSection } from "@/types/bigbook";
 
@@ -218,33 +218,33 @@ const RecentSection = () => {
   );
 };
 
-const KeyExcerpts = () => {
-  const [expandedExcerpt, setExpandedExcerpt] = useState<number | null>(null);
+const PrayersSection = () => {
+  const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
 
   return (
-    <View style={styles.excerptsContainer}>
-      <Text style={styles.excerptsTitle}>Key Excerpts</Text>
-      <Text style={styles.excerptsSubtitle}>Essential passages for offline reading</Text>
+    <View style={styles.prayersContainer}>
+      <Text style={styles.prayersTitle}>AA Prayers</Text>
+      <Text style={styles.prayersSubtitle}>Essential prayers for recovery and reflection</Text>
       
-      {keyExcerpts.map((excerpt, index) => (
-        <View key={index} style={styles.excerptCard}>
+      {aaPrayers.map((prayer, index) => (
+        <View key={index} style={styles.prayerCard}>
           <TouchableOpacity
-            style={styles.excerptHeader}
-            onPress={() => setExpandedExcerpt(expandedExcerpt === index ? null : index)}
-            testID={`excerpt-${index}`}
+            style={styles.prayerHeader}
+            onPress={() => setExpandedPrayer(expandedPrayer === index ? null : index)}
+            testID={`prayer-${index}`}
           >
-            <Text style={styles.excerptTitle}>{excerpt.title}</Text>
-            {expandedExcerpt === index ? (
+            <Text style={styles.prayerTitle}>{prayer.title}</Text>
+            {expandedPrayer === index ? (
               <ChevronDown size={20} color={Colors.light.muted} />
             ) : (
               <ChevronRight size={20} color={Colors.light.muted} />
             )}
           </TouchableOpacity>
           
-          {expandedExcerpt === index && (
-            <View style={styles.excerptContent}>
-              <Text style={styles.excerptText}>{excerpt.content}</Text>
-              <Text style={styles.excerptSource}>— {excerpt.source}</Text>
+          {expandedPrayer === index && (
+            <View style={styles.prayerContent}>
+              <Text style={styles.prayerText}>{prayer.content}</Text>
+              <Text style={styles.prayerSource}>— {prayer.source}</Text>
             </View>
           )}
         </View>
@@ -254,7 +254,7 @@ const KeyExcerpts = () => {
 };
 
 function BigBookBrowserContent() {
-  const [activeTab, setActiveTab] = useState<"browse" | "bookmarks" | "recent" | "excerpts">("browse");
+  const [activeTab, setActiveTab] = useState<"browse" | "bookmarks" | "recent" | "prayers">("browse");
 
   return (
     <View style={styles.container}>
@@ -291,11 +291,11 @@ function BigBookBrowserContent() {
         </TouchableOpacity>
         
         <TouchableOpacity
-          style={[styles.tab, activeTab === "excerpts" && styles.activeTab]}
-          onPress={() => setActiveTab("excerpts")}
-          testID="excerpts-tab"
+          style={[styles.tab, activeTab === "prayers" && styles.activeTab]}
+          onPress={() => setActiveTab("prayers")}
+          testID="prayers-tab"
         >
-          <Text style={[styles.tabText, activeTab === "excerpts" && styles.activeTabText]}>Excerpts</Text>
+          <Text style={[styles.tabText, activeTab === "prayers" && styles.activeTabText]}>Prayers</Text>
         </TouchableOpacity>
       </View>
 
@@ -318,7 +318,7 @@ function BigBookBrowserContent() {
         
         {activeTab === "bookmarks" && <BookmarksSection />}
         {activeTab === "recent" && <RecentSection />}
-        {activeTab === "excerpts" && <KeyExcerpts />}
+        {activeTab === "prayers" && <PrayersSection />}
       </ScrollView>
     </View>
   );
@@ -520,51 +520,55 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.light.muted,
   },
-  excerptsContainer: {
+  prayersContainer: {
     padding: 16,
   },
-  excerptsTitle: {
+  prayersTitle: {
     fontSize: 20,
     fontWeight: "bold",
     color: Colors.light.text,
     marginBottom: 4,
   },
-  excerptsSubtitle: {
+  prayersSubtitle: {
     fontSize: 14,
     color: Colors.light.muted,
     marginBottom: 16,
   },
-  excerptCard: {
+  prayerCard: {
     backgroundColor: Colors.light.cardBackground,
     borderRadius: 8,
     marginBottom: 12,
     overflow: "hidden",
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.tint,
   },
-  excerptHeader: {
+  prayerHeader: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
   },
-  excerptTitle: {
+  prayerTitle: {
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
     color: Colors.light.text,
   },
-  excerptContent: {
+  prayerContent: {
     padding: 16,
     paddingTop: 0,
+    backgroundColor: 'rgba(74, 144, 226, 0.05)',
   },
-  excerptText: {
+  prayerText: {
     fontSize: 14,
     color: Colors.light.text,
     lineHeight: 20,
     marginBottom: 8,
+    fontStyle: "italic",
   },
-  excerptSource: {
+  prayerSource: {
     fontSize: 12,
     color: Colors.light.muted,
-    fontStyle: "italic",
+    textAlign: "right",
   },
   emptyState: {
     flex: 1,

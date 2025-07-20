@@ -207,40 +207,51 @@ export const bigBookData: BigBookCategory[] = [
   }
 ];
 
-// Key excerpts for offline reading
-export const keyExcerpts = [
+// AA Prayers for offline reading
+export const aaPrayers = [
   {
-    title: "The Twelve Steps",
-    content: `1. We admitted we were powerless over alcohol—that our lives had become unmanageable.
-
-2. Came to believe that a Power greater than ourselves could restore us to sanity.
-
-3. Made a decision to turn our will and our lives over to the care of God as we understood Him.
-
-4. Made a searching and fearless moral inventory of ourselves.
-
-5. Admitted to God, to ourselves, and to another human being the exact nature of our wrongs.
-
-6. Were entirely ready to have God remove all these defects of character.
-
-7. Humbly asked Him to remove our shortcomings.
-
-8. Made a list of all persons we had harmed, and became willing to make amends to them all.
-
-9. Made direct amends to such people wherever possible, except when to do so would injure them or others.
-
-10. Continued to take personal inventory and when we were wrong promptly admitted it.
-
-11. Sought through prayer and meditation to improve our conscious contact with God as we understood Him, praying only for knowledge of His will for us and the power to carry that out.
-
-12. Having had a spiritual awakening as the result of these Steps, we tried to carry this message to alcoholics, and to practice these principles in all our affairs.`,
-    source: "Chapter 5: How It Works"
+    title: "Third Step Prayer",
+    content: `God, I offer myself to Thee — to build with me and to do with me as Thou wilt. Relieve me of the bondage of self, that I may better do Thy will. Take away my difficulties, that victory over them may bear witness to those I would help of Thy Power, Thy Love, and Thy Way of life. May I do Thy will always!`,
+    source: "Alcoholics Anonymous, Page 63"
   },
   {
-    title: "The Promises",
-    content: `If we are painstaking about this phase of our development, we will be amazed before we are half way through. We are going to know a new freedom and a new happiness. We will not regret the past nor wish to shut the door on it. We will comprehend the word serenity and we will know peace. No matter how far down the scale we have gone, we will see how our experience can benefit others. That feeling of uselessness and self-pity will disappear. We will lose interest in selfish things and gain interest in our fellows. Self-seeking will slip away. Our whole attitude and outlook upon life will change. Fear of people and of economic insecurity will leave us. We will intuitively know how to handle situations which used to baffle us. We will suddenly realize that God is doing for us what we could not do for ourselves.
+    title: "Seventh Step Prayer",
+    content: `My Creator, I am now willing that you should have all of me, good and bad. I pray that you now remove from me every single defect of character which stands in the way of my usefulness to you and my fellows. Grant me strength, as I go out from here, to do your bidding. Amen.`,
+    source: "Alcoholics Anonymous, Page 76"
+  },
+  {
+    title: "Eleventh Step Prayer",
+    content: `Lord, make me a channel of thy peace—that where there is hatred, I may bring love—that where there is wrong, I may bring the spirit of forgiveness—that where there is discord, I may bring harmony—that where there is error, I may bring truth—that where there is doubt, I may bring faith—that where there is despair, I may bring hope—that where there are shadows, I may bring light—that where there is sadness, I may bring joy. Lord, grant that I may seek rather to comfort than to be comforted—to understand, than to be understood—to love, than to be loved. For it is by self-forgetting that one finds. It is by forgiving that one is forgiven. It is by dying that one awakens to Eternal Life. Amen.`,
+    source: "Twelve Steps and Twelve Traditions, Page 99 (St. Francis Prayer)"
+  },
+  {
+    title: "Serenity Prayer",
+    content: `God, grant me the serenity to accept the things I cannot change,
+Courage to change the things I can,
+And wisdom to know the difference.
 
-Are these extravagant promises? We think not. They are being fulfilled among us—sometimes quickly, sometimes slowly. They will always materialize if we work for them.`,
-    source: "Chapter 6: Into Action, Pages 83-84"
+Living one day at a time,
+Enjoying one moment at a time,
+Accepting hardship as a pathway to peace,
+Taking, as Jesus did, this sinful world as it is,
+Not as I would have it,
+Trusting that You will make all things right,
+If I surrender to Your will,
+So that I may be reasonably happy in this life,
+And supremely happy with You forever in the next.
+Amen.`,
+    source: "Attributed to Reinhold Niebuhr (Full Version)"
+  },
+  {
+    title: "Set Aside Prayer",
+    content: `Dear God, please help me to set aside everything I think I know about myself, my disease, the 12 Steps, and especially You; so that I may have an open mind and a new experience with all these things. Please help me see the truth.`,
+    source: "Commonly used in AA meetings"
+  },
+  {
+    title: "Acceptance Prayer",
+    content: `And acceptance is the answer to all my problems today. When I am disturbed, it is because I find some person, place, thing, or situation—some fact of my life—unacceptable to me, and I can find no serenity until I accept that person, place, thing, or situation as being exactly the way it is supposed to be at this moment.
+
+Nothing, absolutely nothing, happens in God's world by mistake. Until I could accept my alcoholism, I could not stay sober; unless I accept life completely on life's terms, I cannot be happy. I need to concentrate not so much on what needs to be changed in the world as on what needs to be changed in me and in my attitudes.`,
+    source: "Alcoholics Anonymous, Page 417"
   }
 ];
