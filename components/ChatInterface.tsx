@@ -9,11 +9,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Switch,
 } from "react-native";
-import { Send, RotateCcw } from "lucide-react-native";
+import { Send, RotateCcw, UserCircle2 } from "lucide-react-native";
 
 import Colors from "@/constants/colors";
-import { useChatStore } from "@/hooks/use-chat-store";
+import { useChatStore, SponsorType } from "@/hooks/use-chat-store";
 import { ChatMessage } from "@/types";
 
 const ChatBubble = ({ message }: { message: ChatMessage }) => {
@@ -45,8 +46,56 @@ const ChatBubble = ({ message }: { message: ChatMessage }) => {
   );
 };
 
+const SponsorToggle = ({ 
+  sponsorType, 
+  onChange 
+}: { 
+  sponsorType: SponsorType; 
+  onChange: (type: SponsorType) => void;
+}) => {
+  return (
+    <View style={styles.sponsorToggleContainer}>
+      <TouchableOpacity
+        style={[
+          styles.sponsorButton,
+          sponsorType === "supportive" && styles.sponsorButtonActive
+        ]}
+        onPress={() => onChange("supportive")}
+        testID="supportive-sponsor-button"
+      >
+        <Text 
+          style={[
+            styles.sponsorButtonText,
+            sponsorType === "supportive" && styles.sponsorButtonTextActive
+          ]}
+        >
+          Supportive Sponsor
+        </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={[
+          styles.sponsorButton,
+          sponsorType === "salty" && styles.sponsorButtonActive
+        ]}
+        onPress={() => onChange("salty")}
+        testID="salty-sponsor-button"
+      >
+        <Text 
+          style={[
+            styles.sponsorButtonText,
+            sponsorType === "salty" && styles.sponsorButtonTextActive
+          ]}
+        >
+          Salty Sam
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 export default function ChatInterface() {
-  const { messages, isLoading, sendMessage, clearChat } = useChatStore();
+  const { messages, isLoading, sendMessage, clearChat, sponsorType, changeSponsor } = useChatStore();
   const [inputText, setInputText] = useState("");
   const flatListRef = useRef<FlatList>(null);
 
@@ -70,6 +119,10 @@ export default function ChatInterface() {
     clearChat();
   };
 
+  const getSponsorName = () => {
+    return sponsorType === "salty" ? "Salty Sam" : "Supportive Sponsor";
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -79,7 +132,7 @@ export default function ChatInterface() {
       <View style={styles.header}>
         <View style={styles.disclaimer}>
           <Text style={styles.disclaimerText}>
-            💬 <Text style={styles.saltyTitle}>Chatting with Salty Sam</Text> - Your no-nonsense AA companion with decades of sobriety
+            💬 <Text style={styles.saltyTitle}>Chatting with {getSponsorName()}</Text>
           </Text>
         </View>
         <TouchableOpacity
@@ -90,6 +143,11 @@ export default function ChatInterface() {
           <RotateCcw size={18} color={Colors.light.muted} />
         </TouchableOpacity>
       </View>
+      
+      <SponsorToggle 
+        sponsorType={sponsorType} 
+        onChange={changeSponsor}
+      />
       
       <FlatList
         ref={flatListRef}
@@ -104,7 +162,7 @@ export default function ChatInterface() {
       {isLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={Colors.light.tint} />
-          <Text style={styles.loadingText}>Salty Sam is thinking...</Text>
+          <Text style={styles.loadingText}>{getSponsorName()} is thinking...</Text>
         </View>
       )}
       
@@ -113,7 +171,7 @@ export default function ChatInterface() {
           style={styles.input}
           value={inputText}
           onChangeText={setInputText}
-          placeholder="Tell Salty Sam what's on your mind..."
+          placeholder={`Tell ${getSponsorName()} what's on your mind...`}
           placeholderTextColor={Colors.light.muted}
           multiline
           maxLength={500}
@@ -160,12 +218,42 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   saltyTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
   },
   clearButton: {
     padding: 12,
     marginRight: 4,
+  },
+  sponsorToggleContainer: {
+    flexDirection: "row",
+    padding: 8,
+    backgroundColor: Colors.light.cardBackground,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.divider,
+  },
+  sponsorButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    alignItems: "center",
+    marginHorizontal: 4,
+    backgroundColor: Colors.light.background,
+    borderWidth: 1,
+    borderColor: Colors.light.divider,
+  },
+  sponsorButtonActive: {
+    backgroundColor: Colors.light.tint,
+    borderColor: Colors.light.tint,
+  },
+  sponsorButtonText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: Colors.light.muted,
+  },
+  sponsorButtonTextActive: {
+    color: "#fff",
   },
   chatContainer: {
     padding: 16,

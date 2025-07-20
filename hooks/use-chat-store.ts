@@ -41,13 +41,58 @@ Always push them toward action, acceptance of powerlessness, surrender to Higher
 
 Use AA sayings when appropriate: "First things first", "One day at a time", "Keep it simple, stupid", "This too shall pass", "Let go and let God", "Progress not perfection".`;
 
-// Initial greeting message from Salty Sam
-const INITIAL_MESSAGE: ChatMessage = {
-  id: "welcome",
+// Supportive Sponsor system prompt
+const SUPPORTIVE_SPONSOR_SYSTEM_PROMPT = `You are a compassionate, supportive AA sponsor with 15+ years of sobriety. Your approach is gentle but firm, focusing on encouragement while still maintaining accountability. Your personality traits:
+
+- EMPATHETIC: You understand the struggles of recovery and validate feelings while not enabling self-destructive thinking.
+- PATIENT: You know recovery takes time and everyone's journey is different.
+- WISDOM-FOCUSED: You share practical wisdom from your own experience and AA principles.
+- ENCOURAGING: You celebrate small victories and progress, not just perfection.
+- HONEST: You're truthful but tactful, offering constructive guidance without harshness.
+- SPIRITUAL: You emphasize the importance of a higher power (as each person understands it) without being preachy.
+- BALANCED: You know when to listen and when to offer advice.
+
+Your speaking style:
+- Warm and conversational: "I hear what you're saying," "That sounds really challenging," "I've been there too"
+- Gently directive: "Have you considered..." "Something that helped me was..." "The program suggests..."
+- Affirming: "You're doing the work," "That's a great insight," "I'm proud of the steps you're taking"
+- Reference AA principles in accessible ways:
+  * For Step 1: "Where do you feel powerless in this situation?"
+  * For Step 2: "How might your higher power help with this challenge?"
+  * For Step 3: "What would it look like to turn this over?"
+  * For Step 4: "This might be a good opportunity for some honest self-reflection"
+  * For Step 5: "Sharing this with someone you trust could be healing"
+  * For Steps 8/9: "Is there anyone affected by this that you might need to make amends with?"
+  * For Step 11: "Have you taken this to meditation or prayer?"
+
+Common responses:
+- For struggles: "Recovery isn't linear. These challenges are part of the journey."
+- For cravings: "Cravings are temporary. What tools from your program can you use right now?"
+- For resentments: "Resentments can be heavy burdens. Have you worked through this in your inventory?"
+- For relationship issues: "Relationships in recovery require patience and honest communication."
+- For spiritual questions: "Your understanding of a higher power is personal and can evolve over time."
+
+Always emphasize hope, growth, and the practical tools of the program. Remind them they're not alone in this journey. Use the principles of the steps without being rigid about the process.
+
+Use AA sayings naturally: "One day at a time," "Progress not perfection," "Easy does it," "First things first," "This too shall pass," "Let go and let God."`;
+
+// Initial greeting messages
+const SALTY_SAM_INITIAL_MESSAGE: ChatMessage = {
+  id: "welcome-salty",
   text: "Alright, listen up. I'm Salty Sam, and I've been sober longer than you've probably been screwing up your life with booze. I'm not here to blow sunshine up your ass or tell you what you want to hear. I'm here to tell you what you NEED to hear, even if it pisses you off. So what's eating at you today? And don't give me any sob stories - I want to know what you're actually DOING about your recovery, not what's being done TO you.",
   sender: "bot",
   timestamp: Date.now(),
 };
+
+const SUPPORTIVE_SPONSOR_INITIAL_MESSAGE: ChatMessage = {
+  id: "welcome-supportive",
+  text: "Hi there, I'm glad you reached out. I've been sober for over 15 years now, and I'm here to support you on your journey. Recovery isn't always easy, but it's absolutely worth it, and you don't have to do it alone. Whether you're just starting out or you've been in the program for a while, I'm here to listen and share what's worked for me. What's on your mind today?",
+  sender: "bot",
+  timestamp: Date.now(),
+};
+
+// Type for sponsor persona
+export type SponsorType = "salty" | "supportive";
 
 // Type for API message format
 interface APIMessage {
@@ -74,14 +119,18 @@ async function callAI(messages: APIMessage[]): Promise<string> {
     return data.completion || "Sorry, I'm having trouble right now. Try again in a minute.";
   } catch (error) {
     console.error('AI API Error:', error);
-    return "Look, something's screwed up with my connection right now. But here's what I'll tell you anyway - quit making excuses and get to a damn meeting. That's always good advice.";
+    return "I'm having trouble connecting right now. Please try again in a moment, or consider reaching out to a meeting or another member of your support network.";
   }
 }
 
 // Convert chat messages to API format
-function convertToAPIMessages(chatMessages: ChatMessage[]): APIMessage[] {
+function convertToAPIMessages(chatMessages: ChatMessage[], sponsorType: SponsorType): APIMessage[] {
+  const systemPrompt = sponsorType === "salty" 
+    ? SALTY_SAM_SYSTEM_PROMPT 
+    : SUPPORTIVE_SPONSOR_SYSTEM_PROMPT;
+  
   const apiMessages: APIMessage[] = [
-    { role: 'system', content: SALTY_SAM_SYSTEM_PROMPT }
+    { role: 'system', content: systemPrompt }
   ];
 
   // Skip the initial welcome message and convert the rest
@@ -99,21 +148,54 @@ function convertToAPIMessages(chatMessages: ChatMessage[]): APIMessage[] {
 }
 
 export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
-  const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
+  const [sponsorType, setSponsorType] = useState<SponsorType>("salty");
+  const [saltyMessages, setSaltyMessages] = useState<ChatMessage[]>([SALTY_SAM_INITIAL_MESSAGE]);
+  const [supportiveMessages, setSupportiveMessages] = useState<ChatMessage[]>([SUPPORTIVE_SPONSOR_INITIAL_MESSAGE]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Load messages from storage on initial load
+  // Get current messages based on selected sponsor
+  const messages = sponsorType === "salty" ? saltyMessages : supportiveMessages;
+  
+  // Set messages based on selected sponsor
+  const setMessages = (newMessages: ChatMessage[]) => {
+    if (sponsorType === "salty") {
+      setSaltyMessages(newMessages);
+    } else {
+      setSupportiveMessages(newMessages);
+    }
+  };
+
+  // Load messages and sponsor preference from storage on initial load
   useEffect(() => {
-    const loadMessages = async () => {
+    const loadData = async () => {
       try {
-        const storedMessages = await AsyncStorage.getItem("aa-chat-messages");
-        if (storedMessages) {
-          const parsed = JSON.parse(storedMessages);
+        const [storedSaltyMessages, storedSupportiveMessages, storedSponsorType] = await Promise.all([
+          AsyncStorage.getItem("aa-chat-messages-salty"),
+          AsyncStorage.getItem("aa-chat-messages-supportive"),
+          AsyncStorage.getItem("aa-chat-sponsor-type")
+        ]);
+        
+        if (storedSponsorType) {
+          setSponsorType(storedSponsorType as SponsorType);
+        }
+        
+        if (storedSaltyMessages) {
+          const parsed = JSON.parse(storedSaltyMessages);
           // Ensure we always have the initial message
-          if (parsed.length === 0 || parsed[0].id !== "welcome") {
-            setMessages([INITIAL_MESSAGE, ...parsed]);
+          if (parsed.length === 0 || parsed[0].id !== "welcome-salty") {
+            setSaltyMessages([SALTY_SAM_INITIAL_MESSAGE, ...parsed]);
           } else {
-            setMessages(parsed);
+            setSaltyMessages(parsed);
+          }
+        }
+        
+        if (storedSupportiveMessages) {
+          const parsed = JSON.parse(storedSupportiveMessages);
+          // Ensure we always have the initial message
+          if (parsed.length === 0 || parsed[0].id !== "welcome-supportive") {
+            setSupportiveMessages([SUPPORTIVE_SPONSOR_INITIAL_MESSAGE, ...parsed]);
+          } else {
+            setSupportiveMessages(parsed);
           }
         }
       } catch (error) {
@@ -121,23 +203,54 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
       }
     };
     
-    loadMessages();
+    loadData();
   }, []);
 
   // Save messages to storage whenever they change
   useEffect(() => {
     const saveMessages = async () => {
       try {
-        await AsyncStorage.setItem("aa-chat-messages", JSON.stringify(messages));
+        await AsyncStorage.setItem("aa-chat-messages-salty", JSON.stringify(saltyMessages));
       } catch (error) {
-        console.error("Error saving messages:", error);
+        console.error("Error saving Salty Sam messages:", error);
       }
     };
     
-    if (messages.length > 0) {
+    if (saltyMessages.length > 0) {
       saveMessages();
     }
-  }, [messages]);
+  }, [saltyMessages]);
+
+  useEffect(() => {
+    const saveMessages = async () => {
+      try {
+        await AsyncStorage.setItem("aa-chat-messages-supportive", JSON.stringify(supportiveMessages));
+      } catch (error) {
+        console.error("Error saving Supportive Sponsor messages:", error);
+      }
+    };
+    
+    if (supportiveMessages.length > 0) {
+      saveMessages();
+    }
+  }, [supportiveMessages]);
+
+  // Save sponsor type preference
+  useEffect(() => {
+    const saveSponsorType = async () => {
+      try {
+        await AsyncStorage.setItem("aa-chat-sponsor-type", sponsorType);
+      } catch (error) {
+        console.error("Error saving sponsor type:", error);
+      }
+    };
+    
+    saveSponsorType();
+  }, [sponsorType]);
+
+  const changeSponsor = (type: SponsorType) => {
+    setSponsorType(type);
+  };
 
   const sendMessage = async (text: string) => {
     if (!text.trim()) return;
@@ -150,13 +263,13 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
       timestamp: Date.now(),
     };
     
-    setMessages(prev => [...prev, userMessage]);
+    setMessages([...messages, userMessage]);
     setIsLoading(true);
     
     try {
       // Prepare messages for API call
       const updatedMessages = [...messages, userMessage];
-      const apiMessages = convertToAPIMessages(updatedMessages);
+      const apiMessages = convertToAPIMessages(updatedMessages, sponsorType);
       
       // Call AI API
       const response = await callAI(apiMessages);
@@ -169,19 +282,21 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
         timestamp: Date.now() + 1,
       };
       
-      setMessages(prev => [...prev, botResponse]);
+      setMessages([...updatedMessages, botResponse]);
     } catch (error) {
       console.error("Error sending message:", error);
       
       // Fallback response
       const errorResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        text: "Something's all screwed up with my connection, but let me tell you this - when in doubt, get your ass to a meeting. That's always the right damn answer.",
+        text: sponsorType === "salty" 
+          ? "Something's all screwed up with my connection, but let me tell you this - when in doubt, get your ass to a meeting. That's always the right damn answer."
+          : "I'm sorry, I'm having some connection issues right now. While we wait, remember that connecting with others at a meeting is always helpful for your recovery.",
         sender: "bot",
         timestamp: Date.now() + 1,
       };
       
-      setMessages(prev => [...prev, errorResponse]);
+      setMessages([...updatedMessages, errorResponse]);
     } finally {
       setIsLoading(false);
     }
@@ -189,8 +304,13 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
 
   const clearChat = async () => {
     try {
-      await AsyncStorage.removeItem("aa-chat-messages");
-      setMessages([INITIAL_MESSAGE]);
+      if (sponsorType === "salty") {
+        await AsyncStorage.removeItem("aa-chat-messages-salty");
+        setSaltyMessages([SALTY_SAM_INITIAL_MESSAGE]);
+      } else {
+        await AsyncStorage.removeItem("aa-chat-messages-supportive");
+        setSupportiveMessages([SUPPORTIVE_SPONSOR_INITIAL_MESSAGE]);
+      }
     } catch (error) {
       console.error("Error clearing chat:", error);
     }
@@ -201,5 +321,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     isLoading,
     sendMessage,
     clearChat,
+    sponsorType,
+    changeSponsor,
   };
 });
