@@ -263,12 +263,13 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
       timestamp: Date.now(),
     };
     
-    setMessages([...messages, userMessage]);
+    // Define updatedMessages before the try block so it's in scope for the catch block
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setIsLoading(true);
     
     try {
       // Prepare messages for API call
-      const updatedMessages = [...messages, userMessage];
       const apiMessages = convertToAPIMessages(updatedMessages, sponsorType);
       
       // Call AI API
