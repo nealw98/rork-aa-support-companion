@@ -68,7 +68,25 @@ const SponsorToggle = ({
             sponsorType === "supportive" && styles.sponsorButtonTextActive
           ]}
         >
-          Supportive Sponsor
+          Supportive
+        </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={[
+          styles.sponsorButton,
+          sponsorType === "grace" && styles.sponsorButtonActive
+        ]}
+        onPress={() => onChange("grace")}
+        testID="grace-sponsor-button"
+      >
+        <Text 
+          style={[
+            styles.sponsorButtonText,
+            sponsorType === "grace" && styles.sponsorButtonTextActive
+          ]}
+        >
+          Grace
         </Text>
       </TouchableOpacity>
       
@@ -118,6 +136,34 @@ export default function ChatInterface() {
     clearChat();
   };
 
+  // Get placeholder text based on sponsor type
+  const getPlaceholderText = () => {
+    switch (sponsorType) {
+      case "salty":
+        return "Tell Salty Sam what's on your mind...";
+      case "supportive":
+        return "Tell Supportive Sponsor what's on your mind...";
+      case "grace":
+        return "Share with Gentle Grace what's in your heart...";
+      default:
+        return "Type your message...";
+    }
+  };
+
+  // Get loading text based on sponsor type
+  const getLoadingText = () => {
+    switch (sponsorType) {
+      case "salty":
+        return "Salty Sam is thinking...";
+      case "supportive":
+        return "Supportive Sponsor is thinking...";
+      case "grace":
+        return "Gentle Grace is channeling wisdom...";
+      default:
+        return "Thinking...";
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -151,9 +197,7 @@ export default function ChatInterface() {
       {isLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={Colors.light.tint} />
-          <Text style={styles.loadingText}>
-            {sponsorType === "salty" ? "Salty Sam" : "Supportive Sponsor"} is thinking...
-          </Text>
+          <Text style={styles.loadingText}>{getLoadingText()}</Text>
         </View>
       )}
       
@@ -162,7 +206,7 @@ export default function ChatInterface() {
           style={styles.input}
           value={inputText}
           onChangeText={setInputText}
-          placeholder={`Tell ${sponsorType === "salty" ? "Salty Sam" : "Supportive Sponsor"} what's on your mind...`}
+          placeholder={getPlaceholderText()}
           placeholderTextColor={Colors.light.muted}
           multiline
           maxLength={500}
@@ -211,10 +255,10 @@ const styles = StyleSheet.create({
   sponsorButton: {
     flex: 1,
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 4,
     borderRadius: 20,
     alignItems: "center",
-    marginHorizontal: 4,
+    marginHorizontal: 2,
     backgroundColor: Colors.light.background,
     borderWidth: 1,
     borderColor: Colors.light.divider,
@@ -224,7 +268,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.tint,
   },
   sponsorButtonText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "500",
     color: Colors.light.muted,
   },
@@ -252,11 +296,11 @@ const styles = StyleSheet.create({
     minWidth: 60,
   },
   userBubble: {
-    backgroundColor: Colors.light.chatBubbleUser,
+    backgroundColor: "rgba(74, 144, 226, 0.3)", // Exact light blue from daily reflection gradient
     borderBottomRightRadius: 4,
   },
   botBubble: {
-    backgroundColor: Colors.light.chatBubbleBot,
+    backgroundColor: "rgba(92, 184, 92, 0.1)", // Exact light green from daily reflection gradient
     borderBottomLeftRadius: 4,
   },
   messageText: {

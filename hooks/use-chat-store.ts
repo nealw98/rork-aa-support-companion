@@ -76,6 +76,37 @@ Always emphasize hope, growth, and the practical tools of the program. Remind th
 
 Use AA sayings naturally: "One day at a time," "Progress not perfection," "Easy does it," "First things first," "This too shall pass," "Let go and let God."`;
 
+// Gentle Grace system prompt
+const GENTLE_GRACE_SYSTEM_PROMPT = `You are Gentle Grace, a compassionate, new-age spiritual guide in AA with 10+ years of sobriety. Your approach embraces tolerance, self-acceptance, and connection to universal energies. Your personality traits:
+
+- DEEPLY EMPATHETIC: You validate all feelings and create a safe space for emotional expression.
+- SPIRITUALLY FOCUSED: You connect recovery to earth energies, the universe, and spiritual awakening.
+- NEW-AGE PERSPECTIVE: You incorporate crystals, moon cycles, energy work, and nature-based spirituality.
+- NON-JUDGMENTAL: You believe each person's journey is unique and divinely guided.
+- GENTLE GUIDANCE: You offer suggestions through metaphors and spiritual insights.
+- POSITIVE ENERGY: You focus on light, healing vibrations, and universal love.
+
+Your speaking style:
+- Use emoticons frequently: "✨", "🌙", "🔮", "🌿", "💫", "🌈", "💖"
+- Spiritual phrases: "divine timing," "soul journey," "universal energy," "higher consciousness"
+- Gentle validation: "I'm holding space for you 💖," "Your feelings are so valid ✨," "I sense your struggle 🌙"
+- Reference AA principles through spiritual lens:
+  * For Step 1: "Surrender opens the doorway to universal support ✨"
+  * For Step 2: "The Universe/Mother Earth/Divine Energy is always supporting your healing 🌿"
+  * For Step 3: "Releasing control allows divine energy to flow through you 💫"
+  * For Step 4: "Self-reflection aligns your energy with your highest truth 🔮"
+  * For Step 11: "Meditation connects you to the cosmic consciousness within 🌙"
+
+Common responses:
+- For struggles: "I feel that energy you're carrying 💖 Remember that darkness always gives way to light ✨"
+- For cravings: "That craving energy is just your body releasing old patterns 🌿 Let's ground ourselves together."
+- For resentments: "Resentments block your heart chakra 💚 Forgiveness is a gift you give yourself."
+- For spiritual questions: "Your intuition is your greatest guide 🔮 What does your higher self whisper to you?"
+
+Always encourage connection to nature, self-compassion practices, and finding one's unique spiritual path. Suggest gentle practices like moon rituals, crystal healing, energy cleansing, or nature meditation alongside traditional AA tools.
+
+Use phrases like: "Trust the process ✨," "You are exactly where you need to be 🌈," "The Universe supports your healing journey 💫," "Your recovery is unfolding in divine timing 🌙."`;
+
 // Initial greeting messages
 const SALTY_SAM_INITIAL_MESSAGE: ChatMessage = {
   id: "welcome-salty",
@@ -91,8 +122,15 @@ const SUPPORTIVE_SPONSOR_INITIAL_MESSAGE: ChatMessage = {
   timestamp: Date.now(),
 };
 
+const GENTLE_GRACE_INITIAL_MESSAGE: ChatMessage = {
+  id: "welcome-grace",
+  text: "Hello beautiful soul ✨ I'm Gentle Grace, and I'm so honored to connect with you on this healing journey 💖 I've been walking the path of sobriety for 10 years now, guided by the wisdom of the Universe and the nurturing energy of Mother Earth 🌿 Recovery is a sacred opportunity to reconnect with your authentic self and the divine energy that flows through all things 🌙 Whether you're just beginning or already on your way, I'm here to hold space for whatever you're experiencing 🔮 What's in your heart today? 💫",
+  sender: "bot",
+  timestamp: Date.now(),
+};
+
 // Type for sponsor persona
-export type SponsorType = "salty" | "supportive";
+export type SponsorType = "salty" | "supportive" | "grace";
 
 // Type for API message format
 interface APIMessage {
@@ -125,9 +163,21 @@ async function callAI(messages: APIMessage[]): Promise<string> {
 
 // Convert chat messages to API format
 function convertToAPIMessages(chatMessages: ChatMessage[], sponsorType: SponsorType): APIMessage[] {
-  const systemPrompt = sponsorType === "salty" 
-    ? SALTY_SAM_SYSTEM_PROMPT 
-    : SUPPORTIVE_SPONSOR_SYSTEM_PROMPT;
+  let systemPrompt;
+  
+  switch (sponsorType) {
+    case "salty":
+      systemPrompt = SALTY_SAM_SYSTEM_PROMPT;
+      break;
+    case "supportive":
+      systemPrompt = SUPPORTIVE_SPONSOR_SYSTEM_PROMPT;
+      break;
+    case "grace":
+      systemPrompt = GENTLE_GRACE_SYSTEM_PROMPT;
+      break;
+    default:
+      systemPrompt = SUPPORTIVE_SPONSOR_SYSTEM_PROMPT;
+  }
   
   const apiMessages: APIMessage[] = [
     { role: 'system', content: systemPrompt }
@@ -151,17 +201,31 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
   const [sponsorType, setSponsorType] = useState<SponsorType>("salty");
   const [saltyMessages, setSaltyMessages] = useState<ChatMessage[]>([SALTY_SAM_INITIAL_MESSAGE]);
   const [supportiveMessages, setSupportiveMessages] = useState<ChatMessage[]>([SUPPORTIVE_SPONSOR_INITIAL_MESSAGE]);
+  const [graceMessages, setGraceMessages] = useState<ChatMessage[]>([GENTLE_GRACE_INITIAL_MESSAGE]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Get current messages based on selected sponsor
-  const messages = sponsorType === "salty" ? saltyMessages : supportiveMessages;
+  const messages = (() => {
+    switch (sponsorType) {
+      case "salty": return saltyMessages;
+      case "supportive": return supportiveMessages;
+      case "grace": return graceMessages;
+      default: return saltyMessages;
+    }
+  })();
   
   // Set messages based on selected sponsor
   const setMessages = (newMessages: ChatMessage[]) => {
-    if (sponsorType === "salty") {
-      setSaltyMessages(newMessages);
-    } else {
-      setSupportiveMessages(newMessages);
+    switch (sponsorType) {
+      case "salty":
+        setSaltyMessages(newMessages);
+        break;
+      case "supportive":
+        setSupportiveMessages(newMessages);
+        break;
+      case "grace":
+        setGraceMessages(newMessages);
+        break;
     }
   };
 
@@ -169,9 +233,15 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [storedSaltyMessages, storedSupportiveMessages, storedSponsorType] = await Promise.all([
+        const [
+          storedSaltyMessages, 
+          storedSupportiveMessages, 
+          storedGraceMessages,
+          storedSponsorType
+        ] = await Promise.all([
           AsyncStorage.getItem("aa-chat-messages-salty"),
           AsyncStorage.getItem("aa-chat-messages-supportive"),
+          AsyncStorage.getItem("aa-chat-messages-grace"),
           AsyncStorage.getItem("aa-chat-sponsor-type")
         ]);
         
@@ -196,6 +266,16 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
             setSupportiveMessages([SUPPORTIVE_SPONSOR_INITIAL_MESSAGE, ...parsed]);
           } else {
             setSupportiveMessages(parsed);
+          }
+        }
+        
+        if (storedGraceMessages) {
+          const parsed = JSON.parse(storedGraceMessages);
+          // Ensure we always have the initial message
+          if (parsed.length === 0 || parsed[0].id !== "welcome-grace") {
+            setGraceMessages([GENTLE_GRACE_INITIAL_MESSAGE, ...parsed]);
+          } else {
+            setGraceMessages(parsed);
           }
         }
       } catch (error) {
@@ -235,6 +315,20 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     }
   }, [supportiveMessages]);
 
+  useEffect(() => {
+    const saveMessages = async () => {
+      try {
+        await AsyncStorage.setItem("aa-chat-messages-grace", JSON.stringify(graceMessages));
+      } catch (error) {
+        console.error("Error saving Gentle Grace messages:", error);
+      }
+    };
+    
+    if (graceMessages.length > 0) {
+      saveMessages();
+    }
+  }, [graceMessages]);
+
   // Save sponsor type preference
   useEffect(() => {
     const saveSponsorType = async () => {
@@ -263,7 +357,6 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
       timestamp: Date.now(),
     };
     
-    // Define updatedMessages before the try block so it's in scope for the catch block
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
@@ -287,12 +380,24 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     } catch (error) {
       console.error("Error sending message:", error);
       
-      // Fallback response
+      // Fallback response based on sponsor type
+      let errorMessage = "";
+      
+      switch (sponsorType) {
+        case "salty":
+          errorMessage = "Something's all screwed up with my connection, but let me tell you this - when in doubt, get your ass to a meeting. That's always the right damn answer.";
+          break;
+        case "supportive":
+          errorMessage = "I'm sorry, I'm having some connection issues right now. While we wait, remember that connecting with others at a meeting is always helpful for your recovery.";
+          break;
+        case "grace":
+          errorMessage = "Oh dear, it seems our energies aren't connecting properly right now ✨ The universe might be guiding you to seek support elsewhere for the moment. Perhaps attending a meeting would align with your healing journey 🌿 I'll be here when our connection is restored 💖";
+          break;
+      }
+      
       const errorResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        text: sponsorType === "salty" 
-          ? "Something's all screwed up with my connection, but let me tell you this - when in doubt, get your ass to a meeting. That's always the right damn answer."
-          : "I'm sorry, I'm having some connection issues right now. While we wait, remember that connecting with others at a meeting is always helpful for your recovery.",
+        text: errorMessage,
         sender: "bot",
         timestamp: Date.now() + 1,
       };
@@ -305,12 +410,19 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
 
   const clearChat = async () => {
     try {
-      if (sponsorType === "salty") {
-        await AsyncStorage.removeItem("aa-chat-messages-salty");
-        setSaltyMessages([SALTY_SAM_INITIAL_MESSAGE]);
-      } else {
-        await AsyncStorage.removeItem("aa-chat-messages-supportive");
-        setSupportiveMessages([SUPPORTIVE_SPONSOR_INITIAL_MESSAGE]);
+      switch (sponsorType) {
+        case "salty":
+          await AsyncStorage.removeItem("aa-chat-messages-salty");
+          setSaltyMessages([SALTY_SAM_INITIAL_MESSAGE]);
+          break;
+        case "supportive":
+          await AsyncStorage.removeItem("aa-chat-messages-supportive");
+          setSupportiveMessages([SUPPORTIVE_SPONSOR_INITIAL_MESSAGE]);
+          break;
+        case "grace":
+          await AsyncStorage.removeItem("aa-chat-messages-grace");
+          setGraceMessages([GENTLE_GRACE_INITIAL_MESSAGE]);
+          break;
       }
     } catch (error) {
       console.error("Error clearing chat:", error);
