@@ -9,16 +9,86 @@ import Colors from "@/constants/colors";
 import { getReflectionForDate } from "@/constants/reflections";
 import { Reflection } from "@/types";
 
+// Helper to generate calendar grid
+const generateCalendarDays = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  
+  // First day of the month
+  const firstDay = new Date(year, month, 1);
+  // Last day of the month
+  const lastDay = new Date(year, month + 1, 0);
+  
+  // Get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
+  const firstDayOfWeek = firstDay.getDay();
+  
+  // Calculate how many days to show from the previous month
+  const daysFromPrevMonth = firstDayOfWeek;
+  
+  // Calculate total days in the current month
+  const daysInMonth = lastDay.getDate();
+  
+  // Calculate how many rows we need (including days from prev/next months)
+  const totalDays = daysFromPrevMonth + daysInMonth;
+  const rows = Math.ceil(totalDays / 7);
+  const totalCells = rows * 7;
+  
+  // Generate calendar days array
+  const days = [];
+  
+  // Previous month days
+  const prevMonth = new Date(year, month, 0);
+  const prevMonthDays = prevMonth.getDate();
+  
+  for (let i = 0; i < daysFromPrevMonth; i++) {
+    const day = prevMonthDays - daysFromPrevMonth + i + 1;
+    days.push({
+      date: new Date(year, month - 1, day),
+      day,
+      currentMonth: false,
+    });
+  }
+  
+  // Current month days
+  for (let i = 1; i <= daysInMonth; i++) {
+    days.push({
+      date: new Date(year, month, i),
+      day: i,
+      currentMonth: true,
+    });
+  }
+  
+  // Next month days
+  const remainingCells = totalCells - days.length;
+  for (let i = 1; i <= remainingCells; i++) {
+    days.push({
+      date: new Date(year, month + 1, i),
+      day: i,
+      currentMonth: false,
+    });
+  }
+  
+  return days;
+};
+
 export default function DailyReflection() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [reflection, setReflection] = useState<Reflection | null>(null);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [dateString, setDateString] = useState<string>("");
+  const [calendarDays, setCalendarDays] = useState<any[]>([]);
+  const [calendarDate, setCalendarDate] = useState<Date>(new Date());
 
   useEffect(() => {
     updateReflection(selectedDate);
   }, [selectedDate]);
+
+  useEffect(() => {
+    if (showDatePicker) {
+      setCalendarDays(generateCalendarDays(calendarDate));
+    }
+  }, [showDatePicker, calendarDate]);
 
   const updateReflection = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = { 
@@ -97,10 +167,26 @@ export default function DailyReflection() {
   };
 
   const openDatePicker = () => {
+    setCalendarDate(new Date(selectedDate));
     setShowDatePicker(true);
   };
 
   const closeDatePicker = () => {
+    setShowDatePicker(false);
+  };
+
+  const changeCalendarMonth = (direction: 'prev' | 'next') => {
+    const newDate = new Date(calendarDate);
+    if (direction === 'prev') {
+      newDate.setMonth(newDate.getMonth() - 1);
+    } else {
+      newDate.setMonth(newDate.getMonth() + 1);
+    }
+    setCalendarDate(newDate);
+  };
+
+  const selectCalendarDay = (date: Date) => {
+    setSelectedDate(date);
     setShowDatePicker(false);
   };
 
@@ -111,6 +197,93 @@ export default function DailyReflection() {
       </View>
     );
   }
+
+  const renderCalendarView = () => {
+    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const monthYear = calendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
+    return (
+      <View style={styles.calendarContainer}>
+        <View style={styles.calendarHeader}>
+          <TouchableOpacity onPress={() => changeCalendarMonth('prev')} testID="prev-month">
+            <ChevronLeft size={24} color={Colors.light.tint} />
+          </TouchableOpacity>
+          <Text style={styles.calendarMonthYear}>{monthYear}</Text>
+          <TouchableOpacity onPress={() => changeCalendarMonth('next')} testID="next-month">
+            <ChevronRight size={24} color={Colors.light.tint} />
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.weekDaysContainer}>
+          {weekDays.map((day, index) => (
+            <Text key={index} style={styles.weekDayText}>{day}</Text>
+          ))}
+        </View>
+        
+        <View style={styles.daysContainer}>
+          {calendarDays.map((item, index) => {
+            const isSelected = 
+              selectedDate.getDate() === item.date.getDate() && 
+              selectedDate.getMonth() === item.date.getMonth() && 
+              selectedDate.getFullYear() === item.date.getFullYear();
+            
+            const isToday = 
+              new Date().getDate() === item.date.getDate() && 
+              new Date().getMonth() === item.date.getMonth() && 
+              new Date().getFullYear() === item.date.getFullYear();
+            
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.dayButton,
+                  !item.currentMonth && styles.otherMonthDay,
+                  isSelected && styles.selectedDay,
+                  isToday && styles.todayButton
+                ]}
+                onPress={() => selectCalendarDay(item.date)}
+                testID={`calendar-day-${item.day}`}
+              >
+                <Text 
+                  style={[
+                    styles.dayText,
+                    !item.currentMonth && styles.otherMonthDayText,
+                    isSelected && styles.selectedDayText,
+                    isToday && styles.todayText
+                  ]}
+                >
+                  {item.day}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+        
+        <View style={styles.calendarFooter}>
+          <TouchableOpacity 
+            style={styles.todayButton}
+            onPress={() => {
+              const today = new Date();
+              setSelectedDate(today);
+              setCalendarDate(today);
+              setShowDatePicker(false);
+            }}
+            testID="today-button"
+          >
+            <Text style={styles.todayButtonText}>Today</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.cancelButton}
+            onPress={closeDatePicker}
+            testID="cancel-button"
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -185,47 +358,31 @@ export default function DailyReflection() {
         </View>
       </View>
 
-      {/* Date Picker Modal for iOS */}
-      {Platform.OS === 'ios' && (
-        <Modal
-          visible={showDatePicker}
-          transparent={true}
-          animationType="slide"
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <TouchableOpacity onPress={closeDatePicker}>
-                  <Text style={styles.modalButton}>Cancel</Text>
-                </TouchableOpacity>
-                <Text style={styles.modalTitle}>Select Date</Text>
-                <TouchableOpacity onPress={() => {
-                  setShowDatePicker(false);
-                }}>
-                  <Text style={styles.modalButton}>Done</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                value={selectedDate}
-                mode="date"
-                display="spinner"
-                onChange={handleDateChange}
-                style={styles.datePicker}
-              />
-            </View>
+      {/* Calendar Modal */}
+      <Modal
+        visible={showDatePicker}
+        transparent={true}
+        animationType="slide"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            {Platform.OS === 'ios' ? (
+              renderCalendarView()
+            ) : (
+              <>
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={selectedDate}
+                    mode="date"
+                    display="default"
+                    onChange={handleDateChange}
+                  />
+                )}
+              </>
+            )}
           </View>
-        </Modal>
-      )}
-
-      {/* Date Picker for Android */}
-      {Platform.OS === 'android' && showDatePicker && (
-        <DateTimePicker
-          value={selectedDate}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -408,7 +565,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    paddingBottom: 34,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 0,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -430,5 +587,98 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     height: 200,
+  },
+  // Calendar styles
+  calendarContainer: {
+    backgroundColor: Colors.light.background,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 16,
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  calendarMonthYear: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.light.text,
+  },
+  weekDaysContainer: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  weekDayText: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '500',
+    color: Colors.light.muted,
+  },
+  daysContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 16,
+  },
+  dayButton: {
+    width: '14.28%', // 100% / 7 days
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  dayText: {
+    fontSize: 16,
+    color: Colors.light.text,
+  },
+  otherMonthDay: {
+    opacity: 0.4,
+  },
+  otherMonthDayText: {
+    color: Colors.light.muted,
+  },
+  selectedDay: {
+    backgroundColor: Colors.light.tint,
+    borderRadius: 20,
+  },
+  selectedDayText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  todayButton: {
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    borderRadius: 20,
+  },
+  todayText: {
+    color: Colors.light.tint,
+    fontWeight: '600',
+  },
+  calendarFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  todayButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: Colors.light.cardBackground,
+    borderRadius: 8,
+  },
+  todayButtonText: {
+    color: Colors.light.tint,
+    fontWeight: '600',
+  },
+  cancelButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: Colors.light.cardBackground,
+    borderRadius: 8,
+  },
+  cancelButtonText: {
+    color: Colors.light.muted,
+    fontWeight: '500',
   },
 });
