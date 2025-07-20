@@ -102,8 +102,10 @@ const SponsorToggle = ({
             styles.sponsorButtonText,
             sponsorType === "grace" && styles.sponsorButtonTextActive
           ]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
         >
-          Grace
+          Gentle Grace
         </Text>
       </TouchableOpacity>
       
@@ -288,6 +290,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "500",
     color: Colors.light.muted,
+    flexShrink: 1,
   },
   sponsorButtonTextActive: {
     color: "#fff",
