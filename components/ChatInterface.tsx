@@ -9,9 +9,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Switch,
 } from "react-native";
-import { Send, RotateCcw, UserCircle2 } from "lucide-react-native";
+import { Send, RotateCcw } from "lucide-react-native";
 
 import Colors from "@/constants/colors";
 import { useChatStore, SponsorType } from "@/hooks/use-chat-store";
@@ -96,7 +95,7 @@ const SponsorToggle = ({
 
 export default function ChatInterface() {
   const { messages, isLoading, sendMessage, clearChat, sponsorType, changeSponsor } = useChatStore();
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState<string>("");
   const flatListRef = useRef<FlatList>(null);
 
   // Scroll to bottom when messages change
