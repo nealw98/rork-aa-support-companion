@@ -239,7 +239,7 @@ export default function DailyReflection() {
                   styles.dayButton,
                   !item.currentMonth && styles.otherMonthDay,
                   isSelected && styles.selectedDay,
-                  isToday && styles.todayButton
+                  isToday && styles.todayDay
                 ]}
                 onPress={() => selectCalendarDay(item.date)}
                 testID={`calendar-day-${item.day}`}
@@ -261,7 +261,7 @@ export default function DailyReflection() {
         
         <View style={styles.calendarFooter}>
           <TouchableOpacity 
-            style={styles.todayButton}
+            style={styles.footerButton}
             onPress={() => {
               const today = new Date();
               setSelectedDate(today);
@@ -274,7 +274,7 @@ export default function DailyReflection() {
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={styles.cancelButton}
+            style={styles.footerButton}
             onPress={closeDatePicker}
             testID="cancel-button"
           >
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
   },
-  todayButton: {
+  todayDay: {
     borderWidth: 1,
     borderColor: Colors.light.tint,
     borderRadius: 20,
@@ -660,26 +660,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 8,
+    paddingHorizontal: 8,
   },
-  // Fixed duplicate property by renaming this one
-  calendarTodayButton: {
+  footerButton: {
     paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     backgroundColor: Colors.light.cardBackground,
     borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 100,
   },
   todayButtonText: {
     color: Colors.light.tint,
     fontWeight: '600',
-  },
-  cancelButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 8,
+    fontSize: 16,
   },
   cancelButtonText: {
     color: Colors.light.muted,
     fontWeight: '500',
+    fontSize: 16,
   },
 });
