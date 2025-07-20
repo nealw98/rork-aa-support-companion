@@ -29,6 +29,17 @@ export default function TabLayout() {
         name="chat"
         options={{
           title: "Sober Chat",
+          headerTitle: "Choose Your AI Sponsor",
+          headerTitleStyle: {
+            fontSize: 18,
+            fontWeight: "600",
+          },
+          headerSubtitle: "Select a voice that fits your mood",
+          headerSubtitleStyle: {
+            fontSize: 12,
+            fontStyle: "italic",
+            color: Colors.light.muted,
+          },
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} />,
         }}
       />

@@ -85,7 +85,7 @@ const SponsorToggle = ({
             sponsorType === "supportive" && styles.sponsorButtonTextActive
           ]}
         >
-          Supportive
+          Wise Riley
         </Text>
       </TouchableOpacity>
       
@@ -159,7 +159,7 @@ export default function ChatInterface() {
       case "salty":
         return "Tell Salty Sam what's on your mind...";
       case "supportive":
-        return "Tell Supportive Sponsor what's on your mind...";
+        return "Tell Wise Riley what's on your mind...";
       case "grace":
         return "Share with Gentle Grace what's in your heart...";
       default:
@@ -173,7 +173,7 @@ export default function ChatInterface() {
       case "salty":
         return "Salty Sam is thinking...";
       case "supportive":
-        return "Supportive Sponsor is thinking...";
+        return "Wise Riley is thinking...";
       case "grace":
         return "Gentle Grace is channeling wisdom...";
       default:
