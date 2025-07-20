@@ -225,7 +225,7 @@ export default function ChatInterface() {
           style={styles.input}
           value={inputText}
           onChangeText={setInputText}
-          placeholder={getPlaceholderText()}
+          placeholder=""
           placeholderTextColor={Colors.light.muted}
           multiline
           maxLength={500}
