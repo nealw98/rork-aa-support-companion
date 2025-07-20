@@ -11,7 +11,7 @@ export default {
     accent: "#5CB85C",
     muted: "#6c757d",
     divider: "#e9ecef",
-    chatBubbleUser: "#7EB3F2", // Light blue from daily reflection
-    chatBubbleBot: "#8CD68C", // Light green from daily reflection
+    chatBubbleUser: "rgba(74, 144, 226, 0.3)", // Exact light blue from daily reflection gradient
+    chatBubbleBot: "rgba(92, 184, 92, 0.1)", // Exact light green from daily reflection gradient
   },
 };
