@@ -79,7 +79,7 @@ export default function ChatInterface() {
       <View style={styles.header}>
         <View style={styles.disclaimer}>
           <Text style={styles.disclaimerText}>
-            💬 Chatting with Salty Sam - Your no-nonsense AA companion with decades of sobriety
+            💬 <Text style={styles.saltyTitle}>Chatting with Salty Sam</Text> - Your no-nonsense AA companion with decades of sobriety
           </Text>
         </View>
         <TouchableOpacity
@@ -158,6 +158,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#795548",
     textAlign: "center",
+  },
+  saltyTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
   },
   clearButton: {
     padding: 12,

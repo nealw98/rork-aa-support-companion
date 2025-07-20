@@ -28,7 +28,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          title: "Recovery Chat",
+          title: "Sober Chat",
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} />,
         }}
       />
