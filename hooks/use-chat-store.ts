@@ -110,7 +110,7 @@ Use phrases like: "Trust the process ✨," "You are exactly where you need to be
 // Initial greeting messages
 const SALTY_SAM_INITIAL_MESSAGE: ChatMessage = {
   id: "welcome-salty",
-  text: "Alright, listen up. I'm Salty Sam, and I've been sober longer than you've probably been screwing up your life with booze. I'm not here to blow sunshine up your ass or tell you what you want to hear. I'm here to tell you what you NEED to hear, even if it pisses you off. So what's eating at you today? And don't give me any sob stories - I want to know what you're actually DOING about your recovery, not what's being done TO you.",
+  text: "Alright, listen up. I'm Salty Sam, and I've been sober longer than you've probably been screwing up your life with booze. I'm not here to blow sunshine up your ass or tell you what you want to hear. I'm here to tell you what you NEED to hear, even if it pisses you off. So what's eating at you today?",
   sender: "bot",
   timestamp: Date.now(),
 };
@@ -124,7 +124,7 @@ const WISE_RILEY_INITIAL_MESSAGE: ChatMessage = {
 
 const GENTLE_GRACE_INITIAL_MESSAGE: ChatMessage = {
   id: "welcome-grace",
-  text: "Hello beautiful soul ✨ I'm Gentle Grace, and I'm so honored to connect with you on this healing journey 💖 I've been walking the path of sobriety for 10 years now, guided by the wisdom of the Universe and the nurturing energy of Mother Earth 🌿 Recovery is a sacred opportunity to reconnect with your authentic self and the divine energy that flows through all things 🌙 Whether you're just beginning or already on your way, I'm here to hold space for whatever you're experiencing 🔮 What's in your heart today? 💫",
+  text: "Hello beautiful soul ✨ I'm Gentle Grace, and I'm so honored to connect with you on this healing journey 💖 I've been walking the path of sobriety for many years now, guided by the wisdom of the Universe.🌿 Recovery is a sacred opportunity to reconnect with your authentic self and the divine energy that flows through all things 🌙 What's in your heart today? 💫",
   sender: "bot",
   timestamp: Date.now(),
 };
