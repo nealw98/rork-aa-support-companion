@@ -661,7 +661,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 8,
   },
-  todayButton: {
+  // Fixed duplicate property by renaming this one
+  calendarTodayButton: {
     paddingVertical: 10,
     paddingHorizontal: 16,
     backgroundColor: Colors.light.cardBackground,
