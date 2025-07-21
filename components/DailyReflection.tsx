@@ -209,7 +209,7 @@ export default function DailyReflection() {
             onPress={() => changeCalendarMonth('prev')} 
             testID="prev-month"
             activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <ChevronLeft size={24} color={Colors.light.tint} />
           </TouchableOpacity>
@@ -218,7 +218,7 @@ export default function DailyReflection() {
             onPress={() => changeCalendarMonth('next')} 
             testID="next-month"
             activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <ChevronRight size={24} color={Colors.light.tint} />
           </TouchableOpacity>
@@ -255,7 +255,7 @@ export default function DailyReflection() {
                 testID={`calendar-day-${item.day}`}
                 activeOpacity={0.7}
                 // Add hitSlop to improve touch target area
-                hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }}
+                hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
               >
                 <Text 
                   style={[
@@ -283,6 +283,7 @@ export default function DailyReflection() {
             }}
             testID="today-button"
             activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Text style={styles.todayButtonText}>Today</Text>
           </TouchableOpacity>
@@ -292,6 +293,7 @@ export default function DailyReflection() {
             onPress={closeDatePicker}
             testID="cancel-button"
             activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
@@ -317,7 +319,7 @@ export default function DailyReflection() {
             style={styles.favoriteButton} 
             testID="favorite-button"
             activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <BookmarkIcon size={24} color={isFavorite ? Colors.light.accent : Colors.light.muted} fill={isFavorite ? Colors.light.accent : "transparent"} />
           </TouchableOpacity>
@@ -357,7 +359,7 @@ export default function DailyReflection() {
             style={styles.navButton}
             testID="prev-day-button"
             activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <ChevronLeft size={24} color={Colors.light.tint} />
           </TouchableOpacity>
@@ -367,6 +369,7 @@ export default function DailyReflection() {
             style={styles.dateButton}
             testID="calendar-button"
             activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Calendar size={20} color={Colors.light.tint} />
             <Text style={styles.dateButtonText}>Select Date</Text>
@@ -377,7 +380,7 @@ export default function DailyReflection() {
             style={styles.navButton}
             testID="next-day-button"
             activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <ChevronRight size={24} color={Colors.light.tint} />
           </TouchableOpacity>
@@ -562,8 +565,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 2, // Reduced padding
-    paddingBottom: Platform.OS === 'ios' ? 16 : 2, // Reduced padding
+    paddingTop: 0, // Reduced padding
+    paddingBottom: Platform.OS === 'ios' ? 10 : 0, // Reduced padding
   },
   navButton: {
     padding: 6, // Reduced padding
