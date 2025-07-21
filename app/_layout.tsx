@@ -24,7 +24,7 @@ function RootLayoutNav() {
         name="(tabs)" 
         options={{ 
           headerShown: false,
-          title: "AA Sober Companion"
+          title: "AA Support Companion"
         }} 
       />
     </Stack>
