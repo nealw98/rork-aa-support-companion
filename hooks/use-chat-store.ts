@@ -124,7 +124,7 @@ const WISE_RILEY_INITIAL_MESSAGE: ChatMessage = {
 
 const GENTLE_GRACE_INITIAL_MESSAGE: ChatMessage = {
   id: "welcome-grace",
-  text: "Hello beautiful soul ✨ I'm Gentle Grace, and I'm so honored to connect with you on this healing journey 💖 I've been walking the path of sobriety for many years now, guided by the wisdom of the Universe.🌿 Recovery is a sacred opportunity to reconnect with your authentic self and the divine energy that flows through all things 🌙 What's in your heart today? 💫",
+  text: "Hello beautiful soul ✨ I'm Gentle Grace, and I'm so honored to connect with you on this healing journey 💖 I've been walking the path of sobriety for many years now, guided by the wisdom of the Universe.🌿 Recovery is a sacred opportunity to reconnect with your authentic self and the divine energy that flows through all things 🌙 What's in your heart today?",
   sender: "bot",
   timestamp: Date.now(),
 };
