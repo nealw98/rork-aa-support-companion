@@ -187,7 +187,10 @@ export default function DailyReflection() {
 
   const selectCalendarDay = (date: Date) => {
     setSelectedDate(date);
-    setShowDatePicker(false);
+    // Add a small delay before closing the modal to prevent gesture conflicts
+    setTimeout(() => {
+      setShowDatePicker(false);
+    }, 100);
   };
 
   if (!reflection) {
@@ -205,11 +208,21 @@ export default function DailyReflection() {
     return (
       <View style={styles.calendarContainer}>
         <View style={styles.calendarHeader}>
-          <TouchableOpacity onPress={() => changeCalendarMonth('prev')} testID="prev-month">
+          <TouchableOpacity 
+            onPress={() => changeCalendarMonth('prev')} 
+            testID="prev-month"
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <ChevronLeft size={24} color={Colors.light.tint} />
           </TouchableOpacity>
           <Text style={styles.calendarMonthYear}>{monthYear}</Text>
-          <TouchableOpacity onPress={() => changeCalendarMonth('next')} testID="next-month">
+          <TouchableOpacity 
+            onPress={() => changeCalendarMonth('next')} 
+            testID="next-month"
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <ChevronRight size={24} color={Colors.light.tint} />
           </TouchableOpacity>
         </View>
@@ -243,6 +256,9 @@ export default function DailyReflection() {
                 ]}
                 onPress={() => selectCalendarDay(item.date)}
                 testID={`calendar-day-${item.day}`}
+                activeOpacity={0.7}
+                // Add hitSlop to improve touch target area
+                hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }}
               >
                 <Text 
                   style={[
@@ -266,9 +282,13 @@ export default function DailyReflection() {
               const today = new Date();
               setSelectedDate(today);
               setCalendarDate(today);
-              setShowDatePicker(false);
+              // Add a small delay before closing the modal to prevent gesture conflicts
+              setTimeout(() => {
+                setShowDatePicker(false);
+              }, 100);
             }}
             testID="today-button"
+            activeOpacity={0.7}
           >
             <Text style={styles.todayButtonText}>Today</Text>
           </TouchableOpacity>
@@ -277,6 +297,7 @@ export default function DailyReflection() {
             style={styles.footerButton}
             onPress={closeDatePicker}
             testID="cancel-button"
+            activeOpacity={0.7}
           >
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
@@ -297,7 +318,13 @@ export default function DailyReflection() {
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.contentContainer}>
         <View style={styles.dateContainer}>
           <Text style={styles.date}>{dateString}</Text>
-          <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton} testID="favorite-button">
+          <TouchableOpacity 
+            onPress={toggleFavorite} 
+            style={styles.favoriteButton} 
+            testID="favorite-button"
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <BookmarkIcon size={24} color={isFavorite ? Colors.light.accent : Colors.light.muted} fill={isFavorite ? Colors.light.accent : "transparent"} />
           </TouchableOpacity>
         </View>
@@ -335,6 +362,8 @@ export default function DailyReflection() {
             onPress={() => navigateDate('prev')} 
             style={styles.navButton}
             testID="prev-day-button"
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <ChevronLeft size={24} color={Colors.light.tint} />
           </TouchableOpacity>
@@ -343,6 +372,7 @@ export default function DailyReflection() {
             onPress={openDatePicker}
             style={styles.dateButton}
             testID="calendar-button"
+            activeOpacity={0.7}
           >
             <Calendar size={20} color={Colors.light.tint} />
             <Text style={styles.dateButtonText}>Select Date</Text>
@@ -352,6 +382,8 @@ export default function DailyReflection() {
             onPress={() => navigateDate('next')} 
             style={styles.navButton}
             testID="next-day-button"
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <ChevronRight size={24} color={Colors.light.tint} />
           </TouchableOpacity>
@@ -362,26 +394,36 @@ export default function DailyReflection() {
       <Modal
         visible={showDatePicker}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
+        onRequestClose={closeDatePicker}
       >
-        <View style={styles.modalOverlay}>
+        <TouchableOpacity 
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={closeDatePicker}
+        >
           <View style={styles.modalContent}>
-            {Platform.OS === 'ios' ? (
-              renderCalendarView()
-            ) : (
-              <>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChange}
-                  />
-                )}
-              </>
-            )}
+            <TouchableOpacity 
+              activeOpacity={1} 
+              onPress={(e) => e.stopPropagation()}
+            >
+              {Platform.OS === 'ios' ? (
+                renderCalendarView()
+              ) : (
+                <>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={selectedDate}
+                      mode="date"
+                      display="default"
+                      onChange={handleDateChange}
+                    />
+                  )}
+                </>
+              )}
+            </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -525,11 +567,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 6, // Reduced from 12
-    paddingBottom: Platform.OS === 'ios' ? 24 : 6, // Reduced from 34/12
+    paddingTop: 4, // Reduced padding
+    paddingBottom: Platform.OS === 'ios' ? 20 : 4, // Reduced padding
   },
   navButton: {
-    padding: 8, // Reduced from 12
+    padding: 6, // Reduced padding
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
     shadowColor: "#000",
@@ -541,7 +583,7 @@ const styles = StyleSheet.create({
   dateButton: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 8, // Reduced from 12
+    padding: 6, // Reduced padding
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
     shadowColor: "#000",
@@ -566,6 +608,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     paddingBottom: Platform.OS === 'ios' ? 34 : 0,
+    // Add overflow hidden to prevent gesture leaks
+    overflow: 'hidden',
   },
   modalHeader: {
     flexDirection: 'row',
