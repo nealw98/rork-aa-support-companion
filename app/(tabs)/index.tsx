@@ -403,14 +403,14 @@ const styles = StyleSheet.create({
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 40,
-    paddingBottom: 32,
+    paddingTop: 20,
+    paddingBottom: 16,
   },
   appTitle: {
     fontSize: 42,
     fontWeight: 'bold',
     color: '#2c3e50',
-    marginTop: 24,
+    marginTop: 16,
     marginBottom: 16,
     textAlign: 'center',
   },
