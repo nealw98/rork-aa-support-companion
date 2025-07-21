@@ -525,11 +525,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 12,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 12, // Account for safe area on iOS
+    paddingTop: 6, // Reduced from 12
+    paddingBottom: Platform.OS === 'ios' ? 24 : 6, // Reduced from 34/12
   },
   navButton: {
-    padding: 12,
+    padding: 8, // Reduced from 12
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
     shadowColor: "#000",
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   dateButton: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 12,
+    padding: 8, // Reduced from 12
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
     shadowColor: "#000",
