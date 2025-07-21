@@ -248,10 +248,13 @@ Amen.`,
     source: "Commonly used in AA meetings"
   },
   {
-    title: "Acceptance Prayer",
-    content: `And acceptance is the answer to all my problems today. When I am disturbed, it is because I find some person, place, thing, or situation—some fact of my life—unacceptable to me, and I can find no serenity until I accept that person, place, thing, or situation as being exactly the way it is supposed to be at this moment.
-
-Nothing, absolutely nothing, happens in God's world by mistake. Until I could accept my alcoholism, I could not stay sober; unless I accept life completely on life's terms, I cannot be happy. I need to concentrate not so much on what needs to be changed in the world as on what needs to be changed in me and in my attitudes.`,
-    source: "Alcoholics Anonymous, Page 417"
+    title: "When We Retire At Night",
+    content: `When we retire at night, we constructively review our day. Were we resentful, selfish, dishonest or afraid? Do we owe an apology? Have we kept something to ourselves which should be discussed with another person at once? Were we kind and loving toward all? What could we have done better? Were we thinking of ourselves most of the time? Or were we thinking of what we could do for others, of what we could pack into the stream of life? But we must be careful not to drift into worry, remorse or morbid reflection, for that would diminish our usefulness to others. After making our review we ask God's forgiveness and inquire what corrective measures should be taken.`,
+    source: "Alcoholics Anonymous, Pages 85-86"
+  },
+  {
+    title: "On Awakening",
+    content: `On awakening let us think about the twenty-four hours ahead. We consider our plans for the day. Before we begin, we ask God to direct our thinking, especially asking that it be divorced from self-pity, dishonest or self-seeking motives. Under these conditions we can employ our mental faculties with assurance, for after all God gave us brains to use. Our thought-life will be placed on a much higher plane when our thinking is cleared of wrong motives.`,
+    source: "Alcoholics Anonymous, Page 86"
   }
 ];
