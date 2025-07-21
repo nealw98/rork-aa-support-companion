@@ -75,8 +75,10 @@ const SectionItem = ({ section, categoryId }: { section: BigBookSection; categor
 };
 
 const CategorySection = ({ category }: { category: BigBookCategory }) => {
-  // Auto-expand the "chapters" category by default
-  const [expanded, setExpanded] = useState<boolean>(category.id === "chapters");
+  // Auto-expand the "forewords" and "chapters" categories by default
+  const [expanded, setExpanded] = useState<boolean>(
+    category.id === "forewords" || category.id === "chapters"
+  );
 
   return (
     <View style={styles.categoryContainer}>
@@ -103,21 +105,6 @@ const CategorySection = ({ category }: { category: BigBookCategory }) => {
           ))}
         </View>
       )}
-    </View>
-  );
-};
-
-// Special component to directly render main chapters without the category header
-const MainChaptersSection = () => {
-  const mainChaptersCategory = bigBookData.find(category => category.id === "chapters");
-  
-  if (!mainChaptersCategory) return null;
-  
-  return (
-    <View style={styles.sectionsContainer}>
-      {mainChaptersCategory.sections.map((section) => (
-        <SectionItem key={section.id} section={section} categoryId="chapters" />
-      ))}
     </View>
   );
 };
@@ -272,9 +259,6 @@ const PrayersSection = () => {
 function BigBookBrowserContent() {
   const [activeTab, setActiveTab] = useState<"browse" | "bookmarks" | "recent" | "prayers">("browse");
 
-  // Filter out the "chapters" category since we're displaying it separately
-  const filteredCategories = bigBookData.filter(category => category.id !== "chapters");
-
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -329,14 +313,8 @@ function BigBookBrowserContent() {
               </Text>
             </View>
             
-            {/* Display main chapters directly without the category header */}
-            <View style={styles.mainChaptersHeader}>
-              <Text style={styles.mainChaptersTitle}>Main Chapters</Text>
-            </View>
-            <MainChaptersSection />
-            
-            {/* Display other categories normally */}
-            {filteredCategories.map((category) => (
+            {/* Display all categories in the correct order */}
+            {bigBookData.map((category) => (
               <CategorySection key={category.id} category={category} />
             ))}
           </View>
@@ -418,18 +396,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.light.muted,
     lineHeight: 20,
-  },
-  mainChaptersHeader: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.cardBackground,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.divider,
-  },
-  mainChaptersTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: Colors.light.text,
   },
   categoryContainer: {
     marginBottom: 8,
