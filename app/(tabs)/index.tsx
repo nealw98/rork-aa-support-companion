@@ -297,6 +297,7 @@ export default function HomeScreen() {
             testID="date-picker-button"
             activeOpacity={0.7}
           >
+            <Calendar size={20} color="white" />
             <Text style={styles.datePickerText}>{formatDateForPicker(selectedDate)}</Text>
           </TouchableOpacity>
           
@@ -442,7 +443,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: Colors.light.accent,
+    backgroundColor: Colors.light.tint,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: "#000",
@@ -452,9 +453,10 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   datePickerText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
+    marginTop: 4,
   },
   reflectionSection: {
     paddingHorizontal: 16,
