@@ -1,5 +1,4 @@
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { Download } from "lucide-react-native";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from "react";
 
@@ -53,11 +52,6 @@ export default function HomeScreen() {
           <Text style={styles.appDescription}>
             Everything you need to support your daily recovery practice, combining traditional AA wisdom with helpful tools for recovery.
           </Text>
-          
-          <TouchableOpacity style={styles.downloadButton} testID="download-button">
-            <Download size={20} color="#fff" />
-            <Text style={styles.downloadButtonText}>Download App</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Daily Reflection Section */}
@@ -131,27 +125,7 @@ const styles = StyleSheet.create({
     color: '#5a6c7d',
     textAlign: 'center',
     lineHeight: 24,
-    marginBottom: 32,
     paddingHorizontal: 8,
-  },
-  downloadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.light.tint,
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  downloadButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-    marginLeft: 8,
   },
   reflectionSection: {
     paddingHorizontal: 16,
