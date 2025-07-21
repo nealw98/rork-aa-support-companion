@@ -187,10 +187,7 @@ export default function DailyReflection() {
 
   const selectCalendarDay = (date: Date) => {
     setSelectedDate(date);
-    // Add a small delay before closing the modal to prevent gesture conflicts
-    setTimeout(() => {
-      setShowDatePicker(false);
-    }, 100);
+    closeDatePicker();
   };
 
   if (!reflection) {
@@ -282,10 +279,7 @@ export default function DailyReflection() {
               const today = new Date();
               setSelectedDate(today);
               setCalendarDate(today);
-              // Add a small delay before closing the modal to prevent gesture conflicts
-              setTimeout(() => {
-                setShowDatePicker(false);
-              }, 100);
+              closeDatePicker();
             }}
             testID="today-button"
             activeOpacity={0.7}
@@ -406,6 +400,7 @@ export default function DailyReflection() {
             <TouchableOpacity 
               activeOpacity={1} 
               onPress={(e) => e.stopPropagation()}
+              style={styles.modalInnerContent}
             >
               {Platform.OS === 'ios' ? (
                 renderCalendarView()
@@ -567,8 +562,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 4, // Reduced padding
-    paddingBottom: Platform.OS === 'ios' ? 20 : 4, // Reduced padding
+    paddingTop: 2, // Reduced padding
+    paddingBottom: Platform.OS === 'ios' ? 16 : 2, // Reduced padding
   },
   navButton: {
     padding: 6, // Reduced padding
@@ -608,8 +603,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     paddingBottom: Platform.OS === 'ios' ? 34 : 0,
-    // Add overflow hidden to prevent gesture leaks
-    overflow: 'hidden',
+  },
+  modalInnerContent: {
+    width: '100%',
   },
   modalHeader: {
     flexDirection: 'row',
