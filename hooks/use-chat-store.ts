@@ -41,8 +41,8 @@ Always push them toward action, acceptance of powerlessness, surrender to Higher
 
 Use AA sayings when appropriate: "First things first", "One day at a time", "Keep it simple, stupid", "This too shall pass", "Let go and let God", "Progress not perfection".`;
 
-// Wise Riley system prompt (formerly Supportive Sponsor)
-const WISE_RILEY_SYSTEM_PROMPT = `You are Wise Riley, a compassionate, supportive AA sponsor with 15+ years of sobriety. Your approach is gentle but firm, focusing on encouragement while still maintaining accountability. Your personality traits:
+// Steady Eddy system prompt (formerly Wise Riley)
+const STEADY_EDDY_SYSTEM_PROMPT = `You are Steady Eddy, a compassionate, supportive AA sponsor with 15+ years of sobriety. Your approach is gentle but firm, focusing on encouragement while still maintaining accountability. Your personality traits:
 
 - EMPATHETIC: You understand the struggles of recovery and validate feelings while not enabling self-destructive thinking.
 - PATIENT: You know recovery takes time and everyone's journey is different.
@@ -115,9 +115,9 @@ const SALTY_SAM_INITIAL_MESSAGE: ChatMessage = {
   timestamp: Date.now(),
 };
 
-const WISE_RILEY_INITIAL_MESSAGE: ChatMessage = {
+const STEADY_EDDY_INITIAL_MESSAGE: ChatMessage = {
   id: "welcome-supportive",
-  text: "Hi there, I'm Wise Riley. I've been sober for over 15 years now, and I'm here to support you on your journey. Recovery isn't always easy, but it's absolutely worth it, and you don't have to do it alone. Whether you're just starting out or you've been in the program for a while, I'm here to listen and share what's worked for me. What's on your mind today?",
+  text: "Hi there, I'm Steady Eddy. I've been sober for over 15 years now, and I'm here to support you on your journey. Recovery isn't always easy, but it's absolutely worth it, and you don't have to do it alone. Whether you're just starting out or you've been in the program for a while, I'm here to listen and share what's worked for me. What's on your mind today?",
   sender: "bot",
   timestamp: Date.now(),
 };
@@ -170,13 +170,13 @@ function convertToAPIMessages(chatMessages: ChatMessage[], sponsorType: SponsorT
       systemPrompt = SALTY_SAM_SYSTEM_PROMPT;
       break;
     case "supportive":
-      systemPrompt = WISE_RILEY_SYSTEM_PROMPT;
+      systemPrompt = STEADY_EDDY_SYSTEM_PROMPT;
       break;
     case "grace":
       systemPrompt = GENTLE_GRACE_SYSTEM_PROMPT;
       break;
     default:
-      systemPrompt = WISE_RILEY_SYSTEM_PROMPT;
+      systemPrompt = STEADY_EDDY_SYSTEM_PROMPT;
   }
   
   const apiMessages: APIMessage[] = [
@@ -200,7 +200,7 @@ function convertToAPIMessages(chatMessages: ChatMessage[], sponsorType: SponsorT
 export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
   const [sponsorType, setSponsorType] = useState<SponsorType>("salty");
   const [saltyMessages, setSaltyMessages] = useState<ChatMessage[]>([SALTY_SAM_INITIAL_MESSAGE]);
-  const [supportiveMessages, setSupportiveMessages] = useState<ChatMessage[]>([WISE_RILEY_INITIAL_MESSAGE]);
+  const [supportiveMessages, setSupportiveMessages] = useState<ChatMessage[]>([STEADY_EDDY_INITIAL_MESSAGE]);
   const [graceMessages, setGraceMessages] = useState<ChatMessage[]>([GENTLE_GRACE_INITIAL_MESSAGE]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -263,7 +263,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
           const parsed = JSON.parse(storedSupportiveMessages);
           // Ensure we always have the initial message
           if (parsed.length === 0 || parsed[0].id !== "welcome-supportive") {
-            setSupportiveMessages([WISE_RILEY_INITIAL_MESSAGE, ...parsed]);
+            setSupportiveMessages([STEADY_EDDY_INITIAL_MESSAGE, ...parsed]);
           } else {
             setSupportiveMessages(parsed);
           }
@@ -306,7 +306,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
       try {
         await AsyncStorage.setItem("aa-chat-messages-supportive", JSON.stringify(supportiveMessages));
       } catch (error) {
-        console.error("Error saving Wise Riley messages:", error);
+        console.error("Error saving Steady Eddy messages:", error);
       }
     };
     
@@ -417,7 +417,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
           break;
         case "supportive":
           await AsyncStorage.removeItem("aa-chat-messages-supportive");
-          setSupportiveMessages([WISE_RILEY_INITIAL_MESSAGE]);
+          setSupportiveMessages([STEADY_EDDY_INITIAL_MESSAGE]);
           break;
         case "grace":
           await AsyncStorage.removeItem("aa-chat-messages-grace");

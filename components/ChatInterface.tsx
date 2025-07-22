@@ -85,7 +85,7 @@ const SponsorToggle = ({
             sponsorType === "supportive" && styles.sponsorButtonTextActive
           ]}
         >
-          Wise Riley
+          Steady Eddy
         </Text>
       </TouchableOpacity>
       
@@ -161,7 +161,7 @@ export default function ChatInterface() {
       case "salty":
         return "Tell Salty Sam what's got you sideways...";
       case "supportive":
-        return "Tell Wise Riley what's on your mind...";
+        return "Tell Steady Eddy what's on your mind...";
       case "grace":
         return "Share with Gentle Grace what's in your heart...";
       default:
@@ -175,7 +175,7 @@ export default function ChatInterface() {
       case "salty":
         return "Salty Sam is thinking...";
       case "supportive":
-        return "Wise Riley is thinking...";
+        return "Steady Eddy is thinking...";
       case "grace":
         return "Gentle Grace is channeling wisdom...";
       default:
