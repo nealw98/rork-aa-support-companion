@@ -23,7 +23,10 @@ export async function getReflectionForDate(date: Date): Promise<Reflection> {
       .single();
 
     if (error) {
-      console.error('Supabase error:', error.message, error.details);
+      console.error('Supabase error details:', JSON.stringify(error, null, 2));
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      console.error('Error hint:', error.hint);
       throw error;
     }
 
@@ -41,7 +44,7 @@ export async function getReflectionForDate(date: Date): Promise<Reflection> {
 
     throw new Error('No reflection found');
   } catch (error) {
-    console.error(`Error fetching reflection for day ${dayOfYear}:`, error);
+    console.error(`Error fetching reflection for day ${dayOfYear}:`, JSON.stringify(error, null, 2));
     
     // Return a default reflection if database fetch fails
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -73,7 +76,7 @@ export async function getAllReflections(): Promise<Reflection[]> {
       .order('day_of_year', { ascending: true });
 
     if (error) {
-      console.error('Error fetching all reflections:', error.message, error.details);
+      console.error('Error fetching all reflections:', JSON.stringify(error, null, 2));
       return [];
     }
 
@@ -86,7 +89,7 @@ export async function getAllReflections(): Promise<Reflection[]> {
       thought: item.thought,
     })) || [];
   } catch (error) {
-    console.error('Error fetching all reflections:', error);
+    console.error('Error fetching all reflections:', JSON.stringify(error, null, 2));
     return [];
   }
 }
