@@ -343,7 +343,7 @@ export default function HomeScreen() {
             
             <View style={styles.divider} />
             
-            <Text style={styles.thoughtTitle}>Today's Thought:</Text>
+            <Text style={styles.thoughtTitle}>Meditation:</Text>
             <Text style={styles.thought}>{reflection.thought}</Text>
           </View>
         </View>
@@ -419,15 +419,15 @@ const styles = StyleSheet.create({
   headerSection: {
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 16,
+    paddingTop: 12,
+    paddingBottom: 12,
   },
   appTitle: {
     fontSize: 42,
     fontWeight: 'bold',
     color: '#2c3e50',
-    marginTop: 16,
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 12,
     textAlign: 'center',
   },
   appDescription: {

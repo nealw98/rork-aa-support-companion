@@ -15,6 +15,7 @@ export async function getReflectionForDate(date: Date): Promise<Reflection> {
   
   try {
     console.log(`Fetching reflection for day of year: ${dayOfYear}`);
+    console.log(`Date: ${date.toDateString()}`);
     
     const { data, error } = await supabase
       .from('daily_reflections')
@@ -32,13 +33,14 @@ export async function getReflectionForDate(date: Date): Promise<Reflection> {
 
     if (data) {
       console.log(`Found reflection: ${data.title}`);
+      console.log(`Day of year from DB: ${data.day_of_year}`);
       return {
         date: data.date_display || `Day ${dayOfYear}`,
         title: data.title,
         quote: data.quote,
         source: data.source,
         reflection: data.reflection,
-        thought: data.thought,
+        thought: data.meditation || data.thought, // Use meditation field, fallback to thought
       };
     }
 
@@ -86,7 +88,7 @@ export async function getAllReflections(): Promise<Reflection[]> {
       quote: item.quote,
       source: item.source,
       reflection: item.reflection,
-      thought: item.thought,
+      thought: item.meditation || item.thought, // Use meditation field, fallback to thought
     })) || [];
   } catch (error) {
     console.error('Error fetching all reflections:', JSON.stringify(error, null, 2));

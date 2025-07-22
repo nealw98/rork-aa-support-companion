@@ -356,7 +356,7 @@ export default function DailyReflection() {
           
           <View style={styles.divider} />
           
-          <Text style={styles.thoughtTitle}>Today's Thought:</Text>
+          <Text style={styles.thoughtTitle}>Meditation:</Text>
           <Text style={styles.thought}>{reflection.thought}</Text>
         </View>
 
