@@ -79,6 +79,7 @@ export default function DailyReflection() {
   const [dateString, setDateString] = useState<string>("");
   const [calendarDays, setCalendarDays] = useState<any[]>([]);
   const [calendarDate, setCalendarDate] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     updateReflection(selectedDate);
@@ -90,7 +91,8 @@ export default function DailyReflection() {
     }
   }, [showDatePicker, calendarDate]);
 
-  const updateReflection = (date: Date) => {
+  const updateReflection = async (date: Date) => {
+    setIsLoading(true);
     const options: Intl.DateTimeFormatOptions = { 
       weekday: 'long', 
       year: 'numeric', 
@@ -99,11 +101,17 @@ export default function DailyReflection() {
     };
     setDateString(date.toLocaleDateString(undefined, options));
     
-    const dateReflection = getReflectionForDate(date);
-    setReflection(dateReflection);
-    
-    // Check if this reflection is a favorite
-    checkIfFavorite(dateReflection.title);
+    try {
+      const dateReflection = await getReflectionForDate(date);
+      setReflection(dateReflection);
+      
+      // Check if this reflection is a favorite
+      checkIfFavorite(dateReflection.title);
+    } catch (error) {
+      console.error('Error updating reflection:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const checkIfFavorite = async (title: string) => {
@@ -190,10 +198,18 @@ export default function DailyReflection() {
     closeDatePicker();
   };
 
-  if (!reflection) {
+  if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <Text style={styles.loadingText}>Loading reflection...</Text>
+      </View>
+    );
+  }
+
+  if (!reflection) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Unable to load reflection</Text>
       </View>
     );
   }

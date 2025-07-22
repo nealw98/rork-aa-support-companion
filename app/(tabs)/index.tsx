@@ -77,6 +77,7 @@ export default function HomeScreen() {
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [calendarDays, setCalendarDays] = useState<any[]>([]);
   const [calendarDate, setCalendarDate] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     updateReflection(selectedDate);
@@ -88,9 +89,16 @@ export default function HomeScreen() {
     }
   }, [showDatePicker, calendarDate]);
 
-  const updateReflection = (date: Date) => {
-    const dateReflection = getReflectionForDate(date);
-    setReflection(dateReflection);
+  const updateReflection = async (date: Date) => {
+    setIsLoading(true);
+    try {
+      const dateReflection = await getReflectionForDate(date);
+      setReflection(dateReflection);
+    } catch (error) {
+      console.error('Error updating reflection:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const navigateDate = (direction: 'prev' | 'next') => {
@@ -242,10 +250,18 @@ export default function HomeScreen() {
     );
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading reflection...</Text>
+      </View>
+    );
+  }
+
   if (!reflection) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
+        <Text style={styles.loadingText}>Unable to load reflection</Text>
       </View>
     );
   }
