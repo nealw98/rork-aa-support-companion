@@ -276,10 +276,11 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['rgba(74, 144, 226, 0.1)', 'rgba(78, 205, 196, 0.05)', 'rgba(92, 184, 92, 0.02)']}
+        colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
         style={styles.backgroundGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
+        locations={[0, 1]}
       />
       
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.contentContainer}>
@@ -478,7 +479,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   reflectionCard: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     borderRadius: 16,
     padding: 24,
     shadowColor: "#000",
@@ -486,6 +487,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   reflectionTitle: {
     fontSize: 24,
