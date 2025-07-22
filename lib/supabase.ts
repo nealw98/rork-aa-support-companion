@@ -10,35 +10,44 @@ export type Database = {
     Tables: {
       daily_reflections: {
         Row: {
-          id: number;
-          date: string;
+          id: string;
+          day_of_year: number;
+          date_display: string;
           title: string;
           quote: string;
           source: string;
           reflection: string;
           thought: string;
+          affirmation?: string;
+          meditation?: string;
           created_at?: string;
           updated_at?: string;
         };
         Insert: {
-          id?: number;
-          date: string;
+          id?: string;
+          day_of_year: number;
+          date_display: string;
           title: string;
           quote: string;
           source: string;
           reflection: string;
           thought: string;
+          affirmation?: string;
+          meditation?: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
-          id?: number;
-          date?: string;
+          id?: string;
+          day_of_year?: number;
+          date_display?: string;
           title?: string;
           quote?: string;
           source?: string;
           reflection?: string;
           thought?: string;
+          affirmation?: string;
+          meditation?: string;
           created_at?: string;
           updated_at?: string;
         };
