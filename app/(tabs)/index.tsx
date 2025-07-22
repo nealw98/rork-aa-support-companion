@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   reflectionCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
     borderRadius: 16,
     padding: 24,
     shadowColor: "#000",
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   reflectionTitle: {
     fontSize: 24,
