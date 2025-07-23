@@ -245,43 +245,28 @@ export default function EveningReview() {
             
             {showInsights && (
               <View style={styles.insightsContent}>
-                <Text style={styles.insightsSubtitle}>
-                  Based on {insights.totalDays} completed reviews
+                <Text style={styles.placeholderNote}>
+                  Note: This is a placeholder - additional development required for real word cloud functionality.
                 </Text>
                 
                 <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Emotional Challenges: {insights.counts.emotion} days</Text>
-                  {insights.notes.emotion.length > 0 && (
-                    <Text style={styles.insightNotes}>
-                      Common themes: {insights.notes.emotion.slice(0, 3).join(', ')}
-                    </Text>
-                  )}
+                  <Text style={styles.insightLabel}>• Emotional Reflections: Track patterns in your daily struggles</Text>
                 </View>
                 
                 <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Amends Needed: {insights.counts.amends} days</Text>
+                  <Text style={styles.insightLabel}>• Amends tracking: Remember who deserves your apology</Text>
                 </View>
                 
                 <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Acts of Kindness: {insights.counts.kindness} days</Text>
-                  {insights.notes.kindness.length > 0 && (
-                    <Text style={styles.insightNotes}>
-                      Recent acts: {insights.notes.kindness.slice(0, 3).join(', ')}
-                    </Text>
-                  )}
+                  <Text style={styles.insightLabel}>• Kindness moments: Celebrate your service to others</Text>
                 </View>
                 
                 <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Spiritual Connection: {insights.counts.spiritual} days</Text>
-                  {insights.notes.spiritual.length > 0 && (
-                    <Text style={styles.insightNotes}>
-                      Ways connected: {insights.notes.spiritual.slice(0, 3).join(', ')}
-                    </Text>
-                  )}
+                  <Text style={styles.insightLabel}>• Spiritual connection: Monitor your conscious contact with your Higher Power</Text>
                 </View>
                 
                 <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• AA Conversations: {insights.counts.aaTalk} days</Text>
+                  <Text style={styles.insightLabel}>• AA Connection: Stay connected with the fellowship</Text>
                 </View>
               </View>
             )}
@@ -623,5 +608,12 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     fontStyle: 'italic',
     marginLeft: 12,
+  },
+  placeholderNote: {
+    fontSize: 12,
+    color: '#dc3545',
+    fontStyle: 'italic',
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });
