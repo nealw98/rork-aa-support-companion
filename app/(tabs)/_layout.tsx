@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 import { Home, MessageCircle, Book, Heart } from "lucide-react-native";
 import React from "react";
+import { Text, View } from "react-native";
 
 import Colors from "@/constants/colors";
 
@@ -30,17 +31,14 @@ export default function TabLayout() {
         name="chat"
         options={{
           title: "Sober Chat",
-          headerTitle: "Choose Your AI Sponsor",
-          headerTitleStyle: {
-            fontSize: 18,
-            fontWeight: "600",
-          },
-          headerSubtitle: "Select a voice that fits your mood",
-          headerSubtitleStyle: {
-            fontSize: 12,
-            fontStyle: "italic",
-            color: Colors.light.muted,
-          },
+          headerTitle: () => (
+            <View>
+              <Text style={{ fontSize: 18, fontWeight: "600" }}>Choose Your AI Sponsor</Text>
+              <Text style={{ fontSize: 12, fontStyle: "italic", color: Colors.light.muted }}>
+                Select a voice that fits your mood
+              </Text>
+            </View>
+          ),
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} />,
         }}
       />
