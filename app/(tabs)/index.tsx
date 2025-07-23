@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   reflectionTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: Colors.light.text,
     marginBottom: 16,
@@ -506,11 +506,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   quote: {
-    fontSize: 18,
+    fontSize: 16,
     fontStyle: "italic",
     color: Colors.light.text,
     marginBottom: 8,
-    lineHeight: 26,
+    lineHeight: 24,
     textAlign: "left",
   },
   source: {
