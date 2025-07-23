@@ -20,7 +20,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Colors from "@/constants/colors";
-import { bigBookData, aaPrayers } from "@/constants/bigbook";
+import { bigBookData } from "@/constants/bigbook";
 import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store";
 import { BigBookCategory, BigBookSection } from "@/types/bigbook";
 
@@ -221,43 +221,8 @@ const RecentSection = () => {
   );
 };
 
-const PrayersSection = () => {
-  const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
-
-  return (
-    <View style={styles.prayersContainer}>
-      <Text style={styles.prayersTitle}>AA Prayers</Text>
-      <Text style={styles.prayersSubtitle}>Essential prayers for recovery and reflection</Text>
-      
-      {aaPrayers.map((prayer, index) => (
-        <View key={index} style={styles.prayerCard}>
-          <TouchableOpacity
-            style={styles.prayerHeader}
-            onPress={() => setExpandedPrayer(expandedPrayer === index ? null : index)}
-            testID={`prayer-${index}`}
-          >
-            <Text style={styles.prayerTitle}>{prayer.title}</Text>
-            {expandedPrayer === index ? (
-              <ChevronDown size={20} color={Colors.light.muted} />
-            ) : (
-              <ChevronRight size={20} color={Colors.light.muted} />
-            )}
-          </TouchableOpacity>
-          
-          {expandedPrayer === index && (
-            <View style={styles.prayerContent}>
-              <Text style={styles.prayerText}>{prayer.content}</Text>
-              <Text style={styles.prayerSource}>— {prayer.source}</Text>
-            </View>
-          )}
-        </View>
-      ))}
-    </View>
-  );
-};
-
 function BigBookBrowserContent() {
-  const [activeTab, setActiveTab] = useState<"browse" | "bookmarks" | "recent" | "prayers">("browse");
+  const [activeTab, setActiveTab] = useState<"browse" | "bookmarks" | "recent">("browse");
 
   return (
     <View style={styles.container}>
@@ -292,14 +257,6 @@ function BigBookBrowserContent() {
         >
           <Text style={[styles.tabText, activeTab === "recent" && styles.activeTabText]}>Recent</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "prayers" && styles.activeTab]}
-          onPress={() => setActiveTab("prayers")}
-          testID="prayers-tab"
-        >
-          <Text style={[styles.tabText, activeTab === "prayers" && styles.activeTabText]}>Prayers</Text>
-        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -322,7 +279,6 @@ function BigBookBrowserContent() {
         
         {activeTab === "bookmarks" && <BookmarksSection />}
         {activeTab === "recent" && <RecentSection />}
-        {activeTab === "prayers" && <PrayersSection />}
       </ScrollView>
     </View>
   );
@@ -523,56 +479,6 @@ const styles = StyleSheet.create({
   recentItemDate: {
     fontSize: 12,
     color: Colors.light.muted,
-  },
-  prayersContainer: {
-    padding: 16,
-  },
-  prayersTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: Colors.light.text,
-    marginBottom: 4,
-  },
-  prayersSubtitle: {
-    fontSize: 14,
-    color: Colors.light.muted,
-    marginBottom: 16,
-  },
-  prayerCard: {
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 8,
-    marginBottom: 12,
-    overflow: "hidden",
-    borderLeftWidth: 3,
-    borderLeftColor: Colors.light.tint,
-  },
-  prayerHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-  },
-  prayerTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: "600",
-    color: Colors.light.text,
-  },
-  prayerContent: {
-    padding: 16,
-    paddingTop: 0,
-    backgroundColor: 'rgba(74, 144, 226, 0.05)',
-  },
-  prayerText: {
-    fontSize: 14,
-    color: Colors.light.text,
-    lineHeight: 20,
-    marginBottom: 8,
-    fontStyle: "italic",
-  },
-  prayerSource: {
-    fontSize: 12,
-    color: Colors.light.muted,
-    textAlign: "right",
   },
   emptyState: {
     flex: 1,
