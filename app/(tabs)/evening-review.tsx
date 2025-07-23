@@ -267,8 +267,6 @@ export default function EveningReview() {
           </View>
         </View>
 
-
-
         {/* Complete Button */}
         <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
           <Text style={styles.completeButtonText}>Complete Review</Text>
