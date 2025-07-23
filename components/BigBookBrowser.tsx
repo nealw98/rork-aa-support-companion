@@ -75,10 +75,8 @@ const SectionItem = ({ section, categoryId }: { section: BigBookSection; categor
 };
 
 const CategorySection = ({ category }: { category: BigBookCategory }) => {
-  // Auto-expand the "forewords" and "chapters" categories by default
-  const [expanded, setExpanded] = useState<boolean>(
-    category.id === "forewords" || category.id === "chapters"
-  );
+  // All sections start collapsed by default
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
     <View style={styles.categoryContainer}>
