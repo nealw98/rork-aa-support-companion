@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   reflectionCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Changed from 0.4 to 0.6 (60% opacity)
     borderRadius: 16,
     padding: 24,
     shadowColor: "#000",

@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   card: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Changed from 0.4 to 0.6 (60% opacity)
     borderRadius: 16,
     padding: 24,
     shadowColor: "#000",
