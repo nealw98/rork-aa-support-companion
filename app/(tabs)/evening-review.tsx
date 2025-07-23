@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar } from 'lucide-react-native';
@@ -26,7 +25,6 @@ const formatDateDisplay = (date: Date): string => {
 export default function EveningReview() {
   const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = useEveningReviewStore();
   const [answers, setAnswers] = useState<{ [key: string]: boolean | null }>({});
-  const [reflection, setReflection] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const today = new Date();
@@ -56,7 +54,6 @@ export default function EveningReview() {
 
   const handleStartNew = () => {
     setAnswers({});
-    setReflection('');
     setShowConfirmation(false);
   };
 
@@ -198,19 +195,7 @@ export default function EveningReview() {
           </View>
         </View>
 
-        {/* Reflection */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Reflection</Text>
-          <Text style={styles.reflectionLabel}>Something I did well today</Text>
-          <TextInput
-            style={styles.textInput}
-            value={reflection}
-            onChangeText={setReflection}
-            placeholder=""
-            multiline
-            textAlignVertical="top"
-          />
-        </View>
+
 
         {/* Complete Button */}
         <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
@@ -361,20 +346,7 @@ const styles = StyleSheet.create({
   answerButtonTextSelected: {
     color: 'white',
   },
-  reflectionLabel: {
-    fontSize: 14,
-    color: Colors.light.muted,
-    marginBottom: 8,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#e9ecef',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 14,
-    minHeight: 80,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-  },
+
   completeButton: {
     backgroundColor: Colors.light.tint,
     paddingVertical: 14,
