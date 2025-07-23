@@ -348,6 +348,13 @@ export default function HomeScreen() {
             <Text style={styles.thought}>{reflection.thought}</Text>
           </View>
         </View>
+        
+        {/* Copyright Notice */}
+        <View style={styles.copyrightContainer}>
+          <Text style={styles.copyrightText}>
+            Copyright © 1990 by Alcoholics Anonymous World Services, Inc. All rights reserved.
+          </Text>
+        </View>
       </ScrollView>
 
       {/* Calendar Modal */}
@@ -535,6 +542,17 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     fontStyle: "italic",
     lineHeight: 24,
+  },
+  copyrightContainer: {
+    marginTop: 24,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  copyrightText: {
+    fontSize: 11,
+    color: Colors.light.muted,
+    textAlign: "center",
+    lineHeight: 16,
   },
   modalOverlay: {
     flex: 1,
