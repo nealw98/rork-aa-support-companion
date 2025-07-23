@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle, Calendar } from 'lucide-react-native';
+import { CheckCircle, Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 
@@ -24,8 +24,9 @@ const formatDateDisplay = (date: Date): string => {
 };
 
 export default function EveningReview() {
-  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveEntry } = useEveningReviewStore();
+  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveEntry, entries } = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
   
   // Form state
   const [emotionFlag, setEmotionFlag] = useState(false);
@@ -122,6 +123,50 @@ export default function EveningReview() {
     handleStartNew();
   };
 
+  const insights = useMemo(() => {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 30);
+    const recentEntries = entries.filter(entry => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= cutoff && entry.completed;
+    });
+
+    const counts = {
+      emotion: 0,
+      amends: 0,
+      kindness: 0,
+      spiritual: 0,
+      aaTalk: 0
+    };
+
+    const notes = {
+      emotion: [] as string[],
+      kindness: [] as string[],
+      spiritual: [] as string[]
+    };
+
+    recentEntries.forEach(entry => {
+      if (entry.answers?.emotion) counts.emotion++;
+      if (entry.answers?.apology) counts.amends++;
+      if (entry.answers?.kindness) counts.kindness++;
+      if (entry.answers?.spiritual) counts.spiritual++;
+      if (entry.answers?.aaTalk) counts.aaTalk++;
+
+      if (entry.reflection) {
+        try {
+          const reflectionData = JSON.parse(entry.reflection);
+          if (reflectionData.emotionNote) notes.emotion.push(reflectionData.emotionNote);
+          if (reflectionData.kindnessNote) notes.kindness.push(reflectionData.kindnessNote);
+          if (reflectionData.spiritualNote) notes.spiritual.push(reflectionData.spiritualNote);
+        } catch (e) {
+          // Handle old format or invalid JSON
+        }
+      }
+    });
+
+    return { counts, notes, totalDays: recentEntries.length };
+  }, [entries]);
+
   if (showConfirmation || isCompleted) {
     return (
       <View style={styles.container}>
@@ -183,6 +228,64 @@ export default function EveningReview() {
           <Text style={styles.privacyText}>
             Your responses are saved only on your device. Nothing is uploaded or shared.
           </Text>
+
+          {/* Collapsible Insights */}
+          <View style={styles.card}>
+            <TouchableOpacity 
+              style={styles.insightsHeader} 
+              onPress={() => setShowInsights(!showInsights)}
+            >
+              <Text style={styles.insightsTitle}>Insights from the past 30 days</Text>
+              {showInsights ? (
+                <ChevronUp color={Colors.light.tint} size={20} />
+              ) : (
+                <ChevronDown color={Colors.light.tint} size={20} />
+              )}
+            </TouchableOpacity>
+            
+            {showInsights && (
+              <View style={styles.insightsContent}>
+                <Text style={styles.insightsSubtitle}>
+                  Based on {insights.totalDays} completed reviews
+                </Text>
+                
+                <View style={styles.insightItem}>
+                  <Text style={styles.insightLabel}>• Emotional Challenges: {insights.counts.emotion} days</Text>
+                  {insights.notes.emotion.length > 0 && (
+                    <Text style={styles.insightNotes}>
+                      Common themes: {insights.notes.emotion.slice(0, 3).join(', ')}
+                    </Text>
+                  )}
+                </View>
+                
+                <View style={styles.insightItem}>
+                  <Text style={styles.insightLabel}>• Amends Needed: {insights.counts.amends} days</Text>
+                </View>
+                
+                <View style={styles.insightItem}>
+                  <Text style={styles.insightLabel}>• Acts of Kindness: {insights.counts.kindness} days</Text>
+                  {insights.notes.kindness.length > 0 && (
+                    <Text style={styles.insightNotes}>
+                      Recent acts: {insights.notes.kindness.slice(0, 3).join(', ')}
+                    </Text>
+                  )}
+                </View>
+                
+                <View style={styles.insightItem}>
+                  <Text style={styles.insightLabel}>• Spiritual Connection: {insights.counts.spiritual} days</Text>
+                  {insights.notes.spiritual.length > 0 && (
+                    <Text style={styles.insightNotes}>
+                      Ways connected: {insights.notes.spiritual.slice(0, 3).join(', ')}
+                    </Text>
+                  )}
+                </View>
+                
+                <View style={styles.insightItem}>
+                  <Text style={styles.insightLabel}>• AA Conversations: {insights.counts.aaTalk} days</Text>
+                </View>
+              </View>
+            )}
+          </View>
 
           <View style={styles.buttonContainer}>
             {!isCompleted && (
@@ -482,5 +585,43 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '500',
+  },
+  insightsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  insightsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.light.tint,
+  },
+  insightsContent: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  insightsSubtitle: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  insightItem: {
+    marginBottom: 12,
+  },
+  insightLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  insightNotes: {
+    fontSize: 12,
+    color: Colors.light.muted,
+    fontStyle: 'italic',
+    marginLeft: 12,
   },
 });
