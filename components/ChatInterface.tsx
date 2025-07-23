@@ -225,9 +225,9 @@ export default function ChatInterface() {
           style={styles.input}
           value={inputText}
           onChangeText={setInputText}
-          placeholder=""
+          placeholder={getPlaceholderText()}
           placeholderTextColor={Colors.light.muted}
-          multiline
+          multiline={false}
           maxLength={500}
           testID="chat-input"
         />
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     fontSize: 16,
-    maxHeight: 100,
+    height: 44,
   },
   sendButton: {
     width: 44,
