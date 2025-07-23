@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar } from 'lucide-react-native';
@@ -23,9 +24,19 @@ const formatDateDisplay = (date: Date): string => {
 };
 
 export default function EveningReview() {
-  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = useEveningReviewStore();
-  const [answers, setAnswers] = useState<{ [key: string]: boolean | null }>({});
+  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveEntry } = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  
+  // Form state
+  const [emotionFlag, setEmotionFlag] = useState(false);
+  const [emotionNote, setEmotionNote] = useState('');
+  const [apologyFlag, setApologyFlag] = useState(false);
+  const [apologyName, setApologyName] = useState('');
+  const [kindnessFlag, setKindnessFlag] = useState(false);
+  const [kindnessNote, setKindnessNote] = useState('');
+  const [spiritualFlag, setSpiritualFlag] = useState(false);
+  const [spiritualNote, setSpiritualNote] = useState('');
+  const [aaTalkFlag, setAaTalkFlag] = useState(false);
 
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -33,33 +44,82 @@ export default function EveningReview() {
   const weeklyStreak = getWeeklyStreak();
 
   const questions = [
-    'Was I resentful, selfish, dishonest, or afraid today?',
-    'Do I owe anyone an apology?',
-    'Did I help someone or show kindness today?',
-    'Did I talk with another alcoholic today?',
-    'Was I spiritually connected today?'
+    {
+      text: '1. Was I resentful, selfish, dishonest, or afraid today?',
+      flag: emotionFlag,
+      setFlag: setEmotionFlag,
+      note: emotionNote,
+      setNote: setEmotionNote,
+      placeholder: 'How so?'
+    },
+    {
+      text: '2. Do I owe anyone an apology?',
+      flag: apologyFlag,
+      setFlag: setApologyFlag,
+      note: apologyName,
+      setNote: setApologyName,
+      placeholder: 'Who have you harmed?'
+    },
+    {
+      text: '3. Did I help or show kindness today?',
+      flag: kindnessFlag,
+      setFlag: setKindnessFlag,
+      note: kindnessNote,
+      setNote: setKindnessNote,
+      placeholder: 'What did you do?'
+    },
+    {
+      text: '4. Was I spiritually connected today?',
+      flag: spiritualFlag,
+      setFlag: setSpiritualFlag,
+      note: spiritualNote,
+      setNote: setSpiritualNote,
+      placeholder: 'In what way?'
+    },
+    {
+      text: '5. Talked with another alcoholic today?',
+      flag: aaTalkFlag,
+      setFlag: setAaTalkFlag,
+      note: '',
+      setNote: () => {},
+      placeholder: ''
+    }
   ];
 
-  const handleAnswerChange = (questionIndex: number, answer: boolean) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionIndex]: answer
-    }));
-  };
-
   const handleComplete = () => {
+    const entry = {
+      emotionFlag,
+      emotionNote,
+      apologyFlag,
+      apologyName,
+      kindnessFlag,
+      kindnessNote,
+      spiritualFlag,
+      spiritualNote,
+      aaTalkFlag
+    };
+    
+    saveEntry(entry);
     completeToday();
     setShowConfirmation(true);
   };
 
   const handleStartNew = () => {
-    setAnswers({});
+    setEmotionFlag(false);
+    setEmotionNote('');
+    setApologyFlag(false);
+    setApologyName('');
+    setKindnessFlag(false);
+    setKindnessNote('');
+    setSpiritualFlag(false);
+    setSpiritualNote('');
+    setAaTalkFlag(false);
     setShowConfirmation(false);
   };
 
   const handleUnsubmit = () => {
     uncompleteToday();
-    setShowConfirmation(false);
+    handleStartNew();
   };
 
   if (showConfirmation || isCompleted) {
@@ -164,33 +224,44 @@ export default function EveningReview() {
           <View style={styles.questionsContainer}>
             {questions.map((question, index) => (
               <View key={index} style={styles.questionContainer}>
-                <Text style={styles.questionText}>{question}</Text>
+                <Text style={styles.questionText}>{question.text}</Text>
                 <View style={styles.answerButtons}>
                   <TouchableOpacity
                     style={[
                       styles.answerButton,
-                      answers[index] === true && styles.answerButtonSelected
+                      question.flag === true && styles.answerButtonSelected
                     ]}
-                    onPress={() => handleAnswerChange(index, true)}
+                    onPress={() => question.setFlag(true)}
                   >
                     <Text style={[
                       styles.answerButtonText,
-                      answers[index] === true && styles.answerButtonTextSelected
+                      question.flag === true && styles.answerButtonTextSelected
                     ]}>Yes</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[
                       styles.answerButton,
-                      answers[index] === false && styles.answerButtonSelected
+                      question.flag === false && styles.answerButtonSelected
                     ]}
-                    onPress={() => handleAnswerChange(index, false)}
+                    onPress={() => question.setFlag(false)}
                   >
                     <Text style={[
                       styles.answerButtonText,
-                      answers[index] === false && styles.answerButtonTextSelected
+                      question.flag === false && styles.answerButtonTextSelected
                     ]}>No</Text>
                   </TouchableOpacity>
                 </View>
+                
+                {question.flag && question.placeholder && (
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder={question.placeholder}
+                    value={question.note}
+                    onChangeText={question.setNote}
+                    multiline
+                    placeholderTextColor={Colors.light.muted}
+                  />
+                )}
               </View>
             ))}
           </View>
@@ -351,6 +422,18 @@ const styles = StyleSheet.create({
   },
   answerButtonTextSelected: {
     color: 'white',
+  },
+  textInput: {
+    marginTop: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 14,
+    color: Colors.light.text,
+    minHeight: 40,
+    textAlignVertical: 'top',
   },
 
   completeButton: {

@@ -3,6 +3,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import createContextHook from '@nkzw/create-context-hook';
 import { EveningReviewEntry, WeeklyProgressDay } from '@/types';
 
+interface DetailedEveningEntry {
+  emotionFlag: boolean;
+  emotionNote: string;
+  apologyFlag: boolean;
+  apologyName: string;
+  kindnessFlag: boolean;
+  kindnessNote: string;
+  spiritualFlag: boolean;
+  spiritualNote: string;
+  aaTalkFlag: boolean;
+}
+
 const STORAGE_KEY = 'evening_review_entries';
 
 export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(() => {
@@ -108,6 +120,44 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     }
   };
 
+  const saveEntry = (detailedEntry: DetailedEveningEntry) => {
+    const todayString = getTodayDateString();
+    const existingIndex = entries.findIndex(entry => entry.date === todayString);
+    
+    const newEntry: EveningReviewEntry = {
+      date: todayString,
+      answers: {
+        emotion: detailedEntry.emotionFlag,
+        apology: detailedEntry.apologyFlag,
+        kindness: detailedEntry.kindnessFlag,
+        spiritual: detailedEntry.spiritualFlag,
+        aaTalk: detailedEntry.aaTalkFlag
+      },
+      reflection: JSON.stringify({
+        emotionNote: detailedEntry.emotionNote,
+        apologyName: detailedEntry.apologyName,
+        kindnessNote: detailedEntry.kindnessNote,
+        spiritualNote: detailedEntry.spiritualNote
+      }),
+      completed: false
+    };
+
+    let newEntries: EveningReviewEntry[];
+    if (existingIndex >= 0) {
+      newEntries = [...entries];
+      newEntries[existingIndex] = newEntry;
+    } else {
+      newEntries = [...entries, newEntry];
+    }
+
+    saveEntries(newEntries);
+  };
+
+  const getTodayEntry = (): EveningReviewEntry | null => {
+    const todayString = getTodayDateString();
+    return entries.find(entry => entry.date === todayString) || null;
+  };
+
   return {
     entries,
     isLoading,
@@ -115,6 +165,8 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     completeToday,
     uncompleteToday,
     getWeeklyProgress,
-    getWeeklyStreak
+    getWeeklyStreak,
+    saveEntry,
+    getTodayEntry
   };
 });
