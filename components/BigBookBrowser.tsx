@@ -86,6 +86,7 @@ const CategorySection = ({ category }: { category: BigBookCategory }) => {
         style={styles.categoryHeader}
         onPress={() => setExpanded(!expanded)}
         testID={`category-${category.id}`}
+        activeOpacity={0.7}
       >
         <View style={styles.categoryInfo}>
           <Text style={styles.categoryTitle}>{category.title}</Text>
@@ -227,10 +228,11 @@ function BigBookBrowserContent() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['rgba(74, 144, 226, 0.1)', 'rgba(78, 205, 196, 0.05)', 'rgba(92, 184, 92, 0.02)']}
+        colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
         style={styles.backgroundGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
+        locations={[0, 1]}
       />
       
       <View style={styles.tabContainer}>
@@ -274,6 +276,12 @@ function BigBookBrowserContent() {
             {bigBookData.map((category) => (
               <CategorySection key={category.id} category={category} />
             ))}
+            
+            <View style={styles.copyrightContainer}>
+              <Text style={styles.copyrightText}>
+                Copyright © 1990 by Alcoholics Anonymous World Services, Inc. All rights reserved.
+              </Text>
+            </View>
           </View>
         )}
         
@@ -333,37 +341,46 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 20,
-    backgroundColor: 'rgba(74, 144, 226, 0.05)',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.divider,
+    marginBottom: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     color: Colors.light.text,
     marginBottom: 4,
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
     color: Colors.light.muted,
     marginBottom: 8,
+    textAlign: "center",
   },
   description: {
     fontSize: 14,
     color: Colors.light.muted,
     lineHeight: 20,
+    textAlign: "center",
   },
   categoryContainer: {
-    marginBottom: 8,
-    backgroundColor: Colors.light.background,
+    marginBottom: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    marginHorizontal: 16,
   },
   categoryHeader: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    backgroundColor: Colors.light.cardBackground,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.divider,
+    justifyContent: "space-between",
   },
   categoryInfo: {
     flex: 1,
@@ -379,12 +396,14 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
   },
   sectionsContainer: {
-    backgroundColor: Colors.light.background,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.divider,
   },
   sectionItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: 32,
+    paddingLeft: 16,
     paddingRight: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
@@ -424,10 +443,17 @@ const styles = StyleSheet.create({
   bookmarkItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 16,
     padding: 12,
     marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   bookmarkContent: {
     flex: 1,
@@ -465,10 +491,17 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   recentItem: {
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 16,
     padding: 12,
     marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   recentItemTitle: {
     fontSize: 16,
@@ -497,5 +530,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.light.muted,
     textAlign: "center",
+  },
+  copyrightContainer: {
+    marginTop: 24,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  copyrightText: {
+    fontSize: 11,
+    color: Colors.light.muted,
+    textAlign: "center",
+    lineHeight: 16,
   },
 });
