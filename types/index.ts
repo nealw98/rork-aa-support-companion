@@ -13,3 +13,17 @@ export interface ChatMessage {
   sender: "user" | "bot";
   timestamp: number;
 }
+
+export interface EveningReviewEntry {
+  date: string; // Format: "YYYY-MM-DD"
+  answers: { [key: string]: boolean | null };
+  reflection: string;
+  completed: boolean;
+}
+
+export interface WeeklyProgressDay {
+  dayName: string;
+  completed: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+}
