@@ -102,10 +102,11 @@ export default function EveningReview() {
                   <Text style={styles.dayName}>{day.dayName}</Text>
                   <View style={[
                     styles.dayCircle,
-                    day.completed && styles.dayCircleCompleted,
-                    day.isToday && styles.dayCircleToday
+                    day.completed && !day.isFuture && styles.dayCircleCompleted,
+                    day.isToday && styles.dayCircleToday,
+                    day.isFuture && styles.dayCircleFuture
                   ]}>
-                    {day.completed && (
+                    {day.completed && !day.isFuture && (
                       <CheckCircle color="white" size={16} />
                     )}
                   </View>
@@ -304,6 +305,11 @@ const styles = StyleSheet.create({
   },
   dayCircleToday: {
     borderColor: Colors.light.tint,
+    borderWidth: 3,
+  },
+  dayCircleFuture: {
+    backgroundColor: '#e9ecef',
+    borderColor: 'rgba(108, 117, 125, 0.2)',
   },
   streakText: {
     fontSize: 14,
