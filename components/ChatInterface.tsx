@@ -92,6 +92,24 @@ const SponsorToggle = ({
       <TouchableOpacity
         style={[
           styles.sponsorButton,
+          sponsorType === "salty" && styles.sponsorButtonActive
+        ]}
+        onPress={() => onChange("salty")}
+        testID="salty-sponsor-button"
+      >
+        <Text 
+          style={[
+            styles.sponsorButtonText,
+            sponsorType === "salty" && styles.sponsorButtonTextActive
+          ]}
+        >
+          Salty Sam
+        </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={[
+          styles.sponsorButton,
           sponsorType === "grace" && styles.sponsorButtonActive
         ]}
         onPress={() => onChange("grace")}
@@ -106,24 +124,6 @@ const SponsorToggle = ({
           ellipsizeMode="tail"
         >
           Gentle Grace
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity
-        style={[
-          styles.sponsorButton,
-          sponsorType === "salty" && styles.sponsorButtonActive
-        ]}
-        onPress={() => onChange("salty")}
-        testID="salty-sponsor-button"
-      >
-        <Text 
-          style={[
-            styles.sponsorButtonText,
-            sponsorType === "salty" && styles.sponsorButtonTextActive
-          ]}
-        >
-          Salty Sam
         </Text>
       </TouchableOpacity>
     </View>
