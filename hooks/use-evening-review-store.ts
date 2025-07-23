@@ -97,11 +97,23 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     return weeklyProgress.filter(day => day.completed && !day.isFuture).length;
   };
 
+  const uncompleteToday = () => {
+    const todayString = getTodayDateString();
+    const existingIndex = entries.findIndex(entry => entry.date === todayString);
+    
+    if (existingIndex >= 0) {
+      const newEntries = [...entries];
+      newEntries[existingIndex] = { ...newEntries[existingIndex], completed: false };
+      saveEntries(newEntries);
+    }
+  };
+
   return {
     entries,
     isLoading,
     isCompletedToday,
     completeToday,
+    uncompleteToday,
     getWeeklyProgress,
     getWeeklyStreak
   };

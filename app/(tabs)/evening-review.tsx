@@ -24,7 +24,7 @@ const formatDateDisplay = (date: Date): string => {
 };
 
 export default function EveningReview() {
-  const { isCompletedToday, completeToday, getWeeklyProgress, getWeeklyStreak } = useEveningReviewStore();
+  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = useEveningReviewStore();
   const [answers, setAnswers] = useState<{ [key: string]: boolean | null }>({});
   const [reflection, setReflection] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -57,6 +57,11 @@ export default function EveningReview() {
   const handleStartNew = () => {
     setAnswers({});
     setReflection('');
+    setShowConfirmation(false);
+  };
+
+  const handleUnsubmit = () => {
+    uncompleteToday();
     setShowConfirmation(false);
   };
 
@@ -121,11 +126,16 @@ export default function EveningReview() {
             Your responses are saved only on your device. Nothing is uploaded or shared.
           </Text>
 
-          {!isCompleted && (
-            <TouchableOpacity style={styles.outlineButton} onPress={handleStartNew}>
-              <Text style={styles.outlineButtonText}>Start New Review</Text>
+          <View style={styles.buttonContainer}>
+            {!isCompleted && (
+              <TouchableOpacity style={styles.outlineButton} onPress={handleStartNew}>
+                <Text style={styles.outlineButtonText}>Start New Review</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity style={styles.unsubmitButton} onPress={handleUnsubmit}>
+              <Text style={styles.unsubmitButtonText}>Unsubmit</Text>
             </TouchableOpacity>
-          )}
+          </View>
         </ScrollView>
       </View>
     );
@@ -397,5 +407,21 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     textAlign: 'center',
     marginBottom: 24,
+  },
+  buttonContainer: {
+    gap: 12,
+    marginBottom: 16,
+  },
+  unsubmitButton: {
+    backgroundColor: '#dc3545',
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginHorizontal: 32,
+  },
+  unsubmitButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
