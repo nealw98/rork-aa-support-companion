@@ -454,6 +454,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    zIndex: -1,
   },
   scrollContainer: {
     flex: 1,
@@ -495,6 +496,8 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   cardHeader: {
     alignItems: "center",
@@ -507,7 +510,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "bold",
     color: Colors.light.text,
     marginBottom: 16,
@@ -515,11 +518,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   quote: {
-    fontSize: 18,
+    fontSize: 16,
     fontStyle: "italic",
     color: Colors.light.text,
     marginBottom: 8,
-    lineHeight: 26,
+    lineHeight: 24,
     textAlign: "center",
   },
   source: {
@@ -575,6 +578,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 5,
+    paddingVertical: 8,
   },
   navigationContent: {
     flexDirection: "row",
@@ -585,7 +589,7 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 10 : 0, // Reduced padding
   },
   navButton: {
-    padding: 6, // Reduced padding
+    padding: 8, // Increased padding for better touch target
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
     shadowColor: "#000",
@@ -593,11 +597,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+    minWidth: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   dateButton: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 6, // Reduced padding
+    padding: 8, // Increased padding
+    paddingHorizontal: 12,
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
     shadowColor: "#000",
@@ -687,6 +695,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 2,
+    minHeight: 40, // Ensure minimum height for touch target
   },
   dayText: {
     fontSize: 16,

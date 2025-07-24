@@ -379,6 +379,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+    zIndex: -1,
   },
   content: {
     flex: 1,
@@ -415,6 +416,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -497,6 +503,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.light.tint,
     backgroundColor: 'transparent',
+    elevation: 0,
+    minWidth: 80,
+    alignItems: 'center',
   },
   answerButtonSelected: {
     backgroundColor: Colors.light.tint,
@@ -518,8 +527,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     fontSize: 14,
     color: Colors.light.text,
-    minHeight: 40,
+    minHeight: 80,
     textAlignVertical: 'top',
+    elevation: 1,
   },
 
   completeButton: {
@@ -529,6 +539,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 32,
     marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   completeButtonText: {
     color: 'white',
@@ -543,6 +558,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 32,
     marginBottom: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    elevation: 1,
   },
   outlineButtonText: {
     color: Colors.light.tint,
@@ -565,6 +582,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     marginHorizontal: 32,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
   unsubmitButtonText: {
     color: 'white',
@@ -587,6 +609,9 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 8,
+    padding: 12,
   },
   insightsSubtitle: {
     fontSize: 14,
@@ -615,5 +640,8 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginBottom: 16,
     textAlign: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    padding: 8,
+    borderRadius: 4,
   },
 });
