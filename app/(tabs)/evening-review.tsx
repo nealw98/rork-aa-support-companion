@@ -378,9 +378,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: '100%',
-    width: '100%',
-    zIndex: -1,
+    bottom: 0,
   },
   content: {
     flex: 1,
@@ -411,17 +409,12 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -461,7 +454,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#e9ecef',
     borderWidth: 2,
-    borderColor: 'rgba(108, 117, 125, 0.4)',
+    borderColor: 'rgba(108, 117, 125, 0.2)',
   },
   dayCircleCompleted: {
     backgroundColor: Colors.light.tint,
@@ -496,7 +489,6 @@ const styles = StyleSheet.create({
   answerButtons: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 8,
   },
   answerButton: {
     paddingHorizontal: 24,
@@ -504,11 +496,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: Colors.light.tint,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    elevation: 1,
-    minWidth: 80,
-    alignItems: 'center',
-    marginRight: 8,
+    backgroundColor: 'transparent',
   },
   answerButtonSelected: {
     backgroundColor: Colors.light.tint,
@@ -525,14 +513,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
     padding: 12,
     borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     fontSize: 14,
     color: Colors.light.text,
-    minHeight: 80,
+    minHeight: 40,
     textAlignVertical: 'top',
-    elevation: 1,
   },
 
   completeButton: {
@@ -542,11 +529,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 32,
     marginBottom: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
   completeButtonText: {
     color: 'white',
@@ -561,8 +543,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 32,
     marginBottom: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    elevation: 1,
   },
   outlineButtonText: {
     color: Colors.light.tint,
@@ -576,6 +556,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   buttonContainer: {
+    gap: 12,
     marginBottom: 16,
   },
   unsubmitButton: {
@@ -584,12 +565,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     marginHorizontal: 32,
-    marginTop: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
   },
   unsubmitButtonText: {
     color: 'white',
@@ -612,9 +587,6 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.3)',
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 8,
-    padding: 12,
   },
   insightsSubtitle: {
     fontSize: 14,
@@ -643,8 +615,5 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginBottom: 16,
     textAlign: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    padding: 8,
-    borderRadius: 4,
   },
 });

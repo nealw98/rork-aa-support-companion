@@ -10,30 +10,11 @@ const styles = StyleSheet.create({
   headerTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 4,
-    marginLeft: 8
+    gap: 8
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    marginLeft: 8,
-    color: Colors.light.text
-  },
-  chatHeaderContainer: {
-    paddingVertical: 4,
-    alignItems: 'center'
-  },
-  chatHeaderTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    color: Colors.light.text
-  },
-  chatHeaderSubtitle: {
-    fontSize: 12,
-    fontStyle: 'italic',
-    color: Colors.light.muted,
-    textAlign: 'center'
+    fontWeight: '600'
   }
 });
 
@@ -45,25 +26,9 @@ export default function TabLayout() {
         headerShown: true,
         tabBarStyle: {
           backgroundColor: "#f8f9fa",
-          elevation: 4,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-          height: 60,
-          paddingBottom: 8,
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(0, 0, 0, 0.05)',
         },
         headerStyle: {
           backgroundColor: "#f8f9fa",
-          elevation: 4,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-          borderBottomWidth: 1,
-          borderBottomColor: 'rgba(0, 0, 0, 0.05)',
         },
       }}
     >
@@ -85,9 +50,9 @@ export default function TabLayout() {
         options={{
           title: "Sober Chat",
           headerTitle: () => (
-            <View style={styles.chatHeaderContainer}>
-              <Text style={styles.chatHeaderTitle}>Choose Your AI Sponsor</Text>
-              <Text style={styles.chatHeaderSubtitle}>
+            <View>
+              <Text style={{ fontSize: 18, fontWeight: "600" }}>Choose Your AI Sponsor</Text>
+              <Text style={{ fontSize: 12, fontStyle: "italic", color: Colors.light.muted }}>
                 Select a voice that fits your mood
               </Text>
             </View>
