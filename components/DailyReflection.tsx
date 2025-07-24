@@ -490,11 +490,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.6)', // Changed from 0.4 to 0.6 (60% opacity)
     borderRadius: 16,
     padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    // Shadow removed
     marginBottom: 16,
   },
   cardHeader: {
@@ -571,11 +567,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
     borderTopWidth: 1,
     borderTopColor: Colors.light.divider,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 5,
+    // Shadow removed
   },
   navigationContent: {
     flexDirection: "row",
@@ -589,11 +581,7 @@ const styles = StyleSheet.create({
     padding: 6, // Reduced padding
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    // Shadow removed
   },
   dateButton: {
     flexDirection: "row",
@@ -601,11 +589,7 @@ const styles = StyleSheet.create({
     padding: 6, // Reduced padding
     borderRadius: 8,
     backgroundColor: Colors.light.cardBackground,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    // Shadow removed
   },
   dateButtonText: {
     marginLeft: 8,

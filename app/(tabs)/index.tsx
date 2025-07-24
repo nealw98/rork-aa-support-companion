@@ -472,11 +472,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.tint,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 6,
+    // Shadow removed
   },
   datePickerText: {
     fontSize: 16,
@@ -491,11 +487,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.6)', // Changed from 0.4 to 0.6 (60% opacity)
     borderRadius: 16,
     padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    // Shadow removed
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
