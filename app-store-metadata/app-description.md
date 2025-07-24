@@ -12,7 +12,7 @@ AA Sober Companion is your personal recovery assistant, providing daily support 
 ### AI Sponsor Chat
 - Connect with three unique AI sponsors, each with different approaches to recovery:
   - Salty Sam: Direct, no-nonsense guidance with tough love
-  - Steady Eddy: Balanced, supportive wisdom with gentle accountability
+  - Steady Eddie: Balanced, supportive wisdom with gentle accountability
   - Gentle Grace: Compassionate, spiritual guidance with a focus on self-acceptance
 - Have meaningful recovery conversations anytime, anywhere
 - Review past conversations for continued insight

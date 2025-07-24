@@ -13,8 +13,8 @@ import {
 import { Send, RotateCcw } from "lucide-react-native";
 
 import Colors from "@/constants/colors";
-import { useChatStore, SponsorType } from "@/hooks/use-chat-store";
-import { ChatMessage } from "@/types";
+import { useChatStore } from "@/hooks/use-chat-store";
+import { ChatMessage, SponsorType } from "@/types";
 import { adjustFontWeight } from "@/constants/fonts";
 
 const ChatBubble = ({ message }: { message: ChatMessage }) => {
@@ -86,7 +86,7 @@ const SponsorToggle = ({
             sponsorType === "supportive" && styles.sponsorButtonTextActive
           ]}
         >
-          Steady Eddy
+          Steady Eddie
         </Text>
       </TouchableOpacity>
       
@@ -162,7 +162,7 @@ export default function ChatInterface() {
       case "salty":
         return "Tell Salty Sam what's got you sideways...";
       case "supportive":
-        return "Tell Steady Eddy what's on your mind...";
+        return "Tell Steady Eddie what's on your mind...";
       case "grace":
         return "Share with Gentle Grace what's in your heart...";
       default:
@@ -176,7 +176,7 @@ export default function ChatInterface() {
       case "salty":
         return "Salty Sam is thinking...";
       case "supportive":
-        return "Steady Eddy is thinking...";
+        return "Steady Eddie is thinking...";
       case "grace":
         return "Gentle Grace is channeling wisdom...";
       default:
