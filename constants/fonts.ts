@@ -25,7 +25,8 @@ export const getScreenPadding = (): ViewStyle => {
   if (Platform.OS === 'android') {
     return {
       paddingTop: 24,
-      paddingBottom: 24
+      paddingBottom: 24,
+      paddingHorizontal: 16
     };
   }
   

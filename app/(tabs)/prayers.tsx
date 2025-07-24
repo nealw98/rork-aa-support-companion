@@ -12,12 +12,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Colors from "@/constants/colors";
 import { aaPrayers } from "@/constants/bigbook";
 import { adjustFontWeight } from "@/constants/fonts";
+import ScreenContainer from "@/components/ScreenContainer";
 
 export default function PrayersScreen() {
   const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
 
   return (
-    <View style={styles.container}>
+    <ScreenContainer style={styles.container}>
       <LinearGradient
         colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
         style={styles.backgroundGradient}
@@ -63,7 +64,7 @@ export default function PrayersScreen() {
           </Text>
         </View>
       </ScrollView>
-    </View>
+    </ScreenContainer>
   );
 }
 

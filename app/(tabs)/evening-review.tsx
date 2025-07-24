@@ -8,6 +8,7 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
+import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
@@ -171,7 +172,7 @@ export default function EveningReview() {
 
   if (showConfirmation || isCompleted) {
     return (
-      <View style={styles.container}>
+      <ScreenContainer style={styles.container}>
         <LinearGradient
           colors={[Colors.light.chatBubbleUser, Colors.light.chatBubbleBot]}
           start={{ x: 0, y: 0 }}
@@ -285,12 +286,12 @@ export default function EveningReview() {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      </View>
+      </ScreenContainer>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <ScreenContainer style={styles.container}>
       <LinearGradient
         colors={[Colors.light.chatBubbleUser, Colors.light.chatBubbleBot]}
         start={{ x: 0, y: 0 }}
@@ -367,7 +368,7 @@ export default function EveningReview() {
           Your responses are saved only on your device. Nothing is uploaded or shared.
         </Text>
       </ScrollView>
-    </View>
+    </ScreenContainer>
   );
 }
 

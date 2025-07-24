@@ -1,11 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import BigBookBrowser from "@/components/BigBookBrowser";
+import ScreenContainer from "@/components/ScreenContainer";
 
 export default function BigBookScreen() {
   return (
-    <View style={styles.container}>
+    <ScreenContainer style={styles.container}>
       <BigBookBrowser />
-    </View>
+    </ScreenContainer>
   );
 }
 
