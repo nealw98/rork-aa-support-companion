@@ -62,7 +62,7 @@ export default function EveningReview() {
       setFlag: setApologyFlag,
       note: apologyName,
       setNote: setApologyName,
-      placeholder: 'Who have you harmed?'
+      placeholder: 'Whom have you harmed?'
     },
     {
       text: '3. Did I help or show kindness today?',
