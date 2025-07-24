@@ -10,13 +10,14 @@ const styles = StyleSheet.create({
   headerTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    paddingVertical: 4
+    paddingVertical: 4,
+    marginLeft: 8
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginLeft: 8
+    marginLeft: 8,
+    color: Colors.light.text
   },
   chatHeaderContainer: {
     paddingVertical: 4,
@@ -25,7 +26,8 @@ const styles = StyleSheet.create({
   chatHeaderTitle: {
     fontSize: 18,
     fontWeight: '600',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: Colors.light.text
   },
   chatHeaderSubtitle: {
     fontSize: 12,
@@ -50,6 +52,8 @@ export default function TabLayout() {
           shadowRadius: 3,
           height: 60,
           paddingBottom: 8,
+          borderTopWidth: 1,
+          borderTopColor: 'rgba(0, 0, 0, 0.05)',
         },
         headerStyle: {
           backgroundColor: "#f8f9fa",
@@ -58,6 +62,8 @@ export default function TabLayout() {
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.1,
           shadowRadius: 3,
+          borderBottomWidth: 1,
+          borderBottomColor: 'rgba(0, 0, 0, 0.05)',
         },
       }}
     >

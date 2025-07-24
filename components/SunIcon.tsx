@@ -18,6 +18,12 @@ const styles = StyleSheet.create({
       android: {
         marginRight: 4,
       },
+      ios: {
+        marginRight: 0,
+      },
+      web: {
+        marginRight: 0,
+      }
     }),
   },
 });
