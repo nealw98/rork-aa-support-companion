@@ -27,3 +27,5 @@ export interface WeeklyProgressDay {
   isToday: boolean;
   isFuture: boolean;
 }
+
+export type SponsorType = "salty" | "supportive" | "grace";
