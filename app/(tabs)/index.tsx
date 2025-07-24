@@ -9,6 +9,7 @@ import Colors from "@/constants/colors";
 import { getReflectionForDate } from "@/constants/reflections";
 import { Reflection } from "@/types";
 import SunIcon from "@/components/SunIcon";
+import { adjustFontWeight } from "@/constants/fonts";
 
 // Helper to generate calendar grid
 const generateCalendarDays = (date: Date) => {
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 42,
-    fontWeight: 'bold',
+    fontWeight: adjustFontWeight('bold', true),
     color: '#2c3e50',
     marginTop: 8,
     marginBottom: 12,
@@ -461,7 +462,7 @@ const styles = StyleSheet.create({
   navButtonText: {
     fontSize: 16,
     color: Colors.light.muted,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
     marginHorizontal: 4,
   },
   datePickerButton: {
@@ -479,7 +480,7 @@ const styles = StyleSheet.create({
   },
   datePickerText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: adjustFontWeight('bold', true),
     color: 'white',
     marginTop: 4,
   },
@@ -500,7 +501,7 @@ const styles = StyleSheet.create({
   },
   reflectionTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: adjustFontWeight("bold", true),
     color: Colors.light.text,
     marginBottom: 16,
     textAlign: "center",
@@ -519,7 +520,7 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     textAlign: "right",
     marginBottom: 16,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
   },
   divider: {
     height: 1,
@@ -534,7 +535,7 @@ const styles = StyleSheet.create({
   },
   thoughtTitle: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: adjustFontWeight("bold", true),
     color: Colors.light.text,
     marginBottom: 8,
   },
@@ -584,7 +585,7 @@ const styles = StyleSheet.create({
   },
   calendarMonthYear: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600', true),
     color: Colors.light.text,
   },
   weekDaysContainer: {
@@ -595,7 +596,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
     color: Colors.light.muted,
   },
   daysContainer: {
@@ -626,7 +627,7 @@ const styles = StyleSheet.create({
   },
   selectedDayText: {
     color: 'white',
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600'),
   },
   todayDay: {
     borderWidth: 1,
@@ -635,7 +636,7 @@ const styles = StyleSheet.create({
   },
   todayText: {
     color: Colors.light.tint,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600'),
   },
   calendarFooter: {
     flexDirection: 'row',
@@ -654,12 +655,12 @@ const styles = StyleSheet.create({
   },
   todayButtonText: {
     color: Colors.light.tint,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600'),
     fontSize: 16,
   },
   cancelButtonText: {
     color: Colors.light.muted,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
     fontSize: 16,
   },
 });

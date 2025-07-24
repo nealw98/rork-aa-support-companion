@@ -11,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import Colors from "@/constants/colors";
 import { aaPrayers } from "@/constants/bigbook";
+import { adjustFontWeight } from "@/constants/fonts";
 
 export default function PrayersScreen() {
   const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: adjustFontWeight("bold", true),
     color: Colors.light.text,
     marginBottom: 8,
     textAlign: "center",
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
   },
   prayerTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: adjustFontWeight("600", true),
     color: Colors.light.text,
   },
   prayerContent: {

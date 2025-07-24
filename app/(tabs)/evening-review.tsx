@@ -6,11 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
+import { adjustFontWeight } from '@/constants/fonts';
 
 
 
@@ -391,7 +393,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
+    fontWeight: adjustFontWeight('700', true),
     color: Colors.light.text,
     marginBottom: 8,
     textAlign: 'center',
@@ -423,7 +425,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600', true),
     color: Colors.light.tint,
     marginLeft: 8,
   },
@@ -481,7 +483,7 @@ const styles = StyleSheet.create({
   },
   questionText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
     color: Colors.light.text,
     marginBottom: 8,
     lineHeight: 20,
@@ -504,7 +506,7 @@ const styles = StyleSheet.create({
   answerButtonText: {
     fontSize: 14,
     color: Colors.light.tint,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
   },
   answerButtonTextSelected: {
     color: 'white',
@@ -533,7 +535,7 @@ const styles = StyleSheet.create({
   completeButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600'),
   },
   outlineButton: {
     borderWidth: 1,
@@ -547,7 +549,7 @@ const styles = StyleSheet.create({
   outlineButtonText: {
     color: Colors.light.tint,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
   },
   privacyText: {
     fontSize: 12,
@@ -569,7 +571,7 @@ const styles = StyleSheet.create({
   unsubmitButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
   },
   insightsHeader: {
     flexDirection: 'row',
@@ -579,7 +581,7 @@ const styles = StyleSheet.create({
   },
   insightsTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600', true),
     color: Colors.light.tint,
   },
   insightsContent: {
@@ -599,7 +601,7 @@ const styles = StyleSheet.create({
   },
   insightLabel: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
     color: Colors.light.text,
     marginBottom: 4,
   },
