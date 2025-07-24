@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Colors from "@/constants/colors";
 import { getReflectionForDate } from "@/constants/reflections";
 import { Reflection } from "@/types";
+import { adjustFontWeight } from "@/constants/fonts";
 
 // Helper to generate calendar grid
 const generateCalendarDays = (date: Date) => {
@@ -480,7 +481,7 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 16,
     color: Colors.light.text,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
   },
   favoriteButton: {
     padding: 8,
@@ -508,7 +509,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: adjustFontWeight("bold", true),
     color: Colors.light.text,
     marginBottom: 16,
     textAlign: "center",
@@ -527,7 +528,7 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     textAlign: "right",
     marginBottom: 16,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
   },
   divider: {
     height: 1,
@@ -542,7 +543,7 @@ const styles = StyleSheet.create({
   },
   thoughtTitle: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: adjustFontWeight("bold", true),
     color: Colors.light.text,
     marginBottom: 8,
   },
@@ -610,7 +611,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 14,
     color: Colors.light.text,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
   },
   modalOverlay: {
     flex: 1,
@@ -636,13 +637,13 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600', true),
     color: Colors.light.text,
   },
   modalButton: {
     fontSize: 16,
     color: Colors.light.tint,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
   },
   datePicker: {
     height: 200,
@@ -662,7 +663,7 @@ const styles = StyleSheet.create({
   },
   calendarMonthYear: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600', true),
     color: Colors.light.text,
   },
   weekDaysContainer: {
@@ -673,7 +674,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
     color: Colors.light.muted,
   },
   daysContainer: {
@@ -704,7 +705,7 @@ const styles = StyleSheet.create({
   },
   selectedDayText: {
     color: 'white',
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600'),
   },
   todayDay: {
     borderWidth: 1,
@@ -713,7 +714,7 @@ const styles = StyleSheet.create({
   },
   todayText: {
     color: Colors.light.tint,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600'),
   },
   calendarFooter: {
     flexDirection: 'row',
@@ -732,12 +733,12 @@ const styles = StyleSheet.create({
   },
   todayButtonText: {
     color: Colors.light.tint,
-    fontWeight: '600',
+    fontWeight: adjustFontWeight('600'),
     fontSize: 16,
   },
   cancelButtonText: {
     color: Colors.light.muted,
-    fontWeight: '500',
+    fontWeight: adjustFontWeight('500'),
     fontSize: 16,
   },
 });

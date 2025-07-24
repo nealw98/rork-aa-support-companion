@@ -5,6 +5,7 @@ import { Text, View, StyleSheet } from "react-native";
 import SunIcon from "@/components/SunIcon";
 
 import Colors from "@/constants/colors";
+import { adjustFontWeight } from "@/constants/fonts";
 
 const styles = StyleSheet.create({
   headerTitleContainer: {
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600'
+    fontWeight: adjustFontWeight('600', true)
   }
 });
 
@@ -51,8 +52,8 @@ export default function TabLayout() {
           title: "Sober Chat",
           headerTitle: () => (
             <View>
-              <Text style={{ fontSize: 18, fontWeight: "600" }}>Choose Your AI Sponsor</Text>
-              <Text style={{ fontSize: 12, fontStyle: "italic", color: Colors.light.muted }}>
+              <Text style={{ fontSize: 18, fontWeight: adjustFontWeight("600", true) }}>Choose Your AI Sponsor</Text>
+              <Text style={{ fontSize: 12, fontStyle: "italic", fontWeight: adjustFontWeight("400"), color: Colors.light.muted }}>
                 Select a voice that fits your mood
               </Text>
             </View>

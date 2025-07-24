@@ -23,6 +23,7 @@ import Colors from "@/constants/colors";
 import { bigBookData } from "@/constants/bigbook";
 import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store";
 import { BigBookCategory, BigBookSection } from "@/types/bigbook";
+import { adjustFontWeight } from "@/constants/fonts";
 
 const SectionItem = ({ section, categoryId }: { section: BigBookSection; categoryId: string }) => {
   const { addBookmark, removeBookmark, isBookmarked, addToRecent } = useBigBookStore();
@@ -328,11 +329,11 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     color: Colors.light.muted,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
   },
   activeTabText: {
     color: Colors.light.tint,
-    fontWeight: "600",
+    fontWeight: adjustFontWeight("600"),
   },
   content: {
     flex: 1,
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: adjustFontWeight("bold", true),
     color: Colors.light.text,
     marginBottom: 4,
     textAlign: "center",
@@ -385,7 +386,7 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: adjustFontWeight("600", true),
     color: Colors.light.text,
     marginBottom: 2,
   },
@@ -417,7 +418,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
     color: Colors.light.text,
     marginBottom: 2,
   },
@@ -458,7 +459,7 @@ const styles = StyleSheet.create({
   },
   bookmarkTitle: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
     color: Colors.light.text,
     marginBottom: 2,
   },
@@ -480,13 +481,13 @@ const styles = StyleSheet.create({
   },
   recentTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: adjustFontWeight("600", true),
     color: Colors.light.text,
   },
   clearText: {
     fontSize: 14,
     color: Colors.light.tint,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
   },
   recentItem: {
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
@@ -503,7 +504,7 @@ const styles = StyleSheet.create({
   },
   recentItemTitle: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
     color: Colors.light.text,
     marginBottom: 2,
   },
@@ -519,7 +520,7 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: adjustFontWeight("600", true),
     color: Colors.light.muted,
     marginTop: 16,
     marginBottom: 4,

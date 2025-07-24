@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { EveningReviewProvider } from "@/hooks/use-evening-review-store";
+import { adjustFontWeight } from "@/constants/fonts";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,7 +19,7 @@ function RootLayoutNav() {
         backgroundColor: "#f8f9fa",
       },
       headerTitleStyle: {
-        fontWeight: "600",
+        fontWeight: adjustFontWeight("600", true),
       },
     }}>
       <Stack.Screen 

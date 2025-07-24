@@ -15,6 +15,7 @@ import { Send, RotateCcw } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useChatStore, SponsorType } from "@/hooks/use-chat-store";
 import { ChatMessage } from "@/types";
+import { adjustFontWeight } from "@/constants/fonts";
 
 const ChatBubble = ({ message }: { message: ChatMessage }) => {
   const isUser = message.sender === "user";
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
   },
   sponsorButtonText: {
     fontSize: 13,
-    fontWeight: "500",
+    fontWeight: adjustFontWeight("500"),
     color: Colors.light.muted,
     flexShrink: 1,
   },
@@ -335,6 +336,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333333",
     lineHeight: 22,
+    fontWeight: adjustFontWeight("400"),
   },
   timestamp: {
     fontSize: 11,
@@ -351,6 +353,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.light.muted,
     marginLeft: 4,
+    fontWeight: adjustFontWeight("400"),
   },
   inputContainer: {
     flexDirection: "row",
