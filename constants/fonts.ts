@@ -1,4 +1,4 @@
-import { Platform, TextStyle } from 'react-native';
+import { Platform, TextStyle, ViewStyle } from 'react-native';
 
 type FontWeight = TextStyle['fontWeight'];
 
@@ -18,4 +18,16 @@ export const adjustFontWeight = (weight: FontWeight, isHeader: boolean = false):
   
   // Return original weight for iOS or if no adjustment needed
   return weight;
+};
+
+// Utility function to get platform-specific screen padding
+export const getScreenPadding = (): ViewStyle => {
+  if (Platform.OS === 'android') {
+    return {
+      paddingTop: 24,
+      paddingBottom: 24
+    };
+  }
+  
+  return {};
 };

@@ -5,7 +5,7 @@ import { Text, View, StyleSheet } from "react-native";
 import SunIcon from "@/components/SunIcon";
 
 import Colors from "@/constants/colors";
-import { adjustFontWeight } from "@/constants/fonts";
+import { adjustFontWeight, getScreenPadding } from "@/constants/fonts";
 
 const styles = StyleSheet.create({
   headerTitleContainer: {
@@ -16,6 +16,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: adjustFontWeight('600', true)
+  },
+  screenContainer: {
+    ...getScreenPadding()
   }
 });
 
@@ -30,7 +33,7 @@ export default function TabLayout() {
         },
         headerStyle: {
           backgroundColor: "#f8f9fa",
-        },
+        }
       }}
     >
       <Tabs.Screen

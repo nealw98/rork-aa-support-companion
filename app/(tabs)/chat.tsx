@@ -1,14 +1,15 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import ChatInterface from "@/components/ChatInterface";
 import { ChatStoreProvider } from "@/hooks/use-chat-store";
+import ScreenContainer from "@/components/ScreenContainer";
 
 export default function ChatScreen() {
   return (
-    <View style={styles.container}>
+    <ScreenContainer style={styles.container}>
       <ChatStoreProvider>
         <ChatInterface />
       </ChatStoreProvider>
-    </View>
+    </ScreenContainer>
   );
 }
 

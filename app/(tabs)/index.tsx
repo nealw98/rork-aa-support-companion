@@ -1,4 +1,5 @@
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, Platform } from "react-native";
+import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react-native";
@@ -252,17 +253,17 @@ export default function HomeScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <ScreenContainer style={styles.loadingContainer}>
         <Text style={styles.loadingText}>Loading reflection...</Text>
-      </View>
+      </ScreenContainer>
     );
   }
 
   if (!reflection) {
     return (
-      <View style={styles.loadingContainer}>
+      <ScreenContainer style={styles.loadingContainer}>
         <Text style={styles.loadingText}>Unable to load reflection</Text>
-      </View>
+      </ScreenContainer>
     );
   }
 
@@ -274,7 +275,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScreenContainer style={styles.container}>
       <LinearGradient
         colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
         style={styles.backgroundGradient}
@@ -393,7 +394,7 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
       </Modal>
-    </View>
+    </ScreenContainer>
   );
 }
 
