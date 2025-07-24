@@ -68,10 +68,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="bigbook"
+        name="evening-review"
         options={{
-          title: "Big Book",
-          tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
+          title: "Review",
+          headerTitle: "Evening Review",
+          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
       />
       <Tabs.Screen
@@ -83,11 +84,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="evening-review"
+        name="bigbook"
         options={{
-          title: "Review",
-          headerTitle: "Evening Review",
-          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
+          title: "Big Book",
+          tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
         }}
       />
     </Tabs>
