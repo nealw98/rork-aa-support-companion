@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import { Home, MessageCircle, Book, Heart, Moon } from "lucide-react-native";
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Platform } from "react-native";
 import SunIcon from "@/components/SunIcon";
 
 import Colors from "@/constants/colors";
@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
   },
   screenContainer: {
     ...getScreenPadding()
+  },
+  tabIcon: {
+    ...(Platform.OS === 'android' ? { marginTop: 2 } : {})
   }
 });
 
@@ -46,7 +49,7 @@ export default function TabLayout() {
               <Text style={styles.headerTitle}>Sober Dailies</Text>
             </View>
           ),
-          tabBarIcon: ({ color }) => <Home color={color} size={22} />,
+          tabBarIcon: ({ color }) => <Home color={color} size={22} style={styles.tabIcon} />,
         }}
       />
       <Tabs.Screen
@@ -61,14 +64,14 @@ export default function TabLayout() {
               </Text>
             </View>
           ),
-          tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} />,
+          tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} style={styles.tabIcon} />,
         }}
       />
       <Tabs.Screen
         name="bigbook"
         options={{
           title: "Big Book",
-          tabBarIcon: ({ color }) => <Book color={color} size={22} />,
+          tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
         }}
       />
       <Tabs.Screen
@@ -76,7 +79,7 @@ export default function TabLayout() {
         options={{
           title: "Prayers",
           headerTitle: "AA Prayers",
-          tabBarIcon: ({ color }) => <Heart color={color} size={22} />,
+          tabBarIcon: ({ color }) => <Heart color={color} size={22} style={styles.tabIcon} />,
         }}
       />
       <Tabs.Screen
@@ -84,7 +87,7 @@ export default function TabLayout() {
         options={{
           title: "Review",
           headerTitle: "Evening Review",
-          tabBarIcon: ({ color }) => <Moon color={color} size={22} />,
+          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
       />
     </Tabs>
