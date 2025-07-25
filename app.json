@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.rork.aa-support-companion"
+      "bundleIdentifier": "app.rork.aa-sober-dailies"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.aa-support-companion"
+      "package": "app.rork.aa-sober-dailies"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
