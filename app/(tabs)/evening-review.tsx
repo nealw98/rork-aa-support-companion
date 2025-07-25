@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Platform,
+  Modal,
 } from 'react-native';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -90,7 +90,13 @@ export default function EveningReview() {
     }
   ];
 
+  const [showAlert, setShowAlert] = useState(false);
+
   const handleComplete = () => {
+    setShowAlert(true);
+  };
+
+  const handleConfirmSubmit = () => {
     const entry = {
       emotionFlag,
       emotionNote,
@@ -106,6 +112,7 @@ export default function EveningReview() {
     saveEntry(entry);
     completeToday();
     setShowConfirmation(true);
+    setShowAlert(false);
   };
 
   const handleStartNew = () => {
@@ -299,6 +306,37 @@ export default function EveningReview() {
         style={styles.gradient}
       />
       
+      {/* Confirmation Dialog */}
+      <Modal
+        visible={showAlert}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowAlert(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.alertContainer}>
+            <Text style={styles.alertTitle}>Complete Your Daily Inventory?</Text>
+            <Text style={styles.alertDescription}>
+              Your evening review will be saved and cannot be modified. Are you ready to complete today&apos;s inventory?
+            </Text>
+            <View style={styles.alertButtonsContainer}>
+              <TouchableOpacity 
+                style={styles.alertCancelButton} 
+                onPress={() => setShowAlert(false)}
+              >
+                <Text style={styles.alertCancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.alertConfirmButton} 
+                onPress={handleConfirmSubmit}
+              >
+                <Text style={styles.alertConfirmButtonText}>Complete Inventory</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -373,6 +411,71 @@ export default function EveningReview() {
 }
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  alertContainer: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: adjustFontWeight('700', true),
+    color: Colors.light.text,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  alertDescription: {
+    fontSize: 16,
+    color: Colors.light.muted,
+    marginBottom: 20,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  alertButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  alertCancelButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  alertCancelButtonText: {
+    color: Colors.light.tint,
+    fontSize: 16,
+    fontWeight: adjustFontWeight('500'),
+  },
+  alertConfirmButton: {
+    flex: 1,
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  alertConfirmButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600'),
+  },
   container: {
     flex: 1,
   },
