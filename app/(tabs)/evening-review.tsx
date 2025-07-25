@@ -330,7 +330,7 @@ export default function EveningReview() {
                 style={styles.alertConfirmButton} 
                 onPress={handleConfirmSubmit}
               >
-                <Text style={styles.alertConfirmButtonText}>Complete Inventory</Text>
+                <Text style={styles.alertConfirmButtonText}>Save</Text>
               </TouchableOpacity>
             </View>
           </View>
