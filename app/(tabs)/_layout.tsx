@@ -56,14 +56,7 @@ export default function TabLayout() {
         name="chat"
         options={{
           title: "Sober Chat",
-          headerTitle: () => (
-            <View>
-              <Text style={{ fontSize: 18, fontWeight: adjustFontWeight("600", true) }}>Choose Your AI Sponsor</Text>
-              <Text style={{ fontSize: 12, fontStyle: "italic", fontWeight: adjustFontWeight("400"), color: Colors.light.muted }}>
-                Select a voice that fits your mood
-              </Text>
-            </View>
-          ),
+          headerTitle: "Sober Chat",
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} style={styles.tabIcon} />,
         }}
       />

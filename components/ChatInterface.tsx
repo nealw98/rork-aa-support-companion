@@ -190,6 +190,11 @@ export default function ChatInterface() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTitle}>Choose Your AI Sponsor</Text>
+        <Text style={styles.headerSubtitle}>Select a voice that fits your mood</Text>
+      </View>
+      
       <View style={styles.topContainer}>
         <SponsorToggle 
           sponsorType={sponsorType} 
@@ -255,6 +260,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
+  },
+  headerContainer: {
+    backgroundColor: Colors.light.cardBackground,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: adjustFontWeight("600", true),
+    color: Colors.light.text,
+    marginBottom: 2,
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    fontStyle: "italic" as const,
+    fontWeight: adjustFontWeight("400"),
+    color: Colors.light.muted,
   },
   topContainer: {
     flexDirection: "row",
