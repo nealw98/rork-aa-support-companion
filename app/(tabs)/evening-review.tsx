@@ -41,6 +41,7 @@ export default function EveningReview() {
   const [spiritualFlag, setSpiritualFlag] = useState(false);
   const [spiritualNote, setSpiritualNote] = useState('');
   const [aaTalkFlag, setAaTalkFlag] = useState(false);
+  const [prayerFlag, setPrayerFlag] = useState(false);
 
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -87,6 +88,14 @@ export default function EveningReview() {
       note: '',
       setNote: () => {},
       placeholder: ''
+    },
+    {
+      text: '6. Did I pray and meditate today?',
+      flag: prayerFlag,
+      setFlag: setPrayerFlag,
+      note: '',
+      setNote: () => {},
+      placeholder: ''
     }
   ];
 
@@ -106,7 +115,8 @@ export default function EveningReview() {
       kindnessNote,
       spiritualFlag,
       spiritualNote,
-      aaTalkFlag
+      aaTalkFlag,
+      prayerFlag
     };
     
     saveEntry(entry);
@@ -125,6 +135,7 @@ export default function EveningReview() {
     setSpiritualFlag(false);
     setSpiritualNote('');
     setAaTalkFlag(false);
+    setPrayerFlag(false);
     setShowConfirmation(false);
   };
 
@@ -146,7 +157,8 @@ export default function EveningReview() {
       amends: 0,
       kindness: 0,
       spiritual: 0,
-      aaTalk: 0
+      aaTalk: 0,
+      prayer: 0
     };
 
     const notes = {
@@ -161,6 +173,7 @@ export default function EveningReview() {
       if (entry.answers?.kindness) counts.kindness++;
       if (entry.answers?.spiritual) counts.spiritual++;
       if (entry.answers?.aaTalk) counts.aaTalk++;
+      if (entry.answers?.prayer) counts.prayer++;
 
       if (entry.reflection) {
         try {
@@ -255,29 +268,47 @@ export default function EveningReview() {
             
             {showInsights && (
               <View style={styles.insightsContent}>
-                <Text style={styles.placeholderNote}>
-                  Note: This is a placeholder - additional development required for real word cloud functionality.
-                </Text>
-                
-                <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Emotional Reflections: Track patterns in your daily struggles</Text>
-                </View>
-                
-                <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Amends tracking: Remember who deserves your apology</Text>
-                </View>
-                
-                <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Kindness moments: Celebrate your service to others</Text>
-                </View>
-                
-                <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• Spiritual connection: Monitor your conscious contact with your Higher Power</Text>
-                </View>
-                
-                <View style={styles.insightItem}>
-                  <Text style={styles.insightLabel}>• AA Connection: Stay connected with the fellowship</Text>
-                </View>
+                {insights.totalDays > 0 ? (
+                  <>
+                    <Text style={styles.insightsSubtitle}>
+                      Based on {insights.totalDays} completed {insights.totalDays === 1 ? 'review' : 'reviews'}
+                    </Text>
+                    
+                    <View style={styles.insightItem}>
+                      <Text style={styles.insightLabel}>• Emotional Struggles: {insights.counts.emotion} out of {insights.totalDays} days</Text>
+                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.emotion / insights.totalDays) * 100)}% of days</Text>
+                    </View>
+                    
+                    <View style={styles.insightItem}>
+                      <Text style={styles.insightLabel}>• Amends Needed: {insights.counts.amends} out of {insights.totalDays} days</Text>
+                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.amends / insights.totalDays) * 100)}% of days</Text>
+                    </View>
+                    
+                    <View style={styles.insightItem}>
+                      <Text style={styles.insightLabel}>• Acts of Service: {insights.counts.kindness} out of {insights.totalDays} days</Text>
+                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.kindness / insights.totalDays) * 100)}% of days</Text>
+                    </View>
+                    
+                    <View style={styles.insightItem}>
+                      <Text style={styles.insightLabel}>• Spiritual Connection: {insights.counts.spiritual} out of {insights.totalDays} days</Text>
+                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.spiritual / insights.totalDays) * 100)}% of days</Text>
+                    </View>
+                    
+                    <View style={styles.insightItem}>
+                      <Text style={styles.insightLabel}>• AA Fellowship: {insights.counts.aaTalk} out of {insights.totalDays} days</Text>
+                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.aaTalk / insights.totalDays) * 100)}% of days</Text>
+                    </View>
+                    
+                    <View style={styles.insightItem}>
+                      <Text style={styles.insightLabel}>• Prayer & Meditation: {insights.counts.prayer} out of {insights.totalDays} days</Text>
+                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.prayer / insights.totalDays) * 100)}% of days</Text>
+                    </View>
+                  </>
+                ) : (
+                  <Text style={styles.insightsSubtitle}>
+                    Complete a few reviews to see your patterns and insights.
+                  </Text>
+                )}
               </View>
             )}
           </View>
@@ -699,6 +730,12 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     marginBottom: 16,
     textAlign: 'center',
+  },
+  insightPercentage: {
+    fontSize: 12,
+    color: Colors.light.tint,
+    fontWeight: adjustFontWeight('600'),
+    marginLeft: 12,
   },
   insightItem: {
     marginBottom: 12,

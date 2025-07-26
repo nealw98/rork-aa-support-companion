@@ -13,6 +13,7 @@ interface DetailedEveningEntry {
   spiritualFlag: boolean;
   spiritualNote: string;
   aaTalkFlag: boolean;
+  prayerFlag: boolean;
 }
 
 const STORAGE_KEY = 'evening_review_entries';
@@ -131,7 +132,8 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
         apology: detailedEntry.apologyFlag,
         kindness: detailedEntry.kindnessFlag,
         spiritual: detailedEntry.spiritualFlag,
-        aaTalk: detailedEntry.aaTalkFlag
+        aaTalk: detailedEntry.aaTalkFlag,
+        prayer: detailedEntry.prayerFlag
       },
       reflection: JSON.stringify({
         emotionNote: detailedEntry.emotionNote,
