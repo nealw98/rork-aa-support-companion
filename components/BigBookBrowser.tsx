@@ -24,6 +24,7 @@ import { bigBookData } from "@/constants/bigbook";
 import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store";
 import { BigBookCategory, BigBookSection } from "@/types/bigbook";
 import { adjustFontWeight } from "@/constants/fonts";
+import BookSelector from "@/components/BookSelector";
 
 const SectionItem = ({ section, categoryId }: { section: BigBookSection; categoryId: string }) => {
   const { addBookmark, removeBookmark, isBookmarked, addToRecent } = useBigBookStore();
@@ -263,6 +264,7 @@ function BigBookBrowserContent() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {activeTab === "browse" && (
           <View>
+            <BookSelector activeBook="bigbook" />
             <View style={styles.header}>
               <Text style={styles.title}>Alcoholics Anonymous</Text>
               <Text style={styles.subtitle}>The Big Book - Fourth Edition</Text>

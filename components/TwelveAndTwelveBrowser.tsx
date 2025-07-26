@@ -24,6 +24,7 @@ import { twelveAndTwelveData } from "@/constants/bigbook";
 import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store";
 import { TwelveAndTwelveCategory, BigBookSection } from "@/types/bigbook";
 import { adjustFontWeight } from "@/constants/fonts";
+import BookSelector from "@/components/BookSelector";
 
 const SectionItem = ({ section, categoryId }: { section: BigBookSection; categoryId: string }) => {
   const { addBookmark, removeBookmark, isBookmarked, addToRecent } = useBigBookStore();
@@ -261,6 +262,7 @@ function TwelveAndTwelveBrowserContent() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {activeTab === "browse" && (
           <View>
+            <BookSelector activeBook="twelve" />
             <View style={styles.header}>
               <Text style={styles.title}>Twelve Steps and Twelve Traditions</Text>
               <Text style={styles.subtitle}>A detailed exploration of the AA program</Text>
