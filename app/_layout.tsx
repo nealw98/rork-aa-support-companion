@@ -3,8 +3,9 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { EveningReviewProvider } from "@/hooks/use-evening-review-store";
-import { adjustFontWeight, getScreenPadding } from "@/constants/fonts";
+import { EveningReviewProvider } from "@/hooks/useEveningReviewStore";
+import { GratitudeProvider } from "@/hooks/useGratitudeStore";
+import { adjustFontWeight } from "@/constants/fonts";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,11 +41,13 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <EveningReviewProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <RootLayoutNav />
-        </GestureHandlerRootView>
-      </EveningReviewProvider>
+      <GratitudeProvider>
+        <EveningReviewProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <RootLayoutNav />
+          </GestureHandlerRootView>
+        </EveningReviewProvider>
+      </GratitudeProvider>
     </QueryClientProvider>
   );
 }

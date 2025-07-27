@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Home, MessageCircle, Book, Heart, Moon } from "lucide-react-native";
+import { Home, MessageCircle, Book, Heart, Moon, Smile, BarChart3 } from "lucide-react-native";
 import React from "react";
 import { Text, View, StyleSheet, Platform } from "react-native";
 import SunIcon from "@/components/SunIcon";
@@ -53,6 +53,30 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="gratitude"
+        options={{
+          title: "Gratitude",
+          headerTitle: "Daily Gratitude",
+          tabBarIcon: ({ color }) => <Smile color={color} size={22} style={styles.tabIcon} />,
+        }}
+      />
+      <Tabs.Screen
+        name="nightly-review"
+        options={{
+          title: "Review",
+          headerTitle: "Evening Review",
+          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
+        }}
+      />
+      <Tabs.Screen
+        name="insights"
+        options={{
+          title: "Insights",
+          headerTitle: "Recovery Insights",
+          tabBarIcon: ({ color }) => <BarChart3 color={color} size={22} style={styles.tabIcon} />,
+        }}
+      />
+      <Tabs.Screen
         name="chat"
         options={{
           title: "Sober Chat",
@@ -79,9 +103,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="evening-review"
         options={{
-          title: "Review",
-          headerTitle: "Evening Review",
-          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
+          href: null
         }}
       />
     </Tabs>
