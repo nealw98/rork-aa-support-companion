@@ -11,7 +11,7 @@ import {
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
-import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
+import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
@@ -120,7 +120,17 @@ export default function EveningReview() {
     };
     
     saveEntry(entry);
-    completeToday();
+    const answers = {
+      resentful: emotionFlag,
+      selfish: emotionFlag,
+      fearful: emotionFlag,
+      apology: apologyFlag,
+      kindness: kindnessFlag,
+      spiritual: spiritualFlag,
+      aaTalk: aaTalkFlag,
+      prayerMeditation: prayerFlag
+    };
+    completeToday(answers);
     setShowConfirmation(true);
     setShowAlert(false);
   };
@@ -149,7 +159,7 @@ export default function EveningReview() {
     cutoff.setDate(cutoff.getDate() - 30);
     const recentEntries = entries.filter(entry => {
       const entryDate = new Date(entry.date);
-      return entryDate >= cutoff && entry.completed;
+      return entryDate >= cutoff;
     });
 
     const counts = {
@@ -168,20 +178,20 @@ export default function EveningReview() {
     };
 
     recentEntries.forEach(entry => {
-      if (entry.answers?.emotion) counts.emotion++;
+      if (entry.answers?.resentful || entry.answers?.selfish || entry.answers?.fearful) counts.emotion++;
       if (entry.answers?.apology) counts.amends++;
       if (entry.answers?.kindness) counts.kindness++;
       if (entry.answers?.spiritual) counts.spiritual++;
       if (entry.answers?.aaTalk) counts.aaTalk++;
-      if (entry.answers?.prayer) counts.prayer++;
+      if (entry.answers?.prayerMeditation) counts.prayer++;
 
-      if (entry.reflection) {
+      if (entry.notes) {
         try {
-          const reflectionData = JSON.parse(entry.reflection);
+          const reflectionData = JSON.parse(entry.notes);
           if (reflectionData.emotionNote) notes.emotion.push(reflectionData.emotionNote);
           if (reflectionData.kindnessNote) notes.kindness.push(reflectionData.kindnessNote);
           if (reflectionData.spiritualNote) notes.spiritual.push(reflectionData.spiritualNote);
-        } catch (e) {
+        } catch {
           // Handle old format or invalid JSON
         }
       }
@@ -225,21 +235,30 @@ export default function EveningReview() {
             </View>
             
             <View style={styles.weeklyProgress}>
-              {weeklyProgress.map((day, index) => (
-                <View key={index} style={styles.dayContainer}>
-                  <Text style={styles.dayName}>{day.dayName}</Text>
-                  <View style={[
-                    styles.dayCircle,
-                    day.completed && !day.isFuture && styles.dayCircleCompleted,
-                    day.isToday && styles.dayCircleToday,
-                    day.isFuture && styles.dayCircleFuture
-                  ]}>
-                    {day.completed && !day.isFuture && (
-                      <CheckCircle color="white" size={16} />
-                    )}
+              {weeklyProgress.map((day, index) => {
+                const dayDate = new Date(day.date);
+                const today = new Date();
+                const isToday = day.date === today.toISOString().split('T')[0];
+                const isFuture = dayDate > today;
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                const dayName = dayNames[dayDate.getDay()];
+                
+                return (
+                  <View key={index} style={styles.dayContainer}>
+                    <Text style={styles.dayName}>{dayName}</Text>
+                    <View style={[
+                      styles.dayCircle,
+                      day.completed && !isFuture && styles.dayCircleCompleted,
+                      isToday && styles.dayCircleToday,
+                      isFuture && styles.dayCircleFuture
+                    ]}>
+                      {day.completed && !isFuture && (
+                        <CheckCircle color="white" size={16} />
+                      )}
+                    </View>
                   </View>
-                </View>
-              ))}
+                );
+              })}
             </View>
             
             <Text style={styles.streakText}>
