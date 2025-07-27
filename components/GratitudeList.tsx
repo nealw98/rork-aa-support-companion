@@ -74,7 +74,7 @@ export default function GratitudeList() {
     return (
       <ScreenContainer style={styles.container}>
         <LinearGradient
-          colors={[Colors.light.chatBubbleUser, Colors.light.chatBubbleBot]}
+          colors={['#E0F7FF', '#FFFFFF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.gradient}
@@ -113,7 +113,7 @@ export default function GratitudeList() {
   return (
     <ScreenContainer style={styles.container}>
       <LinearGradient
-        colors={[Colors.light.chatBubbleUser, Colors.light.chatBubbleBot]}
+        colors={['#E0F7FF', '#FFFFFF']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradient}
@@ -165,7 +165,7 @@ export default function GratitudeList() {
               onKeyPress={handleKeyPress}
               placeholder="e.g., My sobriety"
               style={styles.textInput}
-              placeholderTextColor={Colors.light.muted}
+              placeholderTextColor="#6c757d"
             />
             <TouchableOpacity 
               onPress={handleAddGratitude}
@@ -175,7 +175,7 @@ export default function GratitudeList() {
                 !inputValue.trim() && styles.addButtonDisabled
               ]}
             >
-              <Plus color={!inputValue.trim() ? Colors.light.muted : 'white'} size={16} />
+              <Plus color={!inputValue.trim() ? '#6c757d' : 'white'} size={16} />
               <Text style={[
                 styles.addButtonText,
                 !inputValue.trim() && styles.addButtonTextDisabled
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   alertDescription: {
     fontSize: 16,
-    color: Colors.light.muted,
+    color: '#6c757d',
     marginBottom: 20,
     textAlign: 'center',
     lineHeight: 22,
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: Colors.light.muted,
+    color: '#6c757d',
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   addButtonDisabled: {
-    backgroundColor: Colors.light.muted,
+    backgroundColor: '#6c757d',
   },
   addButtonText: {
     color: 'white',
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     fontWeight: adjustFontWeight('500'),
   },
   completeButtonDisabled: {
-    backgroundColor: Colors.light.muted,
+    backgroundColor: '#6c757d',
   },
   completeButtonText: {
     color: 'white',
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   },
   privacyText: {
     fontSize: 12,
-    color: Colors.light.muted,
+    color: '#6c757d',
     textAlign: 'center',
     marginBottom: 24,
   },

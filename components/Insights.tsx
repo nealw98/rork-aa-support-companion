@@ -65,7 +65,7 @@ export default function Insights() {
   return (
     <ScreenContainer style={styles.container}>
       <LinearGradient
-        colors={[Colors.light.chatBubbleUser, Colors.light.chatBubbleBot]}
+        colors={['#E0F7FF', '#FFFFFF']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.gradient}
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: Colors.light.muted,
+    color: '#6c757d',
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -254,13 +254,13 @@ const styles = StyleSheet.create({
   },
   noDataText: {
     fontSize: 16,
-    color: Colors.light.muted,
+    color: '#6c757d',
     textAlign: 'center',
     lineHeight: 24,
   },
   statsSubtitle: {
     fontSize: 14,
-    color: Colors.light.muted,
+    color: '#6c757d',
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
 
   privacyText: {
     fontSize: 12,
-    color: Colors.light.muted,
+    color: '#6c757d',
     textAlign: 'center',
     marginBottom: 24,
   },
