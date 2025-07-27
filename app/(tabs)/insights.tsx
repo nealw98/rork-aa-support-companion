@@ -9,7 +9,7 @@ import {
 import { Stack } from 'expo-router';
 import { Heart, Moon, ChevronDown, ChevronRight } from 'lucide-react-native';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
-import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
+import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import {
   makeSpiritualFitness,
   makeEmotionalPatterns,
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
 
 export default function InsightsScreen() {
   const { getWeeklyGratitudeProgress, getGratitudeDaysCount } = useGratitudeStore();
-  const { getWeeklyProgress, getWeeklyStreak, get30DayInsights } = useEveningReviewStore();
+  const { getWeeklyProgress, getWeeklyStreak, getThirtyDayCounts } = useEveningReviewStore();
   
   const [insightsOpen, setInsightsOpen] = useState(false);
 
@@ -228,7 +228,7 @@ export default function InsightsScreen() {
 
   const gratitudeWeeklyProgress = getWeeklyGratitudeProgress();
   const gratitudeDaysCount = getGratitudeDaysCount();
-  const counts = get30DayInsights();
+  const counts = getThirtyDayCounts();
   
   const hasData = hasEnoughData(counts);
   const spiritualInsight = hasData ? makeSpiritualFitness(counts, gratitudeDaysCount) : '';
@@ -251,15 +251,16 @@ export default function InsightsScreen() {
         <View style={styles.weekContainer}>
           {data.map((day, index) => {
             const dayName = day.dayName ? day.dayName.slice(0, 3) : new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' });
+            const isFuture = day.isFuture !== undefined ? day.isFuture : new Date(day.date) > new Date();
             
             return (
-              <View key={day.date} style={styles.dayContainer}>
+              <View key={day.date || index} style={styles.dayContainer}>
                 <Text style={styles.dayLabel}>{dayName}</Text>
                 <View style={[
                   styles.dayCircle,
-                  (day.completed && !day.isFuture) ? styles.dayCircleCompleted : styles.dayCircleIncomplete
+                  (day.completed && !isFuture) ? styles.dayCircleCompleted : styles.dayCircleIncomplete
                 ]}>
-                  {(day.completed && !day.isFuture) && (
+                  {(day.completed && !isFuture) && (
                     <View style={styles.completedDot} />
                   )}
                 </View>

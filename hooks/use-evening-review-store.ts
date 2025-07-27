@@ -24,6 +24,9 @@ interface WeeklyProgressDay {
   date: string;
   completed: boolean;
   yesCount: number;
+  dayName: string;
+  isFuture: boolean;
+  isToday: boolean;
 }
 
 interface DetailedEveningEntry {
@@ -112,6 +115,7 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + index);
       const dateString = date.toISOString().split('T')[0];
+      const todayString = getTodayDateString();
       
       const entry = entries.find(entry => entry.date === dateString);
       const completed = !!entry;
@@ -120,7 +124,10 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
       return {
         date: dateString,
         completed,
-        yesCount
+        yesCount,
+        dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        isFuture: date > today,
+        isToday: dateString === todayString
       };
     });
   };
