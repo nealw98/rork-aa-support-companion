@@ -8,81 +8,69 @@ import {
   TextInput,
   Modal,
 } from 'react-native';
+import { router } from 'expo-router';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle, Plus, X } from 'lucide-react-native';
+import { Heart, Plus, Check } from 'lucide-react-native';
 import { useGratitudeStore } from '@/hooks/use-gratitude-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
-import { formatDateDisplay } from '@/lib/dateUtils';
 
 export default function GratitudeList() {
-  const { isCompletedToday, getTodayEntry, saveGratitudeList, uncompleteToday } = useGratitudeStore();
-  const [gratitudeItems, setGratitudeItems] = useState<string[]>(['', '', '']);
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const {
+    isCompletedToday,
+    getTodaysItems,
+    completeToday,
+    uncompleteToday,
+    addItemsToToday
+  } = useGratitudeStore();
+
+  const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
-  const today = new Date();
   const isCompleted = isCompletedToday();
 
   useEffect(() => {
-    const todayEntry = getTodayEntry();
-    if (todayEntry && todayEntry.items.length > 0) {
-      const items = [...todayEntry.items];
-      while (items.length < 3) {
-        items.push('');
-      }
-      setGratitudeItems(items);
+    const todaysItems = getTodaysItems();
+    setGratitudeItems(todaysItems);
+  }, [getTodaysItems]);
+
+  const handleAddGratitude = () => {
+    if (inputValue.trim()) {
+      const newItems = [...gratitudeItems, inputValue.trim()];
+      setGratitudeItems(newItems);
+      addItemsToToday([inputValue.trim()]);
+      setInputValue('');
     }
-  }, []);
+  };
 
   const handleComplete = () => {
-    const filledItems = gratitudeItems.filter(item => item.trim() !== '');
-    if (filledItems.length === 0) {
+    if (gratitudeItems.length === 0) {
       return;
     }
     setShowAlert(true);
   };
 
   const handleConfirmSubmit = () => {
-    saveGratitudeList(gratitudeItems);
-    setShowConfirmation(true);
+    completeToday(gratitudeItems);
     setShowAlert(false);
+    router.push('/insights');
   };
 
-  const handleStartNew = () => {
-    setGratitudeItems(['', '', '']);
-    setShowConfirmation(false);
-  };
-
-  const handleUnsubmit = () => {
+  const handleAddMore = () => {
     uncompleteToday();
-    handleStartNew();
+    const todaysItems = getTodaysItems();
+    setGratitudeItems(todaysItems);
   };
 
-  const addGratitudeItem = () => {
-    setGratitudeItems([...gratitudeItems, '']);
-  };
-
-  const removeGratitudeItem = (index: number) => {
-    if (gratitudeItems.length > 1) {
-      const newItems = gratitudeItems.filter((_, i) => i !== index);
-      setGratitudeItems(newItems);
+  const handleKeyPress = (e: any) => {
+    if (e.nativeEvent.key === 'Enter') {
+      handleAddGratitude();
     }
   };
 
-  const updateGratitudeItem = (index: number, value: string) => {
-    const newItems = [...gratitudeItems];
-    newItems[index] = value;
-    setGratitudeItems(newItems);
-  };
-
-  const filledItemsCount = gratitudeItems.filter(item => item.trim() !== '').length;
-
-  if (showConfirmation || isCompleted) {
-    const todayEntry = getTodayEntry();
-    const completedItems = todayEntry?.items || [];
-
+  if (isCompleted) {
     return (
       <ScreenContainer style={styles.container}>
         <LinearGradient
@@ -94,43 +82,29 @@ export default function GratitudeList() {
         
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
+            <Heart color={Colors.light.tint} size={32} />
             <Text style={styles.title}>Gratitude Complete</Text>
-            <Text style={styles.subtitle}>{formatDateDisplay(today)}</Text>
             <Text style={styles.description}>
-              Gratitude transforms what we have into enough
-            </Text>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.confirmationText}>
               Thank you for taking time to reflect on gratitude. These moments of appreciation strengthen your recovery.
             </Text>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Today's Gratitude</Text>
-            {completedItems.map((item, index) => (
+            <Text style={styles.cardTitle}>Today&apos;s Gratitude</Text>
+            {gratitudeItems.map((item, index) => (
               <View key={index} style={styles.gratitudeItemDisplay}>
-                <CheckCircle color={Colors.light.tint} size={16} />
-                <Text style={styles.gratitudeItemText}>{item}</Text>
+                <Text style={styles.gratitudeItemText}>• {item}</Text>
               </View>
             ))}
           </View>
 
-          <Text style={styles.privacyText}>
-            Your gratitude list is saved only on your device. Nothing is uploaded or shared.
-          </Text>
+          <TouchableOpacity style={styles.addMoreButton} onPress={handleAddMore}>
+            <Text style={styles.addMoreButtonText}>Add More Items</Text>
+          </TouchableOpacity>
 
-          <View style={styles.buttonContainer}>
-            {!isCompleted && (
-              <TouchableOpacity style={styles.outlineButton} onPress={handleStartNew}>
-                <Text style={styles.outlineButtonText}>Start New List</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={styles.unsubmitButton} onPress={handleUnsubmit}>
-              <Text style={styles.unsubmitButtonText}>Unsubmit</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.privacyText}>
+            Your gratitude list is stored locally on your device for privacy.
+          </Text>
         </ScrollView>
       </ScreenContainer>
     );
@@ -153,9 +127,9 @@ export default function GratitudeList() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.alertContainer}>
-            <Text style={styles.alertTitle}>Save Your Gratitude List?</Text>
+            <Text style={styles.alertTitle}>Complete Today&apos;s Gratitude List?</Text>
             <Text style={styles.alertDescription}>
-              Your gratitude list will be saved and cannot be modified. You have {filledItemsCount} item{filledItemsCount !== 1 ? 's' : ''} listed.
+              Mark today&apos;s gratitude practice as complete and view your weekly insights and progress.
             </Text>
             <View style={styles.alertButtonsContainer}>
               <TouchableOpacity 
@@ -168,7 +142,7 @@ export default function GratitudeList() {
                 style={styles.alertConfirmButton} 
                 onPress={handleConfirmSubmit}
               >
-                <Text style={styles.alertConfirmButtonText}>Save</Text>
+                <Text style={styles.alertConfirmButtonText}>Save & Continue</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -177,65 +151,61 @@ export default function GratitudeList() {
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
+          <Heart color={Colors.light.tint} size={32} />
           <Text style={styles.title}>Gratitude List</Text>
-          <Text style={styles.description}>
-            List what you're grateful for today. Research shows gratitude improves mental health and strengthens recovery.
-          </Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>{formatDateDisplay(today)}</Text>
+          <Text style={styles.cardTitle}>Today I&apos;m grateful for:</Text>
           
-          <View style={styles.gratitudeContainer}>
-            {gratitudeItems.map((item, index) => (
-              <View key={index} style={styles.gratitudeItemContainer}>
-                <View style={styles.gratitudeInputRow}>
-                  <Text style={styles.gratitudeNumber}>{index + 1}.</Text>
-                  <TextInput
-                    style={styles.gratitudeInput}
-                    placeholder="What are you grateful for?"
-                    value={item}
-                    onChangeText={(value) => updateGratitudeItem(index, value)}
-                    multiline
-                    placeholderTextColor={Colors.light.muted}
-                  />
-                  {gratitudeItems.length > 1 && (
-                    <TouchableOpacity
-                      style={styles.removeButton}
-                      onPress={() => removeGratitudeItem(index)}
-                    >
-                      <X color={Colors.light.muted} size={20} />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            ))}
-            
-            <TouchableOpacity style={styles.addButton} onPress={addGratitudeItem}>
-              <Plus color={Colors.light.tint} size={20} />
-              <Text style={styles.addButtonText}>Add another item</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={inputValue}
+              onChangeText={setInputValue}
+              onKeyPress={handleKeyPress}
+              placeholder="e.g., My sobriety"
+              style={styles.textInput}
+              placeholderTextColor={Colors.light.muted}
+            />
+            <TouchableOpacity 
+              onPress={handleAddGratitude}
+              disabled={!inputValue.trim()}
+              style={[
+                styles.addButton,
+                !inputValue.trim() && styles.addButtonDisabled
+              ]}
+            >
+              <Plus color={!inputValue.trim() ? Colors.light.muted : 'white'} size={16} />
+              <Text style={[
+                styles.addButtonText,
+                !inputValue.trim() && styles.addButtonTextDisabled
+              ]}>Add</Text>
             </TouchableOpacity>
           </View>
+
+          {gratitudeItems.length > 0 && (
+            <View style={styles.itemsList}>
+              {gratitudeItems.map((item, index) => (
+                <View key={index} style={styles.gratitudeItem}>
+                  <Text style={styles.gratitudeItemText}>{item}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {gratitudeItems.length > 0 && (
+            <TouchableOpacity 
+              style={styles.completeButton}
+              onPress={handleComplete}
+            >
+              <Check color="white" size={16} />
+              <Text style={styles.completeButtonText}>Complete</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
-        <TouchableOpacity 
-          style={[
-            styles.completeButton,
-            filledItemsCount === 0 && styles.completeButtonDisabled
-          ]} 
-          onPress={handleComplete}
-          disabled={filledItemsCount === 0}
-        >
-          <Text style={[
-            styles.completeButtonText,
-            filledItemsCount === 0 && styles.completeButtonTextDisabled
-          ]}>
-            Save Gratitude List
-          </Text>
-        </TouchableOpacity>
-
         <Text style={styles.privacyText}>
-          Your gratitude list is saved only on your device. Nothing is uploaded or shared.
+          Your gratitude list is stored locally on your device for privacy.
         </Text>
       </ScrollView>
     </ScreenContainer>
@@ -400,22 +370,53 @@ const styles = StyleSheet.create({
     padding: 8,
     marginTop: 4,
   },
+  inputContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  textInput: {
+    flex: 1,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 14,
+    color: Colors.light.text,
+    minHeight: 40,
+  },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 4,
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: Colors.light.tint,
+    backgroundColor: Colors.light.tint,
     borderRadius: 8,
-    borderStyle: 'dashed',
-    marginTop: 8,
+  },
+  addButtonDisabled: {
+    backgroundColor: Colors.light.muted,
   },
   addButtonText: {
-    color: Colors.light.tint,
+    color: 'white',
     fontSize: 14,
     fontWeight: adjustFontWeight('500'),
+  },
+  addButtonTextDisabled: {
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  itemsList: {
+    marginBottom: 16,
+  },
+  gratitudeItem: {
+    padding: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    marginBottom: 8,
   },
   gratitudeItemDisplay: {
     flexDirection: 'row',
@@ -430,12 +431,28 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   completeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
     backgroundColor: Colors.light.tint,
     paddingVertical: 14,
+    borderRadius: 25,
+    marginTop: 8,
+  },
+  addMoreButton: {
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    paddingVertical: 12,
     borderRadius: 25,
     alignItems: 'center',
     marginHorizontal: 32,
     marginBottom: 16,
+  },
+  addMoreButtonText: {
+    color: Colors.light.tint,
+    fontSize: 16,
+    fontWeight: adjustFontWeight('500'),
   },
   completeButtonDisabled: {
     backgroundColor: Colors.light.muted,

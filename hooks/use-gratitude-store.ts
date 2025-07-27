@@ -55,7 +55,40 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     return entries.find(entry => entry.date === todayString) || null;
   };
 
-  const saveGratitudeList = (items: string[]) => {
+  const getTodaysItems = (): string[] => {
+    const todayEntry = getTodayEntry();
+    return todayEntry ? todayEntry.items : [];
+  };
+
+  const addItemsToToday = (newItems: string[]) => {
+    const todayString = getTodayDateString();
+    const existingIndex = entries.findIndex(entry => entry.date === todayString);
+    
+    let currentItems: string[] = [];
+    if (existingIndex >= 0) {
+      currentItems = entries[existingIndex].items;
+    }
+    
+    const updatedItems = [...currentItems, ...newItems.filter(item => item.trim() !== '')];
+    
+    const newEntry: GratitudeEntry = {
+      date: todayString,
+      items: updatedItems,
+      completed: false
+    };
+
+    let newEntries: GratitudeEntry[];
+    if (existingIndex >= 0) {
+      newEntries = [...entries];
+      newEntries[existingIndex] = newEntry;
+    } else {
+      newEntries = [...entries, newEntry];
+    }
+
+    saveEntries(newEntries);
+  };
+
+  const completeToday = (items: string[]) => {
     const todayString = getTodayDateString();
     const existingIndex = entries.findIndex(entry => entry.date === todayString);
     
@@ -74,6 +107,10 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     }
 
     saveEntries(newEntries);
+  };
+
+  const saveGratitudeList = (items: string[]) => {
+    completeToday(items);
   };
 
   const uncompleteToday = () => {
@@ -102,6 +139,9 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     isLoading,
     isCompletedToday,
     getTodayEntry,
+    getTodaysItems,
+    addItemsToToday,
+    completeToday,
     saveGratitudeList,
     uncompleteToday,
     getCompletedDaysInLast30
