@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle, Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
-import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
+import { CheckCircle, Calendar } from 'lucide-react-native';
+import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
@@ -27,21 +27,25 @@ const formatDateDisplay = (date: Date): string => {
 };
 
 export default function EveningReview() {
-  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveEntry, entries } = useEveningReviewStore();
+  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, getTodaysAnswers } = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showInsights, setShowInsights] = useState(false);
+
   
-  // Form state
-  const [emotionFlag, setEmotionFlag] = useState(false);
-  const [emotionNote, setEmotionNote] = useState('');
-  const [apologyFlag, setApologyFlag] = useState(false);
+  // Form state - matching web app structure
+  const [resentfulFlag, setResentfulFlag] = useState('');
+  const [resentfulNote, setResentfulNote] = useState('');
+  const [selfishFlag, setSelfishFlag] = useState('');
+  const [selfishNote, setSelfishNote] = useState('');
+  const [fearfulFlag, setFearfulFlag] = useState('');
+  const [fearfulNote, setFearfulNote] = useState('');
+  const [apologyFlag, setApologyFlag] = useState('');
   const [apologyName, setApologyName] = useState('');
-  const [kindnessFlag, setKindnessFlag] = useState(false);
+  const [kindnessFlag, setKindnessFlag] = useState('');
   const [kindnessNote, setKindnessNote] = useState('');
-  const [spiritualFlag, setSpiritualFlag] = useState(false);
+  const [spiritualFlag, setSpiritualFlag] = useState('');
   const [spiritualNote, setSpiritualNote] = useState('');
-  const [aaTalkFlag, setAaTalkFlag] = useState(false);
-  const [prayerFlag, setPrayerFlag] = useState(false);
+  const [aaTalkFlag, setAaTalkFlag] = useState('');
+  const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -50,15 +54,31 @@ export default function EveningReview() {
 
   const questions = [
     {
-      text: '1. Was I resentful, selfish, dishonest, or afraid today?',
-      flag: emotionFlag,
-      setFlag: setEmotionFlag,
-      note: emotionNote,
-      setNote: setEmotionNote,
+      text: '1. Was I resentful today?',
+      flag: resentfulFlag,
+      setFlag: setResentfulFlag,
+      note: resentfulNote,
+      setNote: setResentfulNote,
+      placeholder: 'With whom?'
+    },
+    {
+      text: '2. Was I selfish and self-centered today?',
+      flag: selfishFlag,
+      setFlag: setSelfishFlag,
+      note: selfishNote,
+      setNote: setSelfishNote,
+      placeholder: 'In what way?'
+    },
+    {
+      text: '3. Was I fearful or worrisome today?',
+      flag: fearfulFlag,
+      setFlag: setFearfulFlag,
+      note: fearfulNote,
+      setNote: setFearfulNote,
       placeholder: 'How so?'
     },
     {
-      text: '2. Do I owe anyone an apology?',
+      text: '4. Do I owe anyone an apology?',
       flag: apologyFlag,
       setFlag: setApologyFlag,
       note: apologyName,
@@ -66,7 +86,7 @@ export default function EveningReview() {
       placeholder: 'Whom have you harmed?'
     },
     {
-      text: '3. Was I of service or kind to others today?',
+      text: '5. Was I of service or kind to others today?',
       flag: kindnessFlag,
       setFlag: setKindnessFlag,
       note: kindnessNote,
@@ -74,15 +94,15 @@ export default function EveningReview() {
       placeholder: 'What did you do?'
     },
     {
-      text: '4. Was I spiritually connected today?',
+      text: '6. Was I spiritually connected today?',
       flag: spiritualFlag,
       setFlag: setSpiritualFlag,
       note: spiritualNote,
       setNote: setSpiritualNote,
-      placeholder: 'In what way?'
+      placeholder: 'How so?'
     },
     {
-      text: '5. Talked with another alcoholic today?',
+      text: '7. Did I talk to someone in recovery today?',
       flag: aaTalkFlag,
       setFlag: setAaTalkFlag,
       note: '',
@@ -90,9 +110,9 @@ export default function EveningReview() {
       placeholder: ''
     },
     {
-      text: '6. Did I pray and meditate today?',
-      flag: prayerFlag,
-      setFlag: setPrayerFlag,
+      text: '8. Did I pray or meditate today?',
+      flag: prayerMeditationFlag,
+      setFlag: setPrayerMeditationFlag,
       note: '',
       setNote: () => {},
       placeholder: ''
@@ -106,29 +126,15 @@ export default function EveningReview() {
   };
 
   const handleConfirmSubmit = () => {
-    const entry = {
-      emotionFlag,
-      emotionNote,
-      apologyFlag,
-      apologyName,
-      kindnessFlag,
-      kindnessNote,
-      spiritualFlag,
-      spiritualNote,
-      aaTalkFlag,
-      prayerFlag
-    };
-    
-    saveEntry(entry);
     const answers = {
-      resentful: emotionFlag,
-      selfish: emotionFlag,
-      fearful: emotionFlag,
-      apology: apologyFlag,
-      kindness: kindnessFlag,
-      spiritual: spiritualFlag,
-      aaTalk: aaTalkFlag,
-      prayerMeditation: prayerFlag
+      resentful: resentfulFlag === 'yes',
+      selfish: selfishFlag === 'yes',
+      fearful: fearfulFlag === 'yes',
+      apology: apologyFlag === 'yes',
+      kindness: kindnessFlag === 'yes',
+      spiritual: spiritualFlag === 'yes',
+      aaTalk: aaTalkFlag === 'yes',
+      prayerMeditation: prayerMeditationFlag === 'yes'
     };
     completeToday(answers);
     setShowConfirmation(true);
@@ -136,16 +142,20 @@ export default function EveningReview() {
   };
 
   const handleStartNew = () => {
-    setEmotionFlag(false);
-    setEmotionNote('');
-    setApologyFlag(false);
+    setResentfulFlag('');
+    setResentfulNote('');
+    setSelfishFlag('');
+    setSelfishNote('');
+    setFearfulFlag('');
+    setFearfulNote('');
+    setApologyFlag('');
     setApologyName('');
-    setKindnessFlag(false);
+    setKindnessFlag('');
     setKindnessNote('');
-    setSpiritualFlag(false);
+    setSpiritualFlag('');
     setSpiritualNote('');
-    setAaTalkFlag(false);
-    setPrayerFlag(false);
+    setAaTalkFlag('');
+    setPrayerMeditationFlag('');
     setShowConfirmation(false);
   };
 
@@ -154,51 +164,15 @@ export default function EveningReview() {
     handleStartNew();
   };
 
-  const insights = useMemo(() => {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 30);
-    const recentEntries = entries.filter(entry => {
-      const entryDate = new Date(entry.date);
-      return entryDate >= cutoff;
-    });
+  // Check if all questions are answered
+  const getAnsweredCount = () => {
+    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, kindnessFlag, spiritualFlag, aaTalkFlag, prayerMeditationFlag];
+    return flags.filter(flag => flag !== '').length;
+  };
 
-    const counts = {
-      emotion: 0,
-      amends: 0,
-      kindness: 0,
-      spiritual: 0,
-      aaTalk: 0,
-      prayer: 0
-    };
-
-    const notes = {
-      emotion: [] as string[],
-      kindness: [] as string[],
-      spiritual: [] as string[]
-    };
-
-    recentEntries.forEach(entry => {
-      if (entry.answers?.resentful || entry.answers?.selfish || entry.answers?.fearful) counts.emotion++;
-      if (entry.answers?.apology) counts.amends++;
-      if (entry.answers?.kindness) counts.kindness++;
-      if (entry.answers?.spiritual) counts.spiritual++;
-      if (entry.answers?.aaTalk) counts.aaTalk++;
-      if (entry.answers?.prayerMeditation) counts.prayer++;
-
-      if (entry.notes) {
-        try {
-          const reflectionData = JSON.parse(entry.notes);
-          if (reflectionData.emotionNote) notes.emotion.push(reflectionData.emotionNote);
-          if (reflectionData.kindnessNote) notes.kindness.push(reflectionData.kindnessNote);
-          if (reflectionData.spiritualNote) notes.spiritual.push(reflectionData.spiritualNote);
-        } catch {
-          // Handle old format or invalid JSON
-        }
-      }
-    });
-
-    return { counts, notes, totalDays: recentEntries.length };
-  }, [entries]);
+  const answeredCount = getAnsweredCount();
+  const totalQuestions = 8;
+  const allAnswered = answeredCount === totalQuestions;
 
   if (showConfirmation || isCompleted) {
     return (
@@ -271,66 +245,7 @@ export default function EveningReview() {
             Your responses are saved only on your device. Nothing is uploaded or shared.
           </Text>
 
-          {/* Collapsible Insights */}
-          <View style={styles.card}>
-            <TouchableOpacity 
-              style={styles.insightsHeader} 
-              onPress={() => setShowInsights(!showInsights)}
-            >
-              <Text style={styles.insightsTitle}>Insights from the past 30 days</Text>
-              {showInsights ? (
-                <ChevronUp color={Colors.light.tint} size={20} />
-              ) : (
-                <ChevronDown color={Colors.light.tint} size={20} />
-              )}
-            </TouchableOpacity>
-            
-            {showInsights && (
-              <View style={styles.insightsContent}>
-                {insights.totalDays > 0 ? (
-                  <>
-                    <Text style={styles.insightsSubtitle}>
-                      Based on {insights.totalDays} completed {insights.totalDays === 1 ? 'review' : 'reviews'}
-                    </Text>
-                    
-                    <View style={styles.insightItem}>
-                      <Text style={styles.insightLabel}>• Emotional Struggles: {insights.counts.emotion} out of {insights.totalDays} days</Text>
-                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.emotion / insights.totalDays) * 100)}% of days</Text>
-                    </View>
-                    
-                    <View style={styles.insightItem}>
-                      <Text style={styles.insightLabel}>• Amends Needed: {insights.counts.amends} out of {insights.totalDays} days</Text>
-                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.amends / insights.totalDays) * 100)}% of days</Text>
-                    </View>
-                    
-                    <View style={styles.insightItem}>
-                      <Text style={styles.insightLabel}>• Acts of Service: {insights.counts.kindness} out of {insights.totalDays} days</Text>
-                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.kindness / insights.totalDays) * 100)}% of days</Text>
-                    </View>
-                    
-                    <View style={styles.insightItem}>
-                      <Text style={styles.insightLabel}>• Spiritual Connection: {insights.counts.spiritual} out of {insights.totalDays} days</Text>
-                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.spiritual / insights.totalDays) * 100)}% of days</Text>
-                    </View>
-                    
-                    <View style={styles.insightItem}>
-                      <Text style={styles.insightLabel}>• AA Fellowship: {insights.counts.aaTalk} out of {insights.totalDays} days</Text>
-                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.aaTalk / insights.totalDays) * 100)}% of days</Text>
-                    </View>
-                    
-                    <View style={styles.insightItem}>
-                      <Text style={styles.insightLabel}>• Prayer & Meditation: {insights.counts.prayer} out of {insights.totalDays} days</Text>
-                      <Text style={styles.insightPercentage}>{Math.round((insights.counts.prayer / insights.totalDays) * 100)}% of days</Text>
-                    </View>
-                  </>
-                ) : (
-                  <Text style={styles.insightsSubtitle}>
-                    Complete a few reviews to see your patterns and insights.
-                  </Text>
-                )}
-              </View>
-            )}
-          </View>
+
 
           <View style={styles.buttonContainer}>
             {!isCompleted && (
@@ -408,30 +323,30 @@ export default function EveningReview() {
                   <TouchableOpacity
                     style={[
                       styles.answerButton,
-                      question.flag === true && styles.answerButtonSelected
+                      question.flag === 'yes' && styles.answerButtonSelected
                     ]}
-                    onPress={() => question.setFlag(true)}
+                    onPress={() => question.setFlag('yes')}
                   >
                     <Text style={[
                       styles.answerButtonText,
-                      question.flag === true && styles.answerButtonTextSelected
+                      question.flag === 'yes' && styles.answerButtonTextSelected
                     ]}>Yes</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[
                       styles.answerButton,
-                      question.flag === false && styles.answerButtonSelected
+                      question.flag === 'no' && styles.answerButtonSelected
                     ]}
-                    onPress={() => question.setFlag(false)}
+                    onPress={() => question.setFlag('no')}
                   >
                     <Text style={[
                       styles.answerButtonText,
-                      question.flag === false && styles.answerButtonTextSelected
+                      question.flag === 'no' && styles.answerButtonTextSelected
                     ]}>No</Text>
                   </TouchableOpacity>
                 </View>
                 
-                {question.flag && question.placeholder && (
+                {question.flag === 'yes' && question.placeholder && (
                   <TextInput
                     style={styles.textInput}
                     placeholder={question.placeholder}
@@ -446,9 +361,22 @@ export default function EveningReview() {
           </View>
         </View>
 
+        {/* Progress indicator */}
+        <View style={styles.progressIndicator}>
+          <Text style={styles.progressText}>
+            {allAnswered ? 'Complete Nightly Review' : `Answer all questions to complete (${answeredCount}/${totalQuestions})`}
+          </Text>
+        </View>
+
         {/* Complete Button */}
-        <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
-          <Text style={styles.completeButtonText}>Complete Review</Text>
+        <TouchableOpacity 
+          style={[styles.completeButton, !allAnswered && styles.completeButtonDisabled]} 
+          onPress={handleComplete}
+          disabled={!allAnswered}
+        >
+          <Text style={[styles.completeButtonText, !allAnswered && styles.completeButtonTextDisabled]}>
+            {allAnswered ? 'Complete Nightly Review' : `Answer all questions (${answeredCount}/${totalQuestions})`}
+          </Text>
         </TouchableOpacity>
 
         {/* Privacy Notice */}
@@ -777,5 +705,26 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  progressIndicator: {
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 12,
+    padding: 12,
+    marginHorizontal: 32,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  progressText: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    textAlign: 'center',
+  },
+  completeButtonDisabled: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.6,
+  },
+  completeButtonTextDisabled: {
+    color: 'rgba(255, 255, 255, 0.7)',
   },
 });

@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   ScrollView,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { Calendar, Heart, Moon, TrendingUp, Quote } from 'lucide-react-native';
+import { Heart, Moon, ChevronDown, ChevronRight } from 'lucide-react-native';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import {
@@ -15,6 +16,7 @@ import {
   pickRecoveryQuote,
   hasEnoughData
 } from '@/utils/insightsLogic';
+import { formatDateDisplay } from '@/utils/dateUtils';
 
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -171,23 +173,70 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
     marginTop: 12
+  },
+  description: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    marginTop: 4
+  },
+  completedDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: 'white'
+  },
+  insightsHeader: {
+    backgroundColor: Colors.light.cardBackground,
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12
+  },
+  insightsTitle: {
+    fontSize: 18,
+    fontWeight: adjustFontWeight('600', true),
+    color: Colors.light.text
+  },
+  insightsContent: {
+    marginTop: 8
+  },
+  quoteSection: {
+    backgroundColor: Colors.light.cardBackground,
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.divider
+  },
+  noDataSection: {
+    backgroundColor: Colors.light.cardBackground,
+    borderRadius: 12,
+    padding: 20
   }
 });
 
 export default function InsightsScreen() {
-  const { entries: gratitudeEntries, getWeeklyProgress: getGratitudeProgress } = useGratitudeStore();
-  const { entries: reviewEntries, getWeeklyProgress: getReviewProgress } = useEveningReviewStore();
+  const { getWeeklyGratitudeProgress, getGratitudeDaysCount } = useGratitudeStore();
+  const { getWeeklyProgress, getWeeklyStreak, get30DayInsights } = useEveningReviewStore();
   
-  const gratitudeWeekly = getGratitudeProgress();
-  const reviewWeekly = getReviewProgress();
-  const hasData = hasEnoughData(gratitudeEntries, reviewEntries);
+  const [insightsOpen, setInsightsOpen] = useState(false);
+
+  const today = new Date();
+  const weeklyProgress = getWeeklyProgress();
+
+  const gratitudeWeeklyProgress = getWeeklyGratitudeProgress();
+  const gratitudeDaysCount = getGratitudeDaysCount();
+  const counts = get30DayInsights();
   
-  const spiritualInsight = hasData ? makeSpiritualFitness(gratitudeEntries, reviewEntries) : '';
-  const emotionalInsight = hasData ? makeEmotionalPatterns(reviewEntries) : '';
-  const quote = pickRecoveryQuote();
+  const hasData = hasEnoughData(counts);
+  const spiritualInsight = hasData ? makeSpiritualFitness(counts, gratitudeDaysCount) : '';
+  const emotionalInsight = hasData ? makeEmotionalPatterns(counts) : '';
+  const quote = pickRecoveryQuote(counts, gratitudeDaysCount);
 
   const renderWeeklyProgress = (title: string, icon: any, data: any[], type: 'gratitude' | 'review') => {
-    const completedDays = data.filter(day => day.completed).length;
+    const completedDays = data.filter(day => day.completed && !day.isFuture).length;
     const IconComponent = icon;
     
     return (
@@ -197,35 +246,33 @@ export default function InsightsScreen() {
             <IconComponent size={20} color={Colors.light.tint} />
             <Text style={styles.progressTitle}>{title}</Text>
           </View>
-          <Text style={styles.progressStats}>{completedDays}/7 days</Text>
         </View>
         
         <View style={styles.weekContainer}>
           {data.map((day, index) => {
-            const date = new Date(day.date);
-            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-            const dayNum = date.getDate();
+            const dayName = day.dayName ? day.dayName.slice(0, 3) : new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' });
             
             return (
               <View key={day.date} style={styles.dayContainer}>
                 <Text style={styles.dayLabel}>{dayName}</Text>
                 <View style={[
                   styles.dayCircle,
-                  day.completed ? styles.dayCircleCompleted : styles.dayCircleIncomplete
+                  (day.completed && !day.isFuture) ? styles.dayCircleCompleted : styles.dayCircleIncomplete
                 ]}>
-                  <Text style={[
-                    styles.dayNumber,
-                    day.completed ? styles.dayNumberCompleted : styles.dayNumberIncomplete
-                  ]}>
-                    {type === 'gratitude' && day.completed ? day.count : 
-                     type === 'review' && day.completed ? day.yesCount :
-                     dayNum}
-                  </Text>
+                  {(day.completed && !day.isFuture) && (
+                    <View style={styles.completedDot} />
+                  )}
                 </View>
               </View>
             );
           })}
         </View>
+        
+        {completedDays > 0 && (
+          <Text style={styles.progressStats}>
+            Great job! You completed {completedDays} day{completedDays !== 1 ? 's' : ''} this week.
+          </Text>
+        )}
       </View>
     );
   };
@@ -236,61 +283,63 @@ export default function InsightsScreen() {
       
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Recovery Insights</Text>
+          <Text style={styles.title}>Insights</Text>
           <Text style={styles.subtitle}>
-            Your progress and patterns over the past 7 days
+            {formatDateDisplay(today)}
+          </Text>
+          <Text style={styles.description}>
+            Recovery insights and progress
           </Text>
         </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>
-              <Calendar size={18} color={Colors.light.text} />
-              Weekly Progress
-            </Text>
+            {renderWeeklyProgress('Gratitude List', Heart, gratitudeWeeklyProgress, 'gratitude')}
+            {renderWeeklyProgress('Nightly Review', Moon, weeklyProgress, 'review')}
+          </View>
+
+          <View style={styles.section}>
+            <TouchableOpacity 
+              style={styles.insightsHeader}
+              onPress={() => setInsightsOpen(!insightsOpen)}
+            >
+              <Text style={styles.insightsTitle}>Insights from the past 30 days</Text>
+              {insightsOpen ? 
+                <ChevronDown size={20} color={Colors.light.text} /> : 
+                <ChevronRight size={20} color={Colors.light.text} />
+              }
+            </TouchableOpacity>
             
-            {renderWeeklyProgress('Daily Gratitude', Heart, gratitudeWeekly, 'gratitude')}
-            {renderWeeklyProgress('Evening Review', Moon, reviewWeekly, 'review')}
-          </View>
-
-          {hasData ? (
-            <>
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>
-                  <TrendingUp size={18} color={Colors.light.text} />
-                  30-Day Insights
-                </Text>
-                
-                <View style={styles.insightCard}>
-                  <Text style={styles.insightTitle}>
-                    <Heart size={16} color={Colors.light.accent} />
-                    Spiritual Fitness
-                  </Text>
-                  <Text style={styles.insightText}>{spiritualInsight}</Text>
-                </View>
-                
-                <View style={styles.insightCard}>
-                  <Text style={styles.insightTitle}>
-                    <Moon size={16} color={Colors.light.tint} />
-                    Emotional Patterns
-                  </Text>
-                  <Text style={styles.insightText}>{emotionalInsight}</Text>
-                </View>
+            {insightsOpen && (
+              <View style={styles.insightsContent}>
+                {hasData ? (
+                  <>
+                    <View style={styles.insightCard}>
+                      <Text style={styles.insightTitle}>Spiritual Fitness</Text>
+                      <Text style={styles.insightText}>{spiritualInsight}</Text>
+                    </View>
+                    
+                    <View style={styles.insightCard}>
+                      <Text style={styles.insightTitle}>Emotional Patterns</Text>
+                      <Text style={styles.insightText}>{emotionalInsight}</Text>
+                    </View>
+                    
+                    <View style={styles.quoteSection}>
+                      <Text style={styles.quoteText}>&ldquo;{quote}&rdquo;</Text>
+                    </View>
+                  </>
+                ) : (
+                  <View style={styles.noDataSection}>
+                    <Text style={styles.noDataText}>
+                      Complete at least 7 days of reviews to see your insights!
+                    </Text>
+                  </View>
+                )}
               </View>
-            </>
-          ) : (
-            <View style={styles.noDataCard}>
-              <TrendingUp size={48} color={Colors.light.muted} />
-              <Text style={styles.noDataText}>
-                Complete more gratitude lists and evening reviews to see personalized insights about your recovery journey.
-              </Text>
-            </View>
-          )}
-
-          <View style={styles.quoteCard}>
-            <Quote size={24} color="white" />
-            <Text style={styles.quoteText}>{quote}</Text>
+            )}
           </View>
+
+
         </ScrollView>
       </View>
     </ScreenContainer>

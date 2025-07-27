@@ -76,16 +76,93 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
   };
 
   const getWeeklyProgress = () => {
-    const weekDates = getWeekDates();
-    return weekDates.map(date => {
+    const today = new Date();
+    const weekDays = [];
+    
+    // Get current week (Sunday to Saturday)
+    const startOfWeek = new Date(today);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day; // Sunday is day 0, so subtract day number
+    startOfWeek.setDate(diff);
+    
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
       const dateKey = getDateKey(date);
-      const dayData = data[dateKey];
-      return {
+      
+      weekDays.push({
         date: dateKey,
-        completed: dayData?.completed || false,
-        yesCount: dayData?.answers ? Object.values(dayData.answers).filter(Boolean).length : 0
-      };
-    });
+        dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        completed: data[dateKey]?.completed || false,
+        isToday: dateKey === getDateKey(new Date()),
+        isFuture: date > today
+      });
+    }
+    
+    return weekDays;
+  };
+
+  const getWeeklyStreak = () => {
+    const weekDays = getWeeklyProgress();
+    const completedThisWeek = weekDays.filter(day => day.completed && !day.isFuture).length;
+    return completedThisWeek;
+  };
+
+  const get30DayInsights = () => {
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    let completedCount = 0;
+    let resentfulCount = 0;
+    let selfishCount = 0;
+    let fearfulCount = 0;
+    let apologyCount = 0;
+    let kindnessCount = 0;
+    let spiritualCount = 0;
+    let aaTalkCount = 0;
+    let prayerMeditationCount = 0;
+    
+    // Iterate through the last 30 days
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const dateKey = getDateKey(date);
+      
+      const dayData = data[dateKey];
+      if (dayData?.completed) {
+        completedCount++;
+        if (dayData.answers.resentful) resentfulCount++;
+        if (dayData.answers.selfish) selfishCount++;
+        if (dayData.answers.fearful) fearfulCount++;
+        if (dayData.answers.apology) apologyCount++;
+        if (dayData.answers.kindness) kindnessCount++;
+        if (dayData.answers.spiritual) spiritualCount++;
+        if (dayData.answers.aaTalk) aaTalkCount++;
+        if (dayData.answers.prayerMeditation) prayerMeditationCount++;
+      }
+    }
+    
+    return {
+      completedDays: completedCount,
+      resentfulCount,
+      selfishCount, 
+      fearfulCount,
+      apologyCount,
+      kindnessCount,
+      spiritualCount,
+      aaTalkCount,
+      prayerMeditationCount,
+    };
+  };
+
+  const uncompleteToday = () => {
+    const today = getDateKey(new Date());
+    if (data[today]) {
+      const updatedData = { ...data };
+      delete updatedData[today];
+      saveData(updatedData);
+    }
   };
 
   // Legacy methods for backward compatibility
@@ -155,7 +232,10 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     getTodaysAnswers,
     isCompletedToday,
     completeToday,
+    uncompleteToday,
     getWeeklyProgress,
+    getWeeklyStreak,
+    get30DayInsights,
     
     // Legacy methods for backward compatibility
     entries,

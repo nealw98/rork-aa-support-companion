@@ -91,6 +91,31 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     }
   };
 
+  const getWeeklyGratitudeProgress = () => {
+    const today = new Date();
+    const progress = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dateStr = getDateKey(date);
+      const isFuture = date > today;
+      
+      progress.push({
+        date: dateStr,
+        dayName: date.toLocaleDateString('en-US', { weekday: 'long' }),
+        completed: !!data[dateStr]?.completed,
+        isFuture
+      });
+    }
+    
+    return progress;
+  };
+
+  const getGratitudeDaysCount = () => {
+    return Object.keys(data).filter(date => data[date]?.completed).length;
+  };
+
   const getWeeklyProgress = () => {
     const weekDates = getWeekDates();
     return weekDates.map(date => {
@@ -148,6 +173,8 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     addItemsToToday,
     completeToday,
     uncompleteToday,
+    getWeeklyGratitudeProgress,
+    getGratitudeDaysCount,
     getWeeklyProgress,
     
     // Legacy methods for backward compatibility
