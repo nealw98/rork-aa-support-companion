@@ -4,12 +4,8 @@ import createContextHook from '@nkzw/create-context-hook';
 import { EveningReviewEntry, WeeklyProgressDay } from '@/types';
 
 interface DetailedEveningEntry {
-  resentfulFlag: boolean;
-  resentfulNote: string;
-  selfishFlag: boolean;
-  selfishNote: string;
-  fearfulFlag: boolean;
-  fearfulNote: string;
+  emotionFlag: boolean;
+  emotionNote: string;
   apologyFlag: boolean;
   apologyName: string;
   kindnessFlag: boolean;
@@ -17,7 +13,7 @@ interface DetailedEveningEntry {
   spiritualFlag: boolean;
   spiritualNote: string;
   aaTalkFlag: boolean;
-  prayerMeditationFlag: boolean;
+  prayerFlag: boolean;
 }
 
 const STORAGE_KEY = 'evening_review_entries';
@@ -62,13 +58,13 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     return entries.some(entry => entry.date === todayString && entry.completed);
   };
 
-  const completeToday = (answers?: any) => {
+  const completeToday = () => {
     const todayString = getTodayDateString();
     const existingIndex = entries.findIndex(entry => entry.date === todayString);
     
     const newEntry: EveningReviewEntry = {
       date: todayString,
-      answers: answers || {},
+      answers: {},
       reflection: '',
       completed: true
     };
@@ -76,7 +72,7 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     let newEntries: EveningReviewEntry[];
     if (existingIndex >= 0) {
       newEntries = [...entries];
-      newEntries[existingIndex] = { ...newEntries[existingIndex], completed: true, answers: answers || newEntries[existingIndex].answers };
+      newEntries[existingIndex] = { ...newEntries[existingIndex], completed: true };
     } else {
       newEntries = [...entries, newEntry];
     }
@@ -132,19 +128,15 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     const newEntry: EveningReviewEntry = {
       date: todayString,
       answers: {
-        resentful: detailedEntry.resentfulFlag,
-        selfish: detailedEntry.selfishFlag,
-        fearful: detailedEntry.fearfulFlag,
+        emotion: detailedEntry.emotionFlag,
         apology: detailedEntry.apologyFlag,
         kindness: detailedEntry.kindnessFlag,
         spiritual: detailedEntry.spiritualFlag,
         aaTalk: detailedEntry.aaTalkFlag,
-        prayerMeditation: detailedEntry.prayerMeditationFlag
+        prayer: detailedEntry.prayerFlag
       },
       reflection: JSON.stringify({
-        resentfulNote: detailedEntry.resentfulNote,
-        selfishNote: detailedEntry.selfishNote,
-        fearfulNote: detailedEntry.fearfulNote,
+        emotionNote: detailedEntry.emotionNote,
         apologyName: detailedEntry.apologyName,
         kindnessNote: detailedEntry.kindnessNote,
         spiritualNote: detailedEntry.spiritualNote
