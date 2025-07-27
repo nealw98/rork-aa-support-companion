@@ -8,37 +8,34 @@ import {
   TextInput,
   Modal,
 } from 'react-native';
+import { router } from 'expo-router';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
-
-const formatDateDisplay = (date: Date): string => {
-  return date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 export default function NightlyReview() {
   const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveEntry } = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
   
-  // Form state
-  const [emotionFlag, setEmotionFlag] = useState(false);
-  const [emotionNote, setEmotionNote] = useState('');
-  const [apologyFlag, setApologyFlag] = useState(false);
+  // Form state - 8 separate questions like web version
+  const [resentfulFlag, setResentfulFlag] = useState('');
+  const [resentfulNote, setResentfulNote] = useState('');
+  const [selfishFlag, setSelfishFlag] = useState('');
+  const [selfishNote, setSelfishNote] = useState('');
+  const [fearfulFlag, setFearfulFlag] = useState('');
+  const [fearfulNote, setFearfulNote] = useState('');
+  const [apologyFlag, setApologyFlag] = useState('');
   const [apologyName, setApologyName] = useState('');
-  const [kindnessFlag, setKindnessFlag] = useState(false);
+  const [kindnessFlag, setKindnessFlag] = useState('');
   const [kindnessNote, setKindnessNote] = useState('');
-  const [spiritualFlag, setSpiritualFlag] = useState(false);
+  const [spiritualFlag, setSpiritualFlag] = useState('');
   const [spiritualNote, setSpiritualNote] = useState('');
-  const [aaTalkFlag, setAaTalkFlag] = useState(false);
-  const [prayerFlag, setPrayerFlag] = useState(false);
+  const [aaTalkFlag, setAaTalkFlag] = useState('');
+  const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -47,15 +44,31 @@ export default function NightlyReview() {
 
   const questions = [
     {
-      text: '1. Was I resentful, selfish, dishonest, or afraid today?',
-      flag: emotionFlag,
-      setFlag: setEmotionFlag,
-      note: emotionNote,
-      setNote: setEmotionNote,
+      text: '1. Was I resentful today?',
+      flag: resentfulFlag,
+      setFlag: setResentfulFlag,
+      note: resentfulNote,
+      setNote: setResentfulNote,
+      placeholder: 'With whom?'
+    },
+    {
+      text: '2. Was I selfish and self-centered today?',
+      flag: selfishFlag,
+      setFlag: setSelfishFlag,
+      note: selfishNote,
+      setNote: setSelfishNote,
+      placeholder: 'In what way?'
+    },
+    {
+      text: '3. Was I fearful or worrisome today?',
+      flag: fearfulFlag,
+      setFlag: setFearfulFlag,
+      note: fearfulNote,
+      setNote: setFearfulNote,
       placeholder: 'How so?'
     },
     {
-      text: '2. Do I owe anyone an apology?',
+      text: '4. Do I owe anyone an apology?',
       flag: apologyFlag,
       setFlag: setApologyFlag,
       note: apologyName,
@@ -63,7 +76,7 @@ export default function NightlyReview() {
       placeholder: 'Whom have you harmed?'
     },
     {
-      text: '3. Was I of service or kind to others today?',
+      text: '5. Was I of service or kind to others today?',
       flag: kindnessFlag,
       setFlag: setKindnessFlag,
       note: kindnessNote,
@@ -71,15 +84,15 @@ export default function NightlyReview() {
       placeholder: 'What did you do?'
     },
     {
-      text: '4. Was I spiritually connected today?',
+      text: '6. Was I spiritually connected today?',
       flag: spiritualFlag,
       setFlag: setSpiritualFlag,
       note: spiritualNote,
       setNote: setSpiritualNote,
-      placeholder: 'In what way?'
+      placeholder: 'How so?'
     },
     {
-      text: '5. Talked with another alcoholic today?',
+      text: '7. Did I talk to someone in recovery today?',
       flag: aaTalkFlag,
       setFlag: setAaTalkFlag,
       note: '',
@@ -87,9 +100,9 @@ export default function NightlyReview() {
       placeholder: ''
     },
     {
-      text: '6. Did I pray and meditate today?',
-      flag: prayerFlag,
-      setFlag: setPrayerFlag,
+      text: '8. Did I pray or meditate today?',
+      flag: prayerMeditationFlag,
+      setFlag: setPrayerMeditationFlag,
       note: '',
       setNote: () => {},
       placeholder: ''
@@ -103,36 +116,60 @@ export default function NightlyReview() {
   };
 
   const handleConfirmSubmit = () => {
+    const answers = {
+      resentful: resentfulFlag === 'yes',
+      selfish: selfishFlag === 'yes',
+      fearful: fearfulFlag === 'yes',
+      apology: apologyFlag === 'yes',
+      kindness: kindnessFlag === 'yes',
+      spiritual: spiritualFlag === 'yes',
+      aaTalk: aaTalkFlag === 'yes',
+      prayerMeditation: prayerMeditationFlag === 'yes',
+    };
+    
     const entry = {
-      emotionFlag,
-      emotionNote,
-      apologyFlag,
+      resentfulFlag: resentfulFlag === 'yes',
+      resentfulNote,
+      selfishFlag: selfishFlag === 'yes',
+      selfishNote,
+      fearfulFlag: fearfulFlag === 'yes',
+      fearfulNote,
+      apologyFlag: apologyFlag === 'yes',
       apologyName,
-      kindnessFlag,
+      kindnessFlag: kindnessFlag === 'yes',
       kindnessNote,
-      spiritualFlag,
+      spiritualFlag: spiritualFlag === 'yes',
       spiritualNote,
-      aaTalkFlag,
-      prayerFlag
+      aaTalkFlag: aaTalkFlag === 'yes',
+      prayerMeditationFlag: prayerMeditationFlag === 'yes'
     };
     
     saveEntry(entry);
-    completeToday();
+    completeToday(answers);
     setShowConfirmation(true);
     setShowAlert(false);
+    
+    // Navigate to insights after completion
+    setTimeout(() => {
+      router.push('/insights');
+    }, 1500);
   };
 
   const handleStartNew = () => {
-    setEmotionFlag(false);
-    setEmotionNote('');
-    setApologyFlag(false);
+    setResentfulFlag('');
+    setResentfulNote('');
+    setSelfishFlag('');
+    setSelfishNote('');
+    setFearfulFlag('');
+    setFearfulNote('');
+    setApologyFlag('');
     setApologyName('');
-    setKindnessFlag(false);
+    setKindnessFlag('');
     setKindnessNote('');
-    setSpiritualFlag(false);
+    setSpiritualFlag('');
     setSpiritualNote('');
-    setAaTalkFlag(false);
-    setPrayerFlag(false);
+    setAaTalkFlag('');
+    setPrayerMeditationFlag('');
     setShowConfirmation(false);
   };
 
@@ -204,12 +241,12 @@ export default function NightlyReview() {
           </Text>
 
           {/* Link to Insights Page */}
-          <View style={styles.card}>
+          <TouchableOpacity style={styles.card} onPress={() => router.push('/insights')}>
             <Text style={styles.insightsTitle}>View Recovery Insights</Text>
             <Text style={styles.insightsSubtitle}>
               See patterns and progress from your nightly reviews and gratitude practice in the Insights tab.
             </Text>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.buttonContainer}>
             {!isCompleted && (
@@ -287,30 +324,30 @@ export default function NightlyReview() {
                   <TouchableOpacity
                     style={[
                       styles.answerButton,
-                      question.flag === true && styles.answerButtonSelected
+                      question.flag === 'yes' && styles.answerButtonSelected
                     ]}
-                    onPress={() => question.setFlag(true)}
+                    onPress={() => question.setFlag('yes')}
                   >
                     <Text style={[
                       styles.answerButtonText,
-                      question.flag === true && styles.answerButtonTextSelected
+                      question.flag === 'yes' && styles.answerButtonTextSelected
                     ]}>Yes</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[
                       styles.answerButton,
-                      question.flag === false && styles.answerButtonSelected
+                      question.flag === 'no' && styles.answerButtonSelected
                     ]}
-                    onPress={() => question.setFlag(false)}
+                    onPress={() => question.setFlag('no')}
                   >
                     <Text style={[
                       styles.answerButtonText,
-                      question.flag === false && styles.answerButtonTextSelected
+                      question.flag === 'no' && styles.answerButtonTextSelected
                     ]}>No</Text>
                   </TouchableOpacity>
                 </View>
                 
-                {question.flag && question.placeholder && (
+                {question.flag === 'yes' && question.placeholder && (
                   <TextInput
                     style={styles.textInput}
                     placeholder={question.placeholder}
@@ -326,8 +363,18 @@ export default function NightlyReview() {
         </View>
 
         {/* Complete Button */}
-        <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
-          <Text style={styles.completeButtonText}>Complete Review</Text>
+        <TouchableOpacity 
+          style={[
+            styles.completeButton,
+            (!resentfulFlag || !selfishFlag || !fearfulFlag || !apologyFlag || !kindnessFlag || !spiritualFlag || !aaTalkFlag || !prayerMeditationFlag) && styles.completeButtonDisabled
+          ]} 
+          onPress={handleComplete}
+          disabled={!resentfulFlag || !selfishFlag || !fearfulFlag || !apologyFlag || !kindnessFlag || !spiritualFlag || !aaTalkFlag || !prayerMeditationFlag}
+        >
+          <Text style={[
+            styles.completeButtonText,
+            (!resentfulFlag || !selfishFlag || !fearfulFlag || !apologyFlag || !kindnessFlag || !spiritualFlag || !aaTalkFlag || !prayerMeditationFlag) && styles.completeButtonTextDisabled
+          ]}>Complete Nightly Review</Text>
         </TouchableOpacity>
 
         {/* Privacy Notice */}
@@ -568,6 +615,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: adjustFontWeight('600'),
+  },
+  completeButtonDisabled: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.6,
+  },
+  completeButtonTextDisabled: {
+    color: 'rgba(255, 255, 255, 0.7)',
   },
   outlineButton: {
     borderWidth: 1,
