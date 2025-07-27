@@ -268,25 +268,25 @@ export const twelveAndTwelveData: TwelveAndTwelveCategory[] = [
       {
         id: "copyright",
         title: "Copyright Information",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_copyright.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_copyright.pdf",
         description: "Copyright and publication information"
       },
       {
         id: "contents",
         title: "Contents",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_contents.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_contents.pdf",
         description: "Table of contents"
       },
       {
         id: "introduction",
         title: "Introduction",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_intro.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_intro.pdf",
         description: "Introduction to the Twelve and Twelve"
       },
       {
         id: "foreword",
         title: "Foreword",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_foreword.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_foreword.pdf",
         description: "Foreword to the Twelve and Twelve"
       }
     ]
@@ -299,73 +299,73 @@ export const twelveAndTwelveData: TwelveAndTwelveCategory[] = [
       {
         id: "step-1",
         title: "Step 1",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_01.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_01.pdf",
         description: "We admitted we were powerless over alcohol—that our lives had become unmanageable."
       },
       {
         id: "step-2",
         title: "Step 2",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_02.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_02.pdf",
         description: "Came to believe that a Power greater than ourselves could restore us to sanity."
       },
       {
         id: "step-3",
         title: "Step 3",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_03.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_03.pdf",
         description: "Made a decision to turn our will and our lives over to the care of God as we understood Him."
       },
       {
         id: "step-4",
         title: "Step 4",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_04.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_04.pdf",
         description: "Made a searching and fearless moral inventory of ourselves."
       },
       {
         id: "step-5",
         title: "Step 5",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_05.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_05.pdf",
         description: "Admitted to God, to ourselves, and to another human being the exact nature of our wrongs."
       },
       {
         id: "step-6",
         title: "Step 6",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_06.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_06.pdf",
         description: "Were entirely ready to have God remove all these defects of character."
       },
       {
         id: "step-7",
         title: "Step 7",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_07.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_07.pdf",
         description: "Humbly asked Him to remove our shortcomings."
       },
       {
         id: "step-8",
         title: "Step 8",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_08.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_08.pdf",
         description: "Made a list of all persons we had harmed, and became willing to make amends to them all."
       },
       {
         id: "step-9",
         title: "Step 9",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_09.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_09.pdf",
         description: "Made direct amends to such people wherever possible, except when to do so would injure them or others."
       },
       {
         id: "step-10",
         title: "Step 10",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_10.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_10.pdf",
         description: "Continued to take personal inventory and when we were wrong promptly admitted it."
       },
       {
         id: "step-11",
         title: "Step 11",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_11.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_11.pdf",
         description: "Sought through prayer and meditation to improve our conscious contact with God as we understood Him, praying only for knowledge of His will for us and the power to carry that out."
       },
       {
         id: "step-12",
         title: "Step 12",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_12.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_12.pdf",
         description: "Having had a spiritual awakening as the result of these Steps, we tried to carry this message to alcoholics, and to practice these principles in all our affairs."
       }
     ]
@@ -378,73 +378,73 @@ export const twelveAndTwelveData: TwelveAndTwelveCategory[] = [
       {
         id: "tradition-1",
         title: "Tradition 1",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_13.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_13.pdf",
         description: "Our common welfare should come first; personal recovery depends upon A.A. unity."
       },
       {
         id: "tradition-2",
         title: "Tradition 2",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_14.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_14.pdf",
         description: "For our group purpose there is but one ultimate authority—a loving God as He may express Himself in our group conscience. Our leaders are but trusted servants; they do not govern."
       },
       {
         id: "tradition-3",
         title: "Tradition 3",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_15.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_15.pdf",
         description: "The only requirement for A.A. membership is a desire to stop drinking."
       },
       {
         id: "tradition-4",
         title: "Tradition 4",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_16.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_16.pdf",
         description: "Each group should be autonomous except in matters affecting other groups or A.A. as a whole."
       },
       {
         id: "tradition-5",
         title: "Tradition 5",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_17.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_17.pdf",
         description: "Each group has but one primary purpose—to carry its message to the alcoholic who still suffers."
       },
       {
         id: "tradition-6",
         title: "Tradition 6",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_18.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_18.pdf",
         description: "An A.A. group ought never endorse, finance, or lend the A.A. name to any related facility or outside enterprise, lest problems of money, property, and prestige divert us from our primary purpose."
       },
       {
         id: "tradition-7",
         title: "Tradition 7",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_19.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_19.pdf",
         description: "Every A.A. group ought to be fully self-supporting, declining outside contributions."
       },
       {
         id: "tradition-8",
         title: "Tradition 8",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_20.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_20.pdf",
         description: "Alcoholics Anonymous should remain forever nonprofessional, but our service centers may employ special workers."
       },
       {
         id: "tradition-9",
         title: "Tradition 9",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_21.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_21.pdf",
         description: "A.A., as such, ought never be organized; but we may create service boards or committees directly responsible to those they serve."
       },
       {
         id: "tradition-10",
         title: "Tradition 10",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_22.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_22.pdf",
         description: "Alcoholics Anonymous has no opinion on outside issues; hence the A.A. name ought never be drawn into public controversy."
       },
       {
         id: "tradition-11",
         title: "Tradition 11",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_23.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_23.pdf",
         description: "Our public relations policy is based on attraction rather than promotion; we need always maintain personal anonymity at the level of press, radio, and films."
       },
       {
         id: "tradition-12",
         title: "Tradition 12",
-        url: "https://www.aa.org/sites/default/files/2022-01/en_tt_24.pdf",
+        url: "https://www.aa.org/sites/default/files/2021-11/en_tt_24.pdf",
         description: "Anonymity is the spiritual foundation of all our Traditions, ever reminding us to place principles before personalities."
       }
     ]
