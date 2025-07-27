@@ -122,92 +122,65 @@ export default function Insights() {
               </Text>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Resentful Days:</Text>
+                <Text style={styles.statLabel}>Resentful Days:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.resentfulCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.resentfulCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.resentfulCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.resentfulCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Selfish Days:</Text>
+                <Text style={styles.statLabel}>Selfish Days:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.selfishCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.selfishCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.selfishCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.selfishCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Fearful Days:</Text>
+                <Text style={styles.statLabel}>Fearful Days:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.fearfulCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.fearfulCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.fearfulCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.fearfulCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Amends Needed:</Text>
+                <Text style={styles.statLabel}>Amends Needed:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.apologyCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.apologyCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.apologyCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.apologyCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Acts of Service:</Text>
+                <Text style={styles.statLabel}>Acts of Service:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.kindnessCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.kindnessCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.kindnessCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.kindnessCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Spiritual Connection:</Text>
+                <Text style={styles.statLabel}>Spiritual Connection:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.spiritualCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.spiritualCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.spiritualCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.spiritualCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• AA Fellowship:</Text>
+                <Text style={styles.statLabel}>AA Fellowship:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.aaTalkCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.aaTalkCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.aaTalkCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.aaTalkCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
               
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Prayer & Meditation:</Text>
+                <Text style={styles.statLabel}>Prayer & Meditation:</Text>
                 <Text style={styles.statValue}>
-                  {insights.counts.prayerMeditationCount} out of {insights.counts.completedDays} days
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.counts.prayerMeditationCount / insights.counts.completedDays) * 100)}%
+                  {insights.counts.prayerMeditationCount} out of {insights.counts.completedDays} days ({Math.round((insights.counts.prayerMeditationCount / insights.counts.completedDays) * 100)}%)
                 </Text>
               </View>
 
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>• Gratitude Practice:</Text>
+                <Text style={styles.statLabel}>Gratitude Practice:</Text>
                 <Text style={styles.statValue}>
-                  {insights.gratitudeDays} days in the last 30
-                </Text>
-                <Text style={styles.statPercentage}>
-                  {Math.round((insights.gratitudeDays / 30) * 100)}%
+                  {insights.gratitudeDays} days in the last 30 ({Math.round((insights.gratitudeDays / 30) * 100)}%)
                 </Text>
               </View>
             </View>
@@ -305,12 +278,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginLeft: 12,
   },
-  statPercentage: {
-    fontSize: 12,
-    color: Colors.light.tint,
-    fontWeight: adjustFontWeight('600'),
-    marginLeft: 12,
-  },
+
   privacyText: {
     fontSize: 12,
     color: Colors.light.muted,
