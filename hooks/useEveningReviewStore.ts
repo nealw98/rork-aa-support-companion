@@ -1,134 +1,148 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createContextHook from '@nkzw/create-context-hook';
-import { ReviewEntry } from '@/utils/insightsLogic';
-import { getDateKey, getWeekDates, isToday } from '@/utils/dateUtils';
+import { getDateKey, getWeekDates } from '@/utils/dateUtils';
 
 const STORAGE_KEY = 'evening_review_entries';
 
 export interface ReviewAnswers {
-  prayer: boolean;
-  meditation: boolean;
-  resentments: boolean;
-  fears: boolean;
-  harms: boolean;
-  amends: boolean;
-  helping: boolean;
-  gratitude: boolean;
+  resentful: boolean;
+  selfish: boolean;
+  fearful: boolean;
+  apology: boolean;
+  kindness: boolean;
+  spiritual: boolean;
+  aaTalk: boolean;
+  prayerMeditation: boolean;
+}
+
+interface ReviewData {
+  [date: string]: {
+    answers: ReviewAnswers;
+    completed: boolean;
+  };
 }
 
 export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(() => {
-  const [entries, setEntries] = useState<ReviewEntry[]>([]);
+  const [data, setData] = useState<ReviewData>({});
   const [isLoading, setIsLoading] = useState(true);
-  const [currentAnswers, setCurrentAnswers] = useState<ReviewAnswers>({
-    prayer: false,
-    meditation: false,
-    resentments: false,
-    fears: false,
-    harms: false,
-    amends: false,
-    helping: false,
-    gratitude: false
-  });
-  const [currentNotes, setCurrentNotes] = useState('');
 
   useEffect(() => {
-    loadEntries();
+    loadData();
   }, []);
 
-  useEffect(() => {
-    const today = getDateKey(new Date());
-    const todayEntry = entries.find(entry => entry.date === today);
-    if (todayEntry) {
-      setCurrentAnswers(todayEntry.answers);
-      setCurrentNotes(todayEntry.notes || '');
-    } else {
-      setCurrentAnswers({
-        prayer: false,
-        meditation: false,
-        resentments: false,
-        fears: false,
-        harms: false,
-        amends: false,
-        helping: false,
-        gratitude: false
-      });
-      setCurrentNotes('');
-    }
-  }, [entries]);
-
-  const loadEntries = async () => {
+  const loadData = async () => {
     try {
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
-        setEntries(JSON.parse(stored));
+        setData(JSON.parse(stored));
       }
     } catch (error) {
-      console.error('Error loading evening review entries:', error);
+      console.error('Error loading evening review data:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const saveEntries = async (newEntries: ReviewEntry[]) => {
+  const saveData = async (newData: ReviewData) => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newEntries));
-      setEntries(newEntries);
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+      setData(newData);
     } catch (error) {
-      console.error('Error saving evening review entries:', error);
+      console.error('Error saving evening review data:', error);
     }
   };
 
-  const updateAnswer = (question: keyof ReviewAnswers, value: boolean) => {
-    setCurrentAnswers(prev => ({ ...prev, [question]: value }));
-  };
-
-  const updateNotes = (notes: string) => {
-    setCurrentNotes(notes);
-  };
-
-  const saveReview = () => {
+  const getTodaysAnswers = (): ReviewAnswers | null => {
     const today = getDateKey(new Date());
-    const existingIndex = entries.findIndex(entry => entry.date === today);
-    
-    const newEntry: ReviewEntry = {
-      date: today,
-      timestamp: Date.now(),
-      answers: currentAnswers,
-      notes: currentNotes.trim() || undefined
+    return data[today]?.answers || null;
+  };
+
+  const isCompletedToday = (): boolean => {
+    const today = getDateKey(new Date());
+    return data[today]?.completed || false;
+  };
+
+  const completeToday = (answers: ReviewAnswers) => {
+    const today = getDateKey(new Date());
+    const updatedData = {
+      ...data,
+      [today]: {
+        answers,
+        completed: true
+      }
     };
-
-    let updatedEntries: ReviewEntry[];
-    if (existingIndex >= 0) {
-      updatedEntries = [...entries];
-      updatedEntries[existingIndex] = newEntry;
-    } else {
-      updatedEntries = [...entries, newEntry];
-    }
-
-    saveEntries(updatedEntries);
+    saveData(updatedData);
   };
 
   const getWeeklyProgress = () => {
     const weekDates = getWeekDates();
     return weekDates.map(date => {
       const dateKey = getDateKey(date);
-      const entry = entries.find(e => e.date === dateKey);
+      const dayData = data[dateKey];
       return {
         date: dateKey,
-        completed: !!entry,
-        yesCount: entry ? Object.values(entry.answers).filter(Boolean).length : 0
+        completed: dayData?.completed || false,
+        yesCount: dayData?.answers ? Object.values(dayData.answers).filter(Boolean).length : 0
       };
     });
   };
 
-  const hasCompletedToday = () => {
+  // Legacy methods for backward compatibility
+  const entries = Object.entries(data).map(([date, dayData]) => ({
+    date,
+    timestamp: Date.now(),
+    answers: dayData.answers,
+    notes: undefined
+  }));
+
+  const currentAnswers = getTodaysAnswers() || {
+    resentful: false,
+    selfish: false,
+    fearful: false,
+    apology: false,
+    kindness: false,
+    spiritual: false,
+    aaTalk: false,
+    prayerMeditation: false
+  };
+
+  const currentNotes = '';
+
+  const updateAnswer = (question: keyof ReviewAnswers, value: boolean) => {
     const today = getDateKey(new Date());
-    return entries.some(entry => entry.date === today);
+    const currentData = data[today] || { answers: currentAnswers, completed: false };
+    const updatedData = {
+      ...data,
+      [today]: {
+        ...currentData,
+        answers: {
+          ...currentData.answers,
+          [question]: value
+        }
+      }
+    };
+    saveData(updatedData);
+  };
+
+  const updateNotes = (notes: string) => {
+    // Notes functionality not implemented in web app structure
+  };
+
+  const saveReview = () => {
+    const today = getDateKey(new Date());
+    const currentData = data[today];
+    if (currentData) {
+      completeToday(currentData.answers);
+    }
+  };
+
+  const hasCompletedToday = () => {
+    return isCompletedToday();
   };
 
   const getTodayProgress = () => {
-    const answeredCount = Object.values(currentAnswers).filter(Boolean).length;
+    const answeredCount = Object.values(currentAnswers).filter(answer => answer !== undefined).length;
     return {
       answered: answeredCount,
       total: 8,
@@ -137,6 +151,13 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
   };
 
   return {
+    // New methods matching web app
+    getTodaysAnswers,
+    isCompletedToday,
+    completeToday,
+    getWeeklyProgress,
+    
+    // Legacy methods for backward compatibility
     entries,
     currentAnswers,
     currentNotes,
@@ -144,7 +165,6 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     updateAnswer,
     updateNotes,
     saveReview,
-    getWeeklyProgress,
     hasCompletedToday,
     getTodayProgress
   };

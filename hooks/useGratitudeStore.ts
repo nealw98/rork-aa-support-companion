@@ -1,92 +1,168 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createContextHook from '@nkzw/create-context-hook';
-import { GratitudeEntry } from '@/utils/insightsLogic';
-import { getDateKey, getWeekDates, isToday } from '@/utils/dateUtils';
+import { getDateKey, getWeekDates } from '@/utils/dateUtils';
 
 const STORAGE_KEY = 'gratitude_entries';
 
+interface GratitudeData {
+  [date: string]: {
+    items: string[];
+    completed: boolean;
+  };
+}
+
 export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
-  const [entries, setEntries] = useState<GratitudeEntry[]>([]);
+  const [data, setData] = useState<GratitudeData>({});
   const [isLoading, setIsLoading] = useState(true);
-  const [todayEntries, setTodayEntries] = useState<GratitudeEntry[]>([]);
 
   useEffect(() => {
-    loadEntries();
+    loadData();
   }, []);
 
-  useEffect(() => {
-    const today = getDateKey(new Date());
-    setTodayEntries(entries.filter(entry => entry.date === today));
-  }, [entries]);
-
-  const loadEntries = async () => {
+  const loadData = async () => {
     try {
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
-        setEntries(JSON.parse(stored));
+        setData(JSON.parse(stored));
       }
     } catch (error) {
-      console.error('Error loading gratitude entries:', error);
+      console.error('Error loading gratitude data:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const saveEntries = async (newEntries: GratitudeEntry[]) => {
+  const saveData = async (newData: GratitudeData) => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newEntries));
-      setEntries(newEntries);
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+      setData(newData);
     } catch (error) {
-      console.error('Error saving gratitude entries:', error);
+      console.error('Error saving gratitude data:', error);
     }
   };
 
-  const addEntry = (text: string) => {
-    const newEntry: GratitudeEntry = {
-      id: Date.now().toString(),
-      text: text.trim(),
-      date: getDateKey(new Date()),
-      timestamp: Date.now()
-    };
-    
-    const updatedEntries = [...entries, newEntry];
-    saveEntries(updatedEntries);
+  const getTodaysItems = (): string[] => {
+    const today = getDateKey(new Date());
+    return data[today]?.items || [];
   };
 
-  const removeEntry = (id: string) => {
-    const updatedEntries = entries.filter(entry => entry.id !== id);
-    saveEntries(updatedEntries);
+  const isCompletedToday = (): boolean => {
+    const today = getDateKey(new Date());
+    return data[today]?.completed || false;
+  };
+
+  const addItemsToToday = (items: string[]) => {
+    const today = getDateKey(new Date());
+    const currentItems = data[today]?.items || [];
+    const updatedData = {
+      ...data,
+      [today]: {
+        items: [...currentItems, ...items],
+        completed: data[today]?.completed || false
+      }
+    };
+    saveData(updatedData);
+  };
+
+  const completeToday = (items: string[]) => {
+    const today = getDateKey(new Date());
+    const updatedData = {
+      ...data,
+      [today]: {
+        items,
+        completed: true
+      }
+    };
+    saveData(updatedData);
+  };
+
+  const uncompleteToday = () => {
+    const today = getDateKey(new Date());
+    if (data[today]) {
+      const updatedData = {
+        ...data,
+        [today]: {
+          ...data[today],
+          completed: false
+        }
+      };
+      saveData(updatedData);
+    }
   };
 
   const getWeeklyProgress = () => {
     const weekDates = getWeekDates();
     return weekDates.map(date => {
       const dateKey = getDateKey(date);
-      const dayEntries = entries.filter(entry => entry.date === dateKey);
+      const dayData = data[dateKey];
       return {
         date: dateKey,
-        completed: dayEntries.length > 0,
-        count: dayEntries.length
+        completed: dayData?.completed || false,
+        count: dayData?.items?.length || 0
       };
     });
   };
 
+  // Legacy methods for backward compatibility
+  const todayEntries = getTodaysItems().map((text, index) => ({
+    id: index.toString(),
+    text,
+    date: getDateKey(new Date()),
+    timestamp: Date.now()
+  }));
+
+  const addEntry = (text: string) => {
+    addItemsToToday([text]);
+  };
+
+  const removeEntry = (id: string) => {
+    const today = getDateKey(new Date());
+    const currentItems = data[today]?.items || [];
+    const index = parseInt(id);
+    if (index >= 0 && index < currentItems.length) {
+      const updatedItems = currentItems.filter((_, i) => i !== index);
+      const updatedData = {
+        ...data,
+        [today]: {
+          items: updatedItems,
+          completed: data[today]?.completed || false
+        }
+      };
+      saveData(updatedData);
+    }
+  };
+
   const canComplete = () => {
-    return todayEntries.length >= 3;
+    return getTodaysItems().length >= 3;
   };
 
   const hasCompletedToday = () => {
-    return todayEntries.length >= 3;
+    return isCompletedToday();
   };
 
   return {
-    entries,
+    // New methods matching web app
+    getTodaysItems,
+    isCompletedToday,
+    addItemsToToday,
+    completeToday,
+    uncompleteToday,
+    getWeeklyProgress,
+    
+    // Legacy methods for backward compatibility
+    entries: Object.entries(data).flatMap(([date, dayData]) => 
+      dayData.items.map((text, index) => ({
+        id: `${date}-${index}`,
+        text,
+        date,
+        timestamp: Date.now()
+      }))
+    ),
     todayEntries,
     isLoading,
     addEntry,
     removeEntry,
-    getWeeklyProgress,
     canComplete,
     hasCompletedToday
   };

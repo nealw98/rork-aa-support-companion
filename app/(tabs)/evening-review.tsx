@@ -11,7 +11,7 @@ import {
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar, ChevronDown, ChevronUp } from 'lucide-react-native';
-import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
+import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
