@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
-  TouchableOpacity
+  StyleSheet
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { Heart, Moon, ChevronDown, ChevronRight } from 'lucide-react-native';
+import { Heart, Moon, TrendingUp } from 'lucide-react-native';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
-import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
+import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import {
   makeSpiritualFitness,
   makeEmotionalPatterns,
-  pickRecoveryQuote,
   hasEnoughData
 } from '@/utils/insightsLogic';
 import { formatDateDisplay } from '@/utils/dateUtils';
@@ -21,7 +19,6 @@ import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 import ScreenContainer from '@/components/ScreenContainer';
-import WeeklyProgressCard from '@/components/WeeklyProgressCard';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,16 +31,26 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.divider
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8
+  },
   title: {
     fontSize: 24,
     fontWeight: adjustFontWeight('700', true),
-    color: Colors.light.text,
-    marginBottom: 8
+    color: Colors.light.text
   },
   subtitle: {
     fontSize: 16,
     color: Colors.light.muted,
-    lineHeight: 22
+    lineHeight: 22,
+    marginBottom: 4
+  },
+  description: {
+    fontSize: 14,
+    color: Colors.light.muted
   },
   content: {
     flex: 1
@@ -51,15 +58,6 @@ const styles = StyleSheet.create({
   section: {
     margin: 16,
     marginBottom: 8
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
   },
   progressCard: {
     backgroundColor: Colors.light.cardBackground,
@@ -74,16 +72,20 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
   progressTitle: {
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8
   },
+  progressTitleText: {
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true),
+    color: Colors.light.text
+  },
   progressStats: {
     fontSize: 14,
-    color: Colors.light.muted
+    fontWeight: adjustFontWeight('500', true),
+    color: Colors.light.text,
+    marginTop: 12
   },
   weekContainer: {
     flexDirection: 'row',
@@ -116,150 +118,72 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: Colors.light.divider
   },
-  dayNumber: {
-    fontSize: 12,
-    fontWeight: adjustFontWeight('600', true)
-  },
-  dayNumberCompleted: {
-    color: 'white'
-  },
-  dayNumberIncomplete: {
-    color: Colors.light.muted
-  },
-  insightCard: {
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 12
-  },
-  insightTitle: {
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  insightText: {
-    fontSize: 15,
-    color: Colors.light.text,
-    lineHeight: 22
-  },
-  quoteCard: {
-    backgroundColor: Colors.light.tint,
-    borderRadius: 12,
-    padding: 20,
-    margin: 16,
-    alignItems: 'center'
-  },
-  quoteText: {
-    fontSize: 18,
-    color: 'white',
-    textAlign: 'center',
-    fontStyle: 'italic',
-    lineHeight: 26,
-    marginTop: 8
-  },
-  noDataCard: {
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 12,
-    padding: 20,
-    margin: 16,
-    alignItems: 'center'
-  },
-  noDataText: {
-    fontSize: 16,
-    color: Colors.light.muted,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginTop: 12
-  },
-  description: {
-    fontSize: 14,
-    color: Colors.light.muted,
-    marginTop: 4
-  },
   completedDot: {
     width: 16,
     height: 16,
     borderRadius: 8,
     backgroundColor: 'white'
   },
-  insightsHeader: {
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12
-  },
-  insightsTitle: {
-    fontSize: 18,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text
-  },
-  insightsContent: {
-    marginTop: 8
-  },
-  quoteSection: {
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 12,
-    padding: 20,
-    marginTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: Colors.light.divider
-  },
-  noDataSection: {
+  insightCard: {
     backgroundColor: Colors.light.cardBackground,
     borderRadius: 12,
     padding: 20
+  },
+  insightHeader: {
+    marginBottom: 16
+  },
+  insightTitle: {
+    fontSize: 18,
+    fontWeight: adjustFontWeight('600', true),
+    color: Colors.light.text,
+    marginBottom: 4
+  },
+  insightSubtitle: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    fontStyle: 'italic'
+  },
+  insightContent: {
+    gap: 16
+  },
+  insightSection: {
+    gap: 4
+  },
+  insightSectionTitle: {
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true),
+    color: Colors.light.text
+  },
+  insightText: {
+    fontSize: 15,
+    color: Colors.light.text,
+    lineHeight: 22
+  },
+  noDataSection: {
+    alignItems: 'center',
+    paddingVertical: 20
+  },
+  noDataText: {
+    fontSize: 16,
+    color: Colors.light.muted,
+    textAlign: 'center'
   }
 });
 
 export default function InsightsScreen() {
-  const [insightsOpen, setInsightsOpen] = useState(false);
+  const { getWeeklyProgress, getWeeklyStreak, get30DayInsights } = useEveningReviewStore();
+  const { getWeeklyGratitudeProgress, getGratitudeDaysCount } = useGratitudeStore();
   
-  const gratitudeStore = useGratitudeStore();
-  const eveningStore = useEveningReviewStore();
-  
-  console.log('Insights screen loaded');
-  console.log('Gratitude store:', !!gratitudeStore);
-  console.log('Evening store:', !!eveningStore);
-  
-  // Check if stores are properly initialized
-  if (!gratitudeStore || !eveningStore) {
-    console.log('Stores not initialized');
-    return (
-      <ScreenContainer>
-        <Stack.Screen options={{ title: 'Recovery Insights' }} />
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Loading...</Text>
-          </View>
-        </View>
-      </ScreenContainer>
-    );
-  }
-
   const today = new Date();
-  const weeklyProgress = eveningStore.getWeeklyProgress();
-
-  const gratitudeWeeklyProgress = gratitudeStore.getWeeklyGratitudeProgress();
-  const gratitudeDaysCount = gratitudeStore.getGratitudeDaysCount();
-  const counts = eveningStore.getThirtyDayCounts();
-  
-  console.log('Gratitude weekly progress:', gratitudeWeeklyProgress);
-  console.log('Gratitude days count:', gratitudeDaysCount);
-  console.log('Evening counts:', counts);
+  const weeklyProgress = getWeeklyProgress();
+  const weeklyStreak = getWeeklyStreak();
+  const gratitudeWeeklyProgress = getWeeklyGratitudeProgress();
+  const gratitudeDaysCount = getGratitudeDaysCount();
+  const counts = get30DayInsights();
   
   const hasData = hasEnoughData(counts);
   const spiritualInsight = hasData ? makeSpiritualFitness(counts, gratitudeDaysCount) : '';
   const emotionalInsight = hasData ? makeEmotionalPatterns(counts) : '';
-  const quote = pickRecoveryQuote(counts, gratitudeDaysCount);
-
-
 
   return (
     <ScreenContainer>
@@ -267,7 +191,10 @@ export default function InsightsScreen() {
       
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Insights</Text>
+          <View style={styles.titleContainer}>
+            <TrendingUp size={24} color={Colors.light.tint} />
+            <Text style={styles.title}>Insights</Text>
+          </View>
           <Text style={styles.subtitle}>
             {formatDateDisplay(today)}
           </Text>
@@ -278,52 +205,101 @@ export default function InsightsScreen() {
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.section}>
-            <WeeklyProgressCard title="Gratitude List" icon={Heart} data={gratitudeWeeklyProgress} />
-            <WeeklyProgressCard title="Nightly Review" icon={Moon} data={weeklyProgress} />
-          </View>
-
-          <View style={styles.section}>
-            <TouchableOpacity 
-              style={styles.insightsHeader}
-              onPress={() => setInsightsOpen(!insightsOpen)}
-            >
-              <Text style={styles.insightsTitle}>Insights from the past 30 days</Text>
-              {insightsOpen ? 
-                <ChevronDown size={20} color={Colors.light.text} /> : 
-                <ChevronRight size={20} color={Colors.light.text} />
-              }
-            </TouchableOpacity>
-            
-            {insightsOpen && (
-              <View style={styles.insightsContent}>
-                {hasData ? (
-                  <>
-                    <View style={styles.insightCard}>
-                      <Text style={styles.insightTitle}>Spiritual Fitness</Text>
-                      <Text style={styles.insightText}>{spiritualInsight}</Text>
-                    </View>
-                    
-                    <View style={styles.insightCard}>
-                      <Text style={styles.insightTitle}>Emotional Patterns</Text>
-                      <Text style={styles.insightText}>{emotionalInsight}</Text>
-                    </View>
-                    
-                    <View style={styles.quoteSection}>
-                      <Text style={styles.quoteText}>&ldquo;{quote}&rdquo;</Text>
-                    </View>
-                  </>
-                ) : (
-                  <View style={styles.noDataSection}>
-                    <Text style={styles.noDataText}>
-                      Complete at least 7 days of reviews to see your insights!
-                    </Text>
-                  </View>
-                )}
+            {/* Gratitude List Card */}
+            <View style={styles.progressCard}>
+              <View style={styles.progressHeader}>
+                <View style={styles.progressTitle}>
+                  <Heart size={20} color={Colors.light.tint} />
+                  <Text style={styles.progressTitleText}>Gratitude List</Text>
+                </View>
               </View>
-            )}
+              <View style={styles.weekContainer}>
+                {gratitudeWeeklyProgress.map((day, index) => (
+                  <View key={index} style={styles.dayContainer}>
+                    <Text style={styles.dayLabel}>{day.dayName.slice(0, 3)}</Text>
+                    <View style={[
+                      styles.dayCircle,
+                      day.completed && !day.isFuture ? styles.dayCircleCompleted : styles.dayCircleIncomplete
+                    ]}>
+                      {day.completed && !day.isFuture && (
+                        <View style={styles.completedDot} />
+                      )}
+                    </View>
+                  </View>
+                ))}
+              </View>
+              {(() => {
+                const thisWeekCompleted = gratitudeWeeklyProgress.filter(day => day.completed && !day.isFuture).length;
+                if (thisWeekCompleted > 0) {
+                  return (
+                    <Text style={styles.progressStats}>
+                      Great job! You completed {thisWeekCompleted} day{thisWeekCompleted !== 1 ? 's' : ''} this week.
+                    </Text>
+                  );
+                }
+                return null;
+              })()}
+            </View>
+
+            {/* Nightly Review Card */}
+            <View style={styles.progressCard}>
+              <View style={styles.progressHeader}>
+                <View style={styles.progressTitle}>
+                  <Moon size={20} color={Colors.light.tint} />
+                  <Text style={styles.progressTitleText}>Nightly Review</Text>
+                </View>
+              </View>
+              <View style={styles.weekContainer}>
+                {weeklyProgress.map((day, index) => (
+                  <View key={index} style={styles.dayContainer}>
+                    <Text style={styles.dayLabel}>{day.dayName.slice(0, 3)}</Text>
+                    <View style={[
+                      styles.dayCircle,
+                      day.completed && !day.isFuture ? styles.dayCircleCompleted : styles.dayCircleIncomplete
+                    ]}>
+                      {day.completed && !day.isFuture && (
+                        <View style={styles.completedDot} />
+                      )}
+                    </View>
+                  </View>
+                ))}
+              </View>
+              {weeklyStreak > 0 && (
+                <Text style={styles.progressStats}>
+                  Great job! You completed {weeklyStreak} day{weeklyStreak !== 1 ? 's' : ''} this week.
+                </Text>
+              )}
+            </View>
           </View>
 
-
+          {/* Insights Section */}
+          <View style={styles.section}>
+            <View style={styles.insightCard}>
+              <View style={styles.insightHeader}>
+                <Text style={styles.insightTitle}>Insights from the past 30 days</Text>
+                <Text style={styles.insightSubtitle}>Daily actions build long-term sobriety</Text>
+              </View>
+              {hasData ? (
+                <View style={styles.insightContent}>
+                  <View style={styles.insightSection}>
+                    <Text style={styles.insightSectionTitle}>Spiritual Fitness</Text>
+                    <Text style={styles.insightText}>{spiritualInsight}</Text>
+                  </View>
+                  
+                  <View style={styles.insightSection}>
+                    <Text style={styles.insightSectionTitle}>Emotional Patterns</Text>
+                    <Text style={styles.insightText}>{emotionalInsight}</Text>
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.noDataSection}>
+                  <Text style={styles.noDataText}>
+                    Complete at least 7 days of reviews to see your insights!
+                  </Text>
+                </View>
+              )}
+            </View>
+          </View>
         </ScrollView>
       </View>
     </ScreenContainer>

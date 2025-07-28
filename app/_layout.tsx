@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { EveningReviewProvider } from "@/hooks/use-evening-review-store";
+import { EveningReviewProvider } from "@/hooks/useEveningReviewStore";
 import { GratitudeProvider } from "@/hooks/useGratitudeStore";
 import { adjustFontWeight } from "@/constants/fonts";
 

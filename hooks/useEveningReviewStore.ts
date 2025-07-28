@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createContextHook from '@nkzw/create-context-hook';
-import { getDateKey, getWeekDates } from '@/utils/dateUtils';
+import { getDateKey } from '@/utils/dateUtils';
 
-const STORAGE_KEY = 'evening_review_entries';
+const STORAGE_KEY = 'aa-evening-review';
 
-export interface ReviewAnswers {
+export interface DailyReviewAnswers {
   resentful: boolean;
   selfish: boolean;
   fearful: boolean;
@@ -16,63 +16,63 @@ export interface ReviewAnswers {
   prayerMeditation: boolean;
 }
 
-interface ReviewData {
-  [date: string]: {
-    answers: ReviewAnswers;
-    completed: boolean;
-  };
+export interface EveningReviewData {
+  [date: string]: DailyReviewAnswers;
 }
 
 export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(() => {
-  const [data, setData] = useState<ReviewData>({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [completedDays, setCompletedDays] = useState<EveningReviewData>({});
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          setCompletedDays(JSON.parse(stored));
+        }
+      } catch (error) {
+        console.error('Error loading evening review data:', error);
+      }
+    };
+    
     loadData();
   }, []);
 
-  const loadData = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setData(JSON.parse(stored));
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(completedDays));
+      } catch (error) {
+        console.error('Error saving evening review data:', error);
       }
-    } catch (error) {
-      console.error('Error loading evening review data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+    
+    saveData();
+  }, [completedDays]);
 
-  const saveData = async (newData: ReviewData) => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
-      setData(newData);
-    } catch (error) {
-      console.error('Error saving evening review data:', error);
-    }
-  };
-
-  const getTodaysAnswers = (): ReviewAnswers | null => {
-    const today = getDateKey(new Date());
-    return data[today]?.answers || null;
+  const getTodayKey = () => {
+    return new Date().toISOString().split('T')[0];
   };
 
   const isCompletedToday = (): boolean => {
-    const today = getDateKey(new Date());
-    return data[today]?.completed || false;
+    return completedDays[getTodayKey()] !== undefined;
   };
 
-  const completeToday = (answers: ReviewAnswers) => {
-    const today = getDateKey(new Date());
-    const updatedData = {
-      ...data,
-      [today]: {
-        answers,
-        completed: true
-      }
-    };
-    saveData(updatedData);
+  const completeToday = (answers: DailyReviewAnswers) => {
+    const today = getTodayKey();
+    setCompletedDays(prev => ({
+      ...prev,
+      [today]: answers
+    }));
+  };
+
+  const uncompleteToday = () => {
+    const today = getTodayKey();
+    setCompletedDays(prev => {
+      const updated = { ...prev };
+      delete updated[today];
+      return updated;
+    });
   };
 
   const getWeeklyProgress = () => {
@@ -88,13 +88,13 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     for (let i = 0; i < 7; i++) {
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + i);
-      const dateKey = getDateKey(date);
+      const dateKey = date.toISOString().split('T')[0];
       
       weekDays.push({
         date: dateKey,
         dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        completed: data[dateKey]?.completed || false,
-        isToday: dateKey === getDateKey(new Date()),
+        completed: completedDays[dateKey] !== undefined,
+        isToday: dateKey === getTodayKey(),
         isFuture: date > today
       });
     }
@@ -127,19 +127,19 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     for (let i = 0; i < 30; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
-      const dateKey = getDateKey(date);
+      const dateKey = date.toISOString().split('T')[0];
       
-      const dayData = data[dateKey];
-      if (dayData?.completed) {
+      const dayData = completedDays[dateKey];
+      if (dayData) {
         completedCount++;
-        if (dayData.answers.resentful) resentfulCount++;
-        if (dayData.answers.selfish) selfishCount++;
-        if (dayData.answers.fearful) fearfulCount++;
-        if (dayData.answers.apology) apologyCount++;
-        if (dayData.answers.kindness) kindnessCount++;
-        if (dayData.answers.spiritual) spiritualCount++;
-        if (dayData.answers.aaTalk) aaTalkCount++;
-        if (dayData.answers.prayerMeditation) prayerMeditationCount++;
+        if (dayData.resentful) resentfulCount++;
+        if (dayData.selfish) selfishCount++;
+        if (dayData.fearful) fearfulCount++;
+        if (dayData.apology) apologyCount++;
+        if (dayData.kindness) kindnessCount++;
+        if (dayData.spiritual) spiritualCount++;
+        if (dayData.aaTalk) aaTalkCount++;
+        if (dayData.prayerMeditation) prayerMeditationCount++;
       }
     }
     
@@ -156,96 +156,20 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     };
   };
 
-  const uncompleteToday = () => {
-    const today = getDateKey(new Date());
-    if (data[today]) {
-      const updatedData = { ...data };
-      delete updatedData[today];
-      saveData(updatedData);
-    }
-  };
 
-  // Legacy methods for backward compatibility
-  const entries = Object.entries(data).map(([date, dayData]) => ({
-    date,
-    timestamp: Date.now(),
-    answers: dayData.answers,
-    notes: undefined
-  }));
 
-  const currentAnswers = getTodaysAnswers() || {
-    resentful: false,
-    selfish: false,
-    fearful: false,
-    apology: false,
-    kindness: false,
-    spiritual: false,
-    aaTalk: false,
-    prayerMeditation: false
-  };
-
-  const currentNotes = '';
-
-  const updateAnswer = (question: keyof ReviewAnswers, value: boolean) => {
-    const today = getDateKey(new Date());
-    const currentData = data[today] || { answers: currentAnswers, completed: false };
-    const updatedData = {
-      ...data,
-      [today]: {
-        ...currentData,
-        answers: {
-          ...currentData.answers,
-          [question]: value
-        }
-      }
-    };
-    saveData(updatedData);
-  };
-
-  const updateNotes = (notes: string) => {
-    // Notes functionality not implemented in web app structure
-  };
-
-  const saveReview = () => {
-    const today = getDateKey(new Date());
-    const currentData = data[today];
-    if (currentData) {
-      completeToday(currentData.answers);
-    }
-  };
-
-  const hasCompletedToday = () => {
-    return isCompletedToday();
-  };
-
-  const getTodayProgress = () => {
-    const answeredCount = Object.values(currentAnswers).filter(answer => answer !== undefined).length;
-    return {
-      answered: answeredCount,
-      total: 8,
-      percentage: Math.round((answeredCount / 8) * 100)
-    };
+  const getTodaysAnswers = (): DailyReviewAnswers | null => {
+    const today = getTodayKey();
+    return completedDays[today] || null;
   };
 
   return {
-    // New methods matching web app
-    getTodaysAnswers,
     isCompletedToday,
     completeToday,
     uncompleteToday,
     getWeeklyProgress,
     getWeeklyStreak,
     get30DayInsights,
-    
-    // Legacy methods for backward compatibility
-    entries,
-    currentAnswers,
-    currentNotes,
-    isLoading,
-    updateAnswer,
-    updateNotes,
-    saveReview,
-    hasCompletedToday,
-    getTodayProgress
+    getTodaysAnswers
   };
 });

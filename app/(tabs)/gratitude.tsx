@@ -11,7 +11,7 @@ import {
   Platform
 } from 'react-native';
 import { Stack, router } from 'expo-router';
-import { Plus, Trash2, CheckCircle, Heart } from 'lucide-react-native';
+import { Check, Heart } from 'lucide-react-native';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -35,13 +35,14 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   subtitle: {
-    fontSize: 16,
-    color: Colors.light.muted,
-    lineHeight: 22
+    fontSize: 18,
+    fontWeight: adjustFontWeight('600', true),
+    color: Colors.light.text,
+    marginBottom: 16
   },
   inputSection: {
     padding: 20,
-    backgroundColor: Colors.light.background
+    backgroundColor: Colors.light.cardBackground
   },
   inputContainer: {
     flexDirection: 'row',
@@ -62,9 +63,15 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: Colors.light.tint,
     borderRadius: 12,
-    padding: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true)
   },
   listContainer: {
     flex: 1,
@@ -104,10 +111,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     lineHeight: 22
   },
-  deleteButton: {
-    padding: 8,
-    marginLeft: 12
-  },
+
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
@@ -149,74 +153,36 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 12
   },
-  addMoreButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: Colors.light.tint,
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8
-  },
-  addMoreButtonText: {
-    color: Colors.light.tint,
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600', true)
-  }
+
 });
 
 export default function GratitudeListScreen() {
   const {
     getTodaysItems,
-    isCompletedToday,
-    addItemsToToday,
     completeToday,
-    uncompleteToday
+    addItemsToToday
   } = useGratitudeStore();
   
   const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
-  const [inputText, setInputText] = useState('');
+  const [inputValue, setInputValue] = useState('');
   
   useEffect(() => {
     const todaysItems = getTodaysItems();
     setGratitudeItems(todaysItems);
   }, [getTodaysItems]);
 
-  const handleAddEntry = () => {
-    if (inputText.trim()) {
-      const newItems = [...gratitudeItems, inputText.trim()];
+  const handleAddGratitude = () => {
+    if (inputValue.trim()) {
+      const newItems = [...gratitudeItems, inputValue.trim()];
       setGratitudeItems(newItems);
-      addItemsToToday([inputText.trim()]);
-      setInputText('');
+      addItemsToToday([inputValue.trim()]);
+      setInputValue('');
     }
   };
 
-  const handleDeleteEntry = (index: number) => {
-    Alert.alert(
-      'Delete Gratitude',
-      'Are you sure you want to delete this gratitude entry?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Delete', 
-          style: 'destructive', 
-          onPress: () => {
-            const updatedItems = gratitudeItems.filter((_, i) => i !== index);
-            setGratitudeItems(updatedItems);
-            // Update the stored items by replacing all items with the filtered list
-            console.log('Deleting item, updated items:', updatedItems);
-            completeToday(updatedItems); // This will update the stored items
-          }
-        }
-      ]
-    );
-  };
+
 
   const handleComplete = () => {
-    console.log('Complete button pressed, items:', gratitudeItems);
-    
     if (gratitudeItems.length === 0) {
       Alert.alert(
         'Complete Gratitude List',
@@ -234,35 +200,24 @@ export default function GratitudeListScreen() {
         {
           text: 'Save & Continue',
           onPress: () => {
-            console.log('Saving gratitude items:', gratitudeItems);
             completeToday(gratitudeItems);
-            // Add delay to ensure data is saved before navigation
-            setTimeout(() => {
-              console.log('Navigating to insights');
-              router.push('/(tabs)/insights');
-            }, 200);
+            router.push('/(tabs)/insights');
           }
         }
       ]
     );
   };
-  
-  const handleAddMore = () => {
-    uncompleteToday();
-    // Refresh the items after uncompleting
-    const todaysItems = getTodaysItems();
-    setGratitudeItems(todaysItems);
+
+
+  const handleKeyPress = (e: any) => {
+    if (e.nativeEvent.key === 'Enter') {
+      handleAddGratitude();
+    }
   };
 
   const renderGratitudeItem = ({ item, index }: { item: string; index: number }) => (
     <View style={styles.gratitudeItem}>
       <Text style={styles.gratitudeText}>{item}</Text>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => handleDeleteEntry(index)}
-      >
-        <Trash2 size={20} color={Colors.light.muted} />
-      </TouchableOpacity>
     </View>
   );
 
@@ -279,29 +234,29 @@ export default function GratitudeListScreen() {
             <Heart size={24} color={Colors.light.tint} />
             <Text style={styles.title}>Gratitude List</Text>
           </View>
-          <Text style={styles.subtitle}>
-            Today I&apos;m grateful for:
-          </Text>
         </View>
 
         <View style={styles.inputSection}>
+          <Text style={styles.subtitle}>
+            Today I&apos;m grateful for:
+          </Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder="I&apos;m grateful for..."
+              placeholder="e.g., My sobriety"
               placeholderTextColor={Colors.light.muted}
-              value={inputText}
-              onChangeText={setInputText}
-              onSubmitEditing={handleAddEntry}
+              value={inputValue}
+              onChangeText={setInputValue}
+              onKeyPress={handleKeyPress}
               returnKeyType="done"
               multiline
             />
             <TouchableOpacity
               style={styles.addButton}
-              onPress={handleAddEntry}
-              disabled={!inputText.trim()}
+              onPress={handleAddGratitude}
+              disabled={!inputValue.trim()}
             >
-              <Plus size={24} color="white" />
+              <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -317,36 +272,17 @@ export default function GratitudeListScreen() {
           )}
         </View>
 
-        {isCompletedToday() ? (
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.completeButton}
-              onPress={() => router.push('/(tabs)/insights')}
-            >
-              <CheckCircle size={20} color="white" />
-              <Text style={styles.completeButtonText}>View Insights</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addMoreButton}
-              onPress={handleAddMore}
-            >
-              <Plus size={20} color={Colors.light.tint} />
-              <Text style={styles.addMoreButtonText}>Add More</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={[
-              styles.completeButton,
-              gratitudeItems.length === 0 && styles.completeButtonDisabled
-            ]}
-            onPress={handleComplete}
-            disabled={gratitudeItems.length === 0}
-          >
-            <CheckCircle size={20} color="white" />
-            <Text style={styles.completeButtonText}>Complete</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={[
+            styles.completeButton,
+            gratitudeItems.length === 0 && styles.completeButtonDisabled
+          ]}
+          onPress={handleComplete}
+          disabled={gratitudeItems.length === 0}
+        >
+          <Check size={20} color="white" />
+          <Text style={styles.completeButtonText}>Complete</Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </ScreenContainer>
   );
