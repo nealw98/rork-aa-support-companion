@@ -6,6 +6,10 @@ export const crisisTriggers = {
     "I can't go on",
     "I want to die",
     "I'm going to kill myself",
+    "I want to kill myself",
+    "kill myself",
+    "thinking of killing myself",
+    "thinking about killing myself",
     "I don't want to live anymore",
     "I'm suicidal",
     "I'm going to harm myself"
