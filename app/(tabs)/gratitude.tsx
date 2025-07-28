@@ -205,7 +205,9 @@ export default function GratitudeListScreen() {
           onPress: () => {
             const updatedItems = gratitudeItems.filter((_, i) => i !== index);
             setGratitudeItems(updatedItems);
-            addItemsToToday(updatedItems);
+            // Update the stored items by replacing all items with the filtered list
+            console.log('Deleting item, updated items:', updatedItems);
+            completeToday(updatedItems); // This will update the stored items
           }
         }
       ]
@@ -213,6 +215,8 @@ export default function GratitudeListScreen() {
   };
 
   const handleComplete = () => {
+    console.log('Complete button pressed, items:', gratitudeItems);
+    
     if (gratitudeItems.length === 0) {
       Alert.alert(
         'Complete Gratitude List',
@@ -230,11 +234,13 @@ export default function GratitudeListScreen() {
         {
           text: 'Save & Continue',
           onPress: () => {
+            console.log('Saving gratitude items:', gratitudeItems);
             completeToday(gratitudeItems);
             // Add delay to ensure data is saved before navigation
             setTimeout(() => {
-              router.push('/insights');
-            }, 100);
+              console.log('Navigating to insights');
+              router.push('/(tabs)/insights');
+            }, 200);
           }
         }
       ]
@@ -315,7 +321,7 @@ export default function GratitudeListScreen() {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.completeButton}
-              onPress={() => router.push('/insights')}
+              onPress={() => router.push('/(tabs)/insights')}
             >
               <CheckCircle size={20} color="white" />
               <Text style={styles.completeButtonText}>View Insights</Text>

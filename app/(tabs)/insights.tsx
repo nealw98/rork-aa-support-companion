@@ -224,8 +224,13 @@ export default function InsightsScreen() {
   const gratitudeStore = useGratitudeStore();
   const eveningStore = useEveningReviewStore();
   
+  console.log('Insights screen loaded');
+  console.log('Gratitude store:', !!gratitudeStore);
+  console.log('Evening store:', !!eveningStore);
+  
   // Check if stores are properly initialized
   if (!gratitudeStore || !eveningStore) {
+    console.log('Stores not initialized');
     return (
       <ScreenContainer>
         <Stack.Screen options={{ title: 'Recovery Insights' }} />
@@ -244,6 +249,10 @@ export default function InsightsScreen() {
   const gratitudeWeeklyProgress = gratitudeStore.getWeeklyGratitudeProgress();
   const gratitudeDaysCount = gratitudeStore.getGratitudeDaysCount();
   const counts = eveningStore.getThirtyDayCounts();
+  
+  console.log('Gratitude weekly progress:', gratitudeWeeklyProgress);
+  console.log('Gratitude days count:', gratitudeDaysCount);
+  console.log('Evening counts:', counts);
   
   const hasData = hasEnoughData(counts);
   const spiritualInsight = hasData ? makeSpiritualFitness(counts, gratitudeDaysCount) : '';
