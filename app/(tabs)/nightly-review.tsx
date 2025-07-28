@@ -471,7 +471,7 @@ export default function NightlyReviewScreen() {
           disabled={!allAnswered}
         >
           <Text style={styles.saveButtonText}>
-            {allAnswered ? 'Complete Nightly Review' : `Answer all questions to complete (${answeredCount}/${totalQuestions})`}
+            Complete Nightly Review
           </Text>
         </TouchableOpacity>
       </View>

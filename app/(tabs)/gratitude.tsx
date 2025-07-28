@@ -202,7 +202,10 @@ export default function GratitudeListScreen() {
           text: 'Save & Continue',
           onPress: () => {
             completeToday(gratitudeItems);
-            router.push('/(tabs)/insights');
+            // Add delay to ensure data is saved before navigation
+            setTimeout(() => {
+              router.push('/(tabs)/insights');
+            }, 200);
           }
         }
       ]
