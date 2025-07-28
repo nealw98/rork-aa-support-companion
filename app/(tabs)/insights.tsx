@@ -21,6 +21,7 @@ import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 import ScreenContainer from '@/components/ScreenContainer';
+import WeeklyProgressCard from '@/components/WeeklyProgressCard';
 
 const styles = StyleSheet.create({
   container: {
@@ -218,65 +219,38 @@ const styles = StyleSheet.create({
 });
 
 export default function InsightsScreen() {
-  const { getWeeklyGratitudeProgress, getGratitudeDaysCount } = useGratitudeStore();
-  const { getWeeklyProgress, getWeeklyStreak, getThirtyDayCounts } = useEveningReviewStore();
-  
   const [insightsOpen, setInsightsOpen] = useState(false);
+  
+  const gratitudeStore = useGratitudeStore();
+  const eveningStore = useEveningReviewStore();
+  
+  // Check if stores are properly initialized
+  if (!gratitudeStore || !eveningStore) {
+    return (
+      <ScreenContainer>
+        <Stack.Screen options={{ title: 'Recovery Insights' }} />
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Loading...</Text>
+          </View>
+        </View>
+      </ScreenContainer>
+    );
+  }
 
   const today = new Date();
-  const weeklyProgress = getWeeklyProgress();
+  const weeklyProgress = eveningStore.getWeeklyProgress();
 
-  const gratitudeWeeklyProgress = getWeeklyGratitudeProgress();
-  const gratitudeDaysCount = getGratitudeDaysCount();
-  const counts = getThirtyDayCounts();
+  const gratitudeWeeklyProgress = gratitudeStore.getWeeklyGratitudeProgress();
+  const gratitudeDaysCount = gratitudeStore.getGratitudeDaysCount();
+  const counts = eveningStore.getThirtyDayCounts();
   
   const hasData = hasEnoughData(counts);
   const spiritualInsight = hasData ? makeSpiritualFitness(counts, gratitudeDaysCount) : '';
   const emotionalInsight = hasData ? makeEmotionalPatterns(counts) : '';
   const quote = pickRecoveryQuote(counts, gratitudeDaysCount);
 
-  const renderWeeklyProgress = (title: string, icon: any, data: any[], type: 'gratitude' | 'review') => {
-    const completedDays = data.filter(day => day.completed && !day.isFuture).length;
-    const IconComponent = icon;
-    
-    return (
-      <View style={styles.progressCard}>
-        <View style={styles.progressHeader}>
-          <View style={styles.progressTitle}>
-            <IconComponent size={20} color={Colors.light.tint} />
-            <Text style={styles.progressTitle}>{title}</Text>
-          </View>
-        </View>
-        
-        <View style={styles.weekContainer}>
-          {data.map((day, index) => {
-            const dayName = day.dayName ? day.dayName.slice(0, 3) : new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' });
-            const isFuture = day.isFuture !== undefined ? day.isFuture : new Date(day.date) > new Date();
-            
-            return (
-              <View key={day.date || index} style={styles.dayContainer}>
-                <Text style={styles.dayLabel}>{dayName}</Text>
-                <View style={[
-                  styles.dayCircle,
-                  (day.completed && !isFuture) ? styles.dayCircleCompleted : styles.dayCircleIncomplete
-                ]}>
-                  {(day.completed && !isFuture) && (
-                    <View style={styles.completedDot} />
-                  )}
-                </View>
-              </View>
-            );
-          })}
-        </View>
-        
-        {completedDays > 0 && (
-          <Text style={styles.progressStats}>
-            Great job! You completed {completedDays} day{completedDays !== 1 ? 's' : ''} this week.
-          </Text>
-        )}
-      </View>
-    );
-  };
+
 
   return (
     <ScreenContainer>
@@ -295,8 +269,8 @@ export default function InsightsScreen() {
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.section}>
-            {renderWeeklyProgress('Gratitude List', Heart, gratitudeWeeklyProgress, 'gratitude')}
-            {renderWeeklyProgress('Nightly Review', Moon, weeklyProgress, 'review')}
+            <WeeklyProgressCard title="Gratitude List" icon={Heart} data={gratitudeWeeklyProgress} />
+            <WeeklyProgressCard title="Nightly Review" icon={Moon} data={weeklyProgress} />
           </View>
 
           <View style={styles.section}>

@@ -11,7 +11,8 @@ import {
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar } from 'lucide-react-native';
-import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
+import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
+import { router } from 'expo-router';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
@@ -139,6 +140,11 @@ export default function EveningReview() {
     completeToday(answers);
     setShowConfirmation(true);
     setShowAlert(false);
+    
+    // Add delay to ensure data is saved before navigation
+    setTimeout(() => {
+      router.push('/insights');
+    }, 100);
   };
 
   const handleStartNew = () => {
@@ -174,6 +180,11 @@ export default function EveningReview() {
   const totalQuestions = 8;
   const allAnswered = answeredCount === totalQuestions;
 
+  // Show friendly message if no data found and not editing
+  if (!isCompleted && answeredCount === 0) {
+    // This is the initial state - show the form
+  }
+  
   if (showConfirmation || isCompleted) {
     return (
       <ScreenContainer style={styles.container}>
@@ -200,6 +211,15 @@ export default function EveningReview() {
               Thanks for checking in. You&apos;re doing the work — one day at a time.
             </Text>
           </View>
+          
+          {/* Friendly message for first time users */}
+          {!isCompleted && answeredCount === 0 && (
+            <View style={styles.card}>
+              <Text style={styles.confirmationText}>
+                No review found for today. Start now to see your insights.
+              </Text>
+            </View>
+          )}
 
           {/* Weekly Progress */}
           <View style={styles.card}>
@@ -248,13 +268,11 @@ export default function EveningReview() {
 
 
           <View style={styles.buttonContainer}>
-            {!isCompleted && (
-              <TouchableOpacity style={styles.outlineButton} onPress={handleStartNew}>
-                <Text style={styles.outlineButtonText}>Start New Review</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={styles.unsubmitButton} onPress={handleUnsubmit}>
-              <Text style={styles.unsubmitButtonText}>Unsubmit</Text>
+            <TouchableOpacity style={styles.completeButton} onPress={() => router.push('/insights')}>
+              <Text style={styles.completeButtonText}>View Insights</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.outlineButton} onPress={handleUnsubmit}>
+              <Text style={styles.outlineButtonText}>Edit Review</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

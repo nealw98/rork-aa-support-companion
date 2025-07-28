@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Platform
 } from 'react-native';
 import { Stack, router } from 'expo-router';
-import { Plus, Trash2, CheckCircle } from 'lucide-react-native';
+import { Plus, Trash2, CheckCircle, Heart } from 'lucide-react-native';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -138,49 +138,122 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: adjustFontWeight('600', true)
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8
+  },
+  buttonContainer: {
+    padding: 20,
+    gap: 12
+  },
+  addMoreButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: Colors.light.tint,
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8
+  },
+  addMoreButtonText: {
+    color: Colors.light.tint,
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true)
   }
 });
 
 export default function GratitudeListScreen() {
-  const { todayEntries, addEntry, removeEntry, canComplete, hasCompletedToday } = useGratitudeStore();
+  const {
+    getTodaysItems,
+    isCompletedToday,
+    addItemsToToday,
+    completeToday,
+    uncompleteToday
+  } = useGratitudeStore();
+  
+  const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
   const [inputText, setInputText] = useState('');
+  
+  useEffect(() => {
+    const todaysItems = getTodaysItems();
+    setGratitudeItems(todaysItems);
+  }, [getTodaysItems]);
 
   const handleAddEntry = () => {
     if (inputText.trim()) {
-      addEntry(inputText);
+      const newItems = [...gratitudeItems, inputText.trim()];
+      setGratitudeItems(newItems);
+      addItemsToToday([inputText.trim()]);
       setInputText('');
     }
   };
 
-  const handleDeleteEntry = (id: string) => {
+  const handleDeleteEntry = (index: number) => {
     Alert.alert(
       'Delete Gratitude',
       'Are you sure you want to delete this gratitude entry?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => removeEntry(id) }
+        { 
+          text: 'Delete', 
+          style: 'destructive', 
+          onPress: () => {
+            const updatedItems = gratitudeItems.filter((_, i) => i !== index);
+            setGratitudeItems(updatedItems);
+            addItemsToToday(updatedItems);
+          }
+        }
       ]
     );
   };
 
   const handleComplete = () => {
-    if (hasCompletedToday()) {
-      router.push('/insights');
-    } else {
+    if (gratitudeItems.length === 0) {
       Alert.alert(
         'Complete Gratitude List',
-        'Add at least 3 gratitude items to complete your daily practice.',
+        'Please add at least one gratitude item before completing.',
         [{ text: 'OK' }]
       );
+      return;
     }
+    
+    Alert.alert(
+      'Complete Today\'s Gratitude List?',
+      'Mark today\'s gratitude practice as complete and view your weekly insights and progress.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Save & Continue',
+          onPress: () => {
+            completeToday(gratitudeItems);
+            // Add delay to ensure data is saved before navigation
+            setTimeout(() => {
+              router.push('/insights');
+            }, 100);
+          }
+        }
+      ]
+    );
+  };
+  
+  const handleAddMore = () => {
+    uncompleteToday();
+    // Refresh the items after uncompleting
+    const todaysItems = getTodaysItems();
+    setGratitudeItems(todaysItems);
   };
 
-  const renderGratitudeItem = ({ item }: { item: any }) => (
+  const renderGratitudeItem = ({ item, index }: { item: string; index: number }) => (
     <View style={styles.gratitudeItem}>
-      <Text style={styles.gratitudeText}>{item.text}</Text>
+      <Text style={styles.gratitudeText}>{item}</Text>
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => handleDeleteEntry(item.id)}
+        onPress={() => handleDeleteEntry(index)}
       >
         <Trash2 size={20} color={Colors.light.muted} />
       </TouchableOpacity>
@@ -196,9 +269,12 @@ export default function GratitudeListScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Daily Gratitude</Text>
+          <View style={styles.titleContainer}>
+            <Heart size={24} color={Colors.light.tint} />
+            <Text style={styles.title}>Gratitude List</Text>
+          </View>
           <Text style={styles.subtitle}>
-            List at least 3 things you&apos;re grateful for today. Gratitude is the foundation of a positive mindset in recovery.
+            Today I&apos;m grateful for:
           </Text>
         </View>
 
@@ -225,41 +301,46 @@ export default function GratitudeListScreen() {
         </View>
 
         <View style={styles.listContainer}>
-          <View style={styles.listHeader}>
-            <Text style={styles.listTitle}>Today&apos;s Gratitude</Text>
-            <Text style={styles.counter}>{todayEntries.length} items</Text>
-          </View>
-
-          {todayEntries.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <CheckCircle size={48} color={Colors.light.muted} />
-              <Text style={styles.emptyText}>
-                Start by adding something you&apos;re grateful for today.
-              </Text>
-            </View>
-          ) : (
+          {gratitudeItems.length > 0 && (
             <FlatList
-              data={todayEntries}
+              data={gratitudeItems}
               renderItem={renderGratitudeItem}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index.toString()}
               showsVerticalScrollIndicator={false}
             />
           )}
         </View>
 
-        <TouchableOpacity
-          style={[
-            styles.completeButton,
-            !canComplete() && styles.completeButtonDisabled
-          ]}
-          onPress={handleComplete}
-          disabled={!canComplete()}
-        >
-          <CheckCircle size={20} color="white" />
-          <Text style={styles.completeButtonText}>
-            {hasCompletedToday() ? 'View Insights' : `Complete (${todayEntries.length}/3)`}
-          </Text>
-        </TouchableOpacity>
+        {isCompletedToday() ? (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.completeButton}
+              onPress={() => router.push('/insights')}
+            >
+              <CheckCircle size={20} color="white" />
+              <Text style={styles.completeButtonText}>View Insights</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addMoreButton}
+              onPress={handleAddMore}
+            >
+              <Plus size={20} color={Colors.light.tint} />
+              <Text style={styles.addMoreButtonText}>Add More</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={[
+              styles.completeButton,
+              gratitudeItems.length === 0 && styles.completeButtonDisabled
+            ]}
+            onPress={handleComplete}
+            disabled={gratitudeItems.length === 0}
+          >
+            <CheckCircle size={20} color="white" />
+            <Text style={styles.completeButtonText}>Complete</Text>
+          </TouchableOpacity>
+        )}
       </KeyboardAvoidingView>
     </ScreenContainer>
   );
