@@ -378,15 +378,17 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     
     // Check for crisis triggers before sending to AI
     const lowerText = text.toLowerCase();
-    const isSelfHarm = crisisTriggers.selfHarm.some(trigger => lowerText.includes(trigger.toLowerCase())) || 
-                       crisisTriggers.psychologicalCrisis.some(trigger => lowerText.includes(trigger.toLowerCase()));
+    const isSelfHarm = crisisTriggers.selfHarm.some(trigger => lowerText.includes(trigger.toLowerCase()));
     const isViolence = crisisTriggers.violence.some(trigger => lowerText.includes(trigger.toLowerCase()));
+    const isPsychologicalCrisis = crisisTriggers.psychologicalCrisis.some(trigger => lowerText.includes(trigger.toLowerCase()));
+    const isPsychologicalDistress = crisisTriggers.psychologicalDistress.some(trigger => lowerText.includes(trigger.toLowerCase()));
     
-    if (isSelfHarm || isViolence) {
+    if (isSelfHarm || isViolence || isPsychologicalCrisis || isPsychologicalDistress) {
       let responseText = '';
+      
       if (isViolence) {
-        responseText = crisisResponses.violence;
-      } else {
+        responseText = crisisResponses.violence.all;
+      } else if (isSelfHarm) {
         switch (sponsorType) {
           case 'salty':
             responseText = crisisResponses.selfHarm['Salty Sam'];
@@ -399,6 +401,34 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
             break;
           default:
             responseText = crisisResponses.selfHarm['Steady Eddie'];
+        }
+      } else if (isPsychologicalCrisis) {
+        switch (sponsorType) {
+          case 'salty':
+            responseText = crisisResponses.psychologicalCrisis['Salty Sam'];
+            break;
+          case 'supportive':
+            responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
+            break;
+          case 'grace':
+            responseText = crisisResponses.psychologicalCrisis['Gentle Grace'];
+            break;
+          default:
+            responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
+        }
+      } else if (isPsychologicalDistress) {
+        switch (sponsorType) {
+          case 'salty':
+            responseText = crisisResponses.psychologicalDistress['Salty Sam'];
+            break;
+          case 'supportive':
+            responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
+            break;
+          case 'grace':
+            responseText = crisisResponses.psychologicalDistress['Gentle Grace'];
+            break;
+          default:
+            responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
         }
       }
       
