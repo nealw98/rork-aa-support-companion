@@ -253,9 +253,34 @@ Amen.`,
     source: "Alcoholics Anonymous, Pages 85-86"
   },
   {
-    title: "On Awakening",
-    content: `On awakening let us think about the twenty-four hours ahead. We consider our plans for the day. Before we begin, we ask God to direct our thinking, especially asking that it be divorced from self-pity, dishonest or self-seeking motives. Under these conditions we can employ our mental faculties with assurance, for after all God gave us brains to use. Our thought-life will be placed on a much higher plane when our thinking is cleared of wrong motives.`,
-    source: "Alcoholics Anonymous, Page 86"
+    title: "Morning Prayer",
+    content: `**Morning Prayer (Inspired by Big Book, p. 86)**
+
+> God, as I begin this day, please direct my thinking.
+> Clear my mind of self-pity, dishonesty, and selfish motives.
+> Help me approach today with clarity, purpose, and love.
+>
+> When I don't know what to do, grant me inspiration.
+> Give me an intuitive thought, a gentle nudge, or the patience to wait.
+> Teach me to trust that Your guidance will come.
+>
+> Help me relax and take it easy.
+> Keep me from forcing outcomes or trying to run the show.
+> Let me remember that I'm not in charge — You are.
+>
+> As I go about my day, show me the next right action.
+> Give me what I need to handle whatever comes my way.
+>
+> Remove my fear.
+> Direct my attention to what You would have me be.
+> Give me faith in Your plan and the courage to act.
+>
+> Remove my selfishness and self-centeredness.
+> Direct my thinking toward others.
+> Show me how I can be of service — useful, kind, and willing.
+>
+> Thy will, not mine, be done. Amen.`,
+    source: "Inspired by Alcoholics Anonymous, Page 86"
   }
 ];
 
