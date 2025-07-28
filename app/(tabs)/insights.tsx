@@ -116,13 +116,7 @@ const styles = StyleSheet.create({
   },
   dayCircleIncomplete: {
     backgroundColor: 'transparent',
-    borderColor: Colors.light.divider
-  },
-  completedDot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: 'white'
+    borderColor: Colors.light.text
   },
   insightCard: {
     backgroundColor: Colors.light.cardBackground,
@@ -223,11 +217,7 @@ export default function InsightsScreen() {
                     <View style={[
                       styles.dayCircle,
                       day.completed && !day.isFuture ? styles.dayCircleCompleted : styles.dayCircleIncomplete
-                    ]}>
-                      {day.completed && !day.isFuture && (
-                        <View style={styles.completedDot} />
-                      )}
-                    </View>
+                    ]} />
                   </View>
                 ))}
               </View>
@@ -259,11 +249,7 @@ export default function InsightsScreen() {
                     <View style={[
                       styles.dayCircle,
                       day.completed && !day.isFuture ? styles.dayCircleCompleted : styles.dayCircleIncomplete
-                    ]}>
-                      {day.completed && !day.isFuture && (
-                        <View style={styles.completedDot} />
-                      )}
-                    </View>
+                    ]} />
                   </View>
                 ))}
               </View>
