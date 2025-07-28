@@ -2,6 +2,7 @@ import createContextHook from "@nkzw/create-context-hook";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ChatMessage, SponsorType } from "@/types";
+import { crisisTriggers, crisisResponses } from "@/constants/crisisTriggers";
 
 // Enhanced Salty Sam's personality system prompt
 const SALTY_SAM_SYSTEM_PROMPT = `You are Salty Sam, a gruff, no-nonsense AA sponsor with decades of sobriety. You've "seen it all and done it all" in AA. Your personality traits:
@@ -374,6 +375,44 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
+    
+    // Check for crisis triggers before sending to AI
+    const lowerText = text.toLowerCase();
+    const isSelfHarm = crisisTriggers.selfHarm.some(trigger => lowerText.includes(trigger.toLowerCase())) || 
+                       crisisTriggers.psychologicalCrisis.some(trigger => lowerText.includes(trigger.toLowerCase()));
+    const isViolence = crisisTriggers.violence.some(trigger => lowerText.includes(trigger.toLowerCase()));
+    
+    if (isSelfHarm || isViolence) {
+      let responseText = '';
+      if (isViolence) {
+        responseText = crisisResponses.violence;
+      } else {
+        switch (sponsorType) {
+          case 'salty':
+            responseText = crisisResponses.selfHarm['Salty Sam'];
+            break;
+          case 'supportive':
+            responseText = crisisResponses.selfHarm['Steady Eddie'];
+            break;
+          case 'grace':
+            responseText = crisisResponses.selfHarm['Gentle Grace'];
+            break;
+          default:
+            responseText = crisisResponses.selfHarm['Steady Eddie'];
+        }
+      }
+      
+      const crisisResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        text: responseText,
+        sender: 'bot',
+        timestamp: Date.now() + 1,
+      };
+      
+      setMessages([...updatedMessages, crisisResponse]);
+      setIsLoading(false);
+      return;
+    }
     
     try {
       // Prepare messages for API call

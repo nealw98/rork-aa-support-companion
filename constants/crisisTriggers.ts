@@ -29,7 +29,10 @@ export const crisisTriggers = {
 };
 
 export const crisisResponses = {
-  gentleGrace: "This is really serious, and I care about your safety. I want you to talk to someone trained to help—please call 988 or visit findahelpline.com now. You're not alone.",
-  steadyEddie: "This is the time to find real support. Call 988 or go to findahelpline.com. They can help in ways I can’t.",
-  saltySam: "This is serious. I’m not the right person to help with this—but someone out there is. Call 988 or go to findahelpline.com right now. Don’t wait."
+  selfHarm: {
+    'Gentle Grace': 'This is really serious, and I care about your safety. Please call 988 or visit findahelpline.com. You\'re not alone.',
+    'Steady Eddie': 'This is the time to find real support. Call 988 or go to findahelpline.com. They can help in ways I can’t.',
+    'Salty Sam': 'This is serious. I’m not the right person to help—but someone out there is. Call 988 or go to findahelpline.com. Don’t wait.'
+  },
+  violence: 'This is serious. If you\'re in danger of hurting someone, call 911 or step away now. Please don’t act on it—get help instead.'
 };
