@@ -51,7 +51,14 @@ export default function PrayersScreen() {
             
             {expandedPrayer === index && (
               <View style={styles.prayerContent}>
-                <Text style={styles.prayerText}>{prayer.content}</Text>
+                {prayer.title === "Morning Prayer" ? (
+                  <View>
+                    <Text style={[styles.prayerText, styles.italicText]}>As I begin this day, I ask the God of my understanding:</Text>
+                    <Text style={styles.prayerText}>{prayer.content.split('As I begin this day, I ask the God of my understanding:')[1]}</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.prayerText}>{prayer.content}</Text>
+                )}
                 <Text style={styles.prayerSource}>— {prayer.source}</Text>
               </View>
             )}
@@ -134,6 +141,9 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     lineHeight: 24,
     marginBottom: 16,
+  },
+  italicText: {
+    fontStyle: 'italic',
   },
   prayerSource: {
     fontSize: 14,

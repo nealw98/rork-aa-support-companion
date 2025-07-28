@@ -254,7 +254,7 @@ Amen.`,
   },
   {
     title: "Morning Prayer",
-    content: `*As I begin this day, I ask the God of my understanding:*
+    content: `As I begin this day, I ask the God of my understanding:
 
 Direct my thinking and remove from me self-centered fear and selfish motives.
 Help me walk with clarity, courage, and purpose.
