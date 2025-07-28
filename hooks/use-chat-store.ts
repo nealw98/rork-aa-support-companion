@@ -378,10 +378,31 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     
     // Check for crisis triggers before sending to AI
     const lowerText = text.toLowerCase();
-    const isSelfHarm = crisisTriggers.selfHarm.some(trigger => lowerText.includes(trigger.toLowerCase()));
-    const isViolence = crisisTriggers.violence.some(trigger => lowerText.includes(trigger.toLowerCase()));
-    const isPsychologicalCrisis = crisisTriggers.psychologicalCrisis.some(trigger => lowerText.includes(trigger.toLowerCase()));
-    const isPsychologicalDistress = crisisTriggers.psychologicalDistress.some(trigger => lowerText.includes(trigger.toLowerCase()));
+    console.log('Checking crisis triggers for text:', lowerText);
+    
+    const isSelfHarm = crisisTriggers.selfHarm.some(trigger => {
+      const match = lowerText.includes(trigger.toLowerCase());
+      if (match) console.log('Self-harm trigger matched:', trigger);
+      return match;
+    });
+    
+    const isViolence = crisisTriggers.violence.some(trigger => {
+      const match = lowerText.includes(trigger.toLowerCase());
+      if (match) console.log('Violence trigger matched:', trigger);
+      return match;
+    });
+    
+    const isPsychologicalCrisis = crisisTriggers.psychologicalCrisis.some(trigger => {
+      const match = lowerText.includes(trigger.toLowerCase());
+      if (match) console.log('Psychological crisis trigger matched:', trigger);
+      return match;
+    });
+    
+    const isPsychologicalDistress = crisisTriggers.psychologicalDistress.some(trigger => {
+      const match = lowerText.includes(trigger.toLowerCase());
+      if (match) console.log('Psychological distress trigger matched:', trigger);
+      return match;
+    });
     
     if (isSelfHarm || isViolence || isPsychologicalCrisis || isPsychologicalDistress) {
       let responseText = '';
