@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   dayCircleIncomplete: {
     backgroundColor: 'transparent',
-    borderColor: Colors.light.text
+    borderColor: Colors.light.muted
   },
   insightCard: {
     backgroundColor: Colors.light.cardBackground,
