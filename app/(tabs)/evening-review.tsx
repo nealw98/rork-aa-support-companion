@@ -11,7 +11,7 @@ import {
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar } from 'lucide-react-native';
-import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
+import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import { router } from 'expo-router';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -28,7 +28,8 @@ const formatDateDisplay = (date: Date): string => {
 };
 
 export default function EveningReview() {
-  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, getTodaysAnswers } = useEveningReviewStore();
+  const eveningReviewStore = useEveningReviewStore();
+  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, getTodaysAnswers } = eveningReviewStore;
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   

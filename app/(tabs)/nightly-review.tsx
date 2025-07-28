@@ -215,7 +215,8 @@ const questions = [
 ];
 
 export default function NightlyReviewScreen() {
-  const { isCompletedToday, completeToday, getTodaysAnswers } = useEveningReviewStore();
+  const eveningReviewStore = useEveningReviewStore();
+  const { isCompletedToday, completeToday, getTodaysAnswers } = eveningReviewStore;
   
   // Form state
   const [resentfulFlag, setResentfulFlag] = useState('');

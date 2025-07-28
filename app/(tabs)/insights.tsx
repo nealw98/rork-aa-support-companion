@@ -171,8 +171,11 @@ const styles = StyleSheet.create({
 });
 
 export default function InsightsScreen() {
-  const { getWeeklyProgress, getWeeklyStreak, get30DayInsights } = useEveningReviewStore();
-  const { getWeeklyGratitudeProgress, getGratitudeDaysCount } = useGratitudeStore();
+  const eveningReviewStore = useEveningReviewStore();
+  const gratitudeStore = useGratitudeStore();
+  
+  const { getWeeklyProgress, getWeeklyStreak, get30DayInsights } = eveningReviewStore;
+  const { getWeeklyGratitudeProgress, getGratitudeDaysCount } = gratitudeStore;
   
   const today = new Date();
   const weeklyProgress = getWeeklyProgress();

@@ -157,11 +157,12 @@ const styles = StyleSheet.create({
 });
 
 export default function GratitudeListScreen() {
+  const gratitudeStore = useGratitudeStore();
   const {
     getTodaysItems,
     completeToday,
     addItemsToToday
-  } = useGratitudeStore();
+  } = gratitudeStore;
   
   const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
