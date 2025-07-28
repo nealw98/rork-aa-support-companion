@@ -8,11 +8,34 @@ export const crisisTriggers = {
     "I'm going to kill myself",
     "I want to kill myself",
     "kill myself",
+    "killing myself",
     "thinking of killing myself",
     "thinking about killing myself",
+    "thinking of suicide",
+    "thinking about suicide",
     "I don't want to live anymore",
     "I'm suicidal",
-    "I'm going to harm myself"
+    "I'm going to harm myself",
+    "want to end my life",
+    "end my life",
+    "ending my life",
+    "take my own life",
+    "taking my own life",
+    "hurt myself",
+    "harm myself",
+    "cut myself",
+    "cutting myself",
+    "suicide",
+    "suicidal thoughts",
+    "suicidal ideation",
+    "better off dead",
+    "world would be better without me",
+    "everyone would be better off without me",
+    "no point in living",
+    "life isn't worth living",
+    "want to disappear forever",
+    "wish I was dead",
+    "wish I were dead"
   ],
   violence: [
     "I'm going to hurt someone",
@@ -47,6 +70,62 @@ export const crisisTriggers = {
     "I have to protect myself from them before they get me"
   ]
 };
+
+// Normalize text for better matching
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ') // Remove punctuation
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+}
+
+// Enhanced crisis detection with better matching
+export function detectCrisis(text: string): {
+  type: keyof typeof crisisTriggers | null;
+  matchedTrigger?: string;
+} {
+  const normalizedText = normalizeText(text);
+  console.log('Normalized text for crisis detection:', normalizedText);
+
+  // Check each category in order of severity
+  const categories: (keyof typeof crisisTriggers)[] = ['violence', 'selfHarm', 'psychologicalCrisis', 'psychologicalDistress'];
+  
+  for (const category of categories) {
+    const triggers = crisisTriggers[category];
+    
+    for (const trigger of triggers) {
+      const normalizedTrigger = normalizeText(trigger);
+      
+      // Check for exact phrase match
+      if (normalizedText.includes(normalizedTrigger)) {
+        console.log(`Crisis detected - Category: ${category}, Trigger: "${trigger}"`);
+        return { type: category, matchedTrigger: trigger };
+      }
+      
+      // Check for word-boundary matches to catch variations
+      const words = normalizedTrigger.split(' ');
+      if (words.length > 1) {
+        // For multi-word triggers, check if all key words are present
+        const keyWords = words.filter(word => word.length > 2); // Skip short words like "I", "my", etc.
+        if (keyWords.length > 0 && keyWords.every(word => normalizedText.includes(word))) {
+          // Additional check: ensure words appear in reasonable proximity
+          const firstWordIndex = normalizedText.indexOf(keyWords[0]);
+          const lastWordIndex = normalizedText.lastIndexOf(keyWords[keyWords.length - 1]);
+          const distance = lastWordIndex - firstWordIndex;
+          
+          // If words are within 20 characters of each other, consider it a match
+          if (distance < 20) {
+            console.log(`Crisis detected - Category: ${category}, Trigger: "${trigger}" (word proximity match)`);
+            return { type: category, matchedTrigger: trigger };
+          }
+        }
+      }
+    }
+  }
+
+  return { type: null };
+}
 
 export const crisisResponses = {
   selfHarm: {

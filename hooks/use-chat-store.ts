@@ -2,7 +2,7 @@ import createContextHook from "@nkzw/create-context-hook";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ChatMessage, SponsorType } from "@/types";
-import { crisisTriggers, crisisResponses } from "@/constants/crisisTriggers";
+import { detectCrisis, crisisResponses } from "@/constants/crisisTriggers";
 
 // Enhanced Salty Sam's personality system prompt
 const SALTY_SAM_SYSTEM_PROMPT = `You are Salty Sam, a gruff, no-nonsense AA sponsor with decades of sobriety. You've "seen it all and done it all" in AA. Your personality traits:
@@ -376,40 +376,17 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     setMessages(updatedMessages);
     setIsLoading(true);
     
-    // Check for crisis triggers before sending to AI
-    const lowerText = text.toLowerCase();
-    console.log('Checking crisis triggers for text:', lowerText);
+    // Check for crisis triggers before sending to AI using centralized detection
+    const { type: crisisType, matchedTrigger } = detectCrisis(text);
     
-    const isSelfHarm = crisisTriggers.selfHarm.some(trigger => {
-      const match = lowerText.includes(trigger.toLowerCase());
-      if (match) console.log('Self-harm trigger matched:', trigger);
-      return match;
-    });
-    
-    const isViolence = crisisTriggers.violence.some(trigger => {
-      const match = lowerText.includes(trigger.toLowerCase());
-      if (match) console.log('Violence trigger matched:', trigger);
-      return match;
-    });
-    
-    const isPsychologicalCrisis = crisisTriggers.psychologicalCrisis.some(trigger => {
-      const match = lowerText.includes(trigger.toLowerCase());
-      if (match) console.log('Psychological crisis trigger matched:', trigger);
-      return match;
-    });
-    
-    const isPsychologicalDistress = crisisTriggers.psychologicalDistress.some(trigger => {
-      const match = lowerText.includes(trigger.toLowerCase());
-      if (match) console.log('Psychological distress trigger matched:', trigger);
-      return match;
-    });
-    
-    if (isSelfHarm || isViolence || isPsychologicalCrisis || isPsychologicalDistress) {
+    if (crisisType) {
+      console.log(`Crisis detected: ${crisisType}, matched trigger: "${matchedTrigger}"`);
+      
       let responseText = '';
       
-      if (isViolence) {
+      if (crisisType === 'violence') {
         responseText = crisisResponses.violence.all;
-      } else if (isSelfHarm) {
+      } else if (crisisType === 'selfHarm') {
         switch (sponsorType) {
           case 'salty':
             responseText = crisisResponses.selfHarm['Salty Sam'];
@@ -423,7 +400,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
           default:
             responseText = crisisResponses.selfHarm['Steady Eddie'];
         }
-      } else if (isPsychologicalCrisis) {
+      } else if (crisisType === 'psychologicalCrisis') {
         switch (sponsorType) {
           case 'salty':
             responseText = crisisResponses.psychologicalCrisis['Salty Sam'];
@@ -437,7 +414,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
           default:
             responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
         }
-      } else if (isPsychologicalDistress) {
+      } else if (crisisType === 'psychologicalDistress') {
         switch (sponsorType) {
           case 'salty':
             responseText = crisisResponses.psychologicalDistress['Salty Sam'];
