@@ -79,8 +79,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          title: "Sober Chat",
-          headerTitle: "Sober Chat",
+          title: "AI Sponsor",
+          headerTitle: "AI Sponsor",
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} style={styles.tabIcon} />,
         }}
       />
