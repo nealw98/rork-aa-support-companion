@@ -481,11 +481,6 @@ export default function NightlyReviewScreen() {
           <Text style={styles.subtitle}>
             Nightly inventory based on AA's 'When We Retire at Night' guidance
           </Text>
-          <View style={styles.progressContainer}>
-            <Text style={styles.progressSubtext}>
-              Progress: {answeredCount}/{totalQuestions} questions answered
-            </Text>
-          </View>
         </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
