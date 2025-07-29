@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -176,6 +176,7 @@ export default function GratitudeListScreen() {
   
   const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<TextInput>(null);
   
   useEffect(() => {
     const todaysItems = getTodaysItems();
@@ -188,6 +189,7 @@ export default function GratitudeListScreen() {
       setGratitudeItems(newItems);
       addItemsToToday([inputValue.trim()]);
       setInputValue('');
+      inputRef.current?.blur();
     }
   };
 
@@ -263,14 +265,17 @@ export default function GratitudeListScreen() {
           </Text>
           <View style={styles.inputContainer}>
             <TextInput
+              ref={inputRef}
               style={styles.textInput}
               placeholder="e.g., My sobriety"
               placeholderTextColor={Colors.light.muted}
               value={inputValue}
               onChangeText={setInputValue}
               onKeyPress={handleKeyPress}
+              onSubmitEditing={handleAddGratitude}
               returnKeyType="done"
               multiline
+              blurOnSubmit={true}
             />
             <TouchableOpacity
               style={styles.addButton}

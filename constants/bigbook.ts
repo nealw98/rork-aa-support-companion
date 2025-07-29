@@ -210,6 +210,27 @@ export const bigBookData: BigBookCategory[] = [
 // AA Prayers for offline reading
 export const aaPrayers = [
   {
+    title: "Morning Prayer",
+    content: `As I begin this day, I ask the God of my understanding:
+Direct my thinking and remove from me self-centered fear and selfish motives. Help me walk with clarity, courage, and purpose.
+
+When I don't know what to do, grant me inspiration. Give me an intuitive thought, a gentle nudge, or the patience to wait.
+Teach me to trust that Your guidance will come.
+
+Help me relax and take it easy. Keep me from forcing outcomes or trying to run the show.
+Let me remember that I'm not in charge — You are.
+
+As I go about my day, show me the next right action. Give me what I need to handle whatever comes my way.
+
+Remove my fear. Direct my attention to what You would have me be. Give me faith in Your plan and the courage to act.
+
+Remove my selfishness and self-centeredness. Direct my thinking toward others.
+Show me how I can be of service — useful, kind, and willing.
+
+Thy will, not mine, be done. Amen.`,
+    source: "Inspired by \"On Awakening,\" Alcoholics Anonymous, p. 86"
+  },
+  {
     title: "Third Step Prayer",
     content: `God, I offer myself to Thee — to build with me and to do with me as Thou wilt. Relieve me of the bondage of self, that I may better do Thy will. Take away my difficulties, that victory over them may bear witness to those I would help of Thy Power, Thy Love, and Thy Way of life. May I do Thy will always!`,
     source: "Alcoholics Anonymous, Page 63"
@@ -263,27 +284,6 @@ With gratitude and trust, I place myself in Your care, one day at a time.
 
 Thy will, not mine, be done. Amen.`,
     source: ""
-  },
-  {
-    title: "Morning Prayer",
-    content: `As I begin this day, I ask the God of my understanding:
-Direct my thinking and remove from me self-centered fear and selfish motives. Help me walk with clarity, courage, and purpose.
-
-When I don't know what to do, grant me inspiration. Give me an intuitive thought, a gentle nudge, or the patience to wait.
-Teach me to trust that Your guidance will come.
-
-Help me relax and take it easy. Keep me from forcing outcomes or trying to run the show.
-Let me remember that I'm not in charge — You are.
-
-As I go about my day, show me the next right action. Give me what I need to handle whatever comes my way.
-
-Remove my fear. Direct my attention to what You would have me be. Give me faith in Your plan and the courage to act.
-
-Remove my selfishness and self-centeredness. Direct my thinking toward others.
-Show me how I can be of service — useful, kind, and willing.
-
-Thy will, not mine, be done. Amen.`,
-    source: "Inspired by \"On Awakening,\" Alcoholics Anonymous, p. 86"
   }
 ];
 
