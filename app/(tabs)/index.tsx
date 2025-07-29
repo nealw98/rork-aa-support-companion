@@ -297,34 +297,36 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        {/* Date Navigation Section */}
-        <View style={styles.dateNavigationSection}>
-          <TouchableOpacity 
-            onPress={() => navigateDate('prev')} 
-            style={styles.navButton}
-            testID="prev-day-button"
-            activeOpacity={0.7}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
-            <ChevronLeft size={24} color={Colors.light.muted} />
-            <Text style={styles.navButtonText}>Yesterday</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            onPress={() => navigateDate('next')} 
-            style={styles.navButton}
-            testID="next-day-button"
-            activeOpacity={0.7}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
-            <Text style={styles.navButtonText}>Tomorrow</Text>
-            <ChevronRight size={24} color={Colors.light.muted} />
-          </TouchableOpacity>
-        </View>
+
 
         {/* Daily Reflection Section */}
         <View style={styles.reflectionSection}>
           <View style={styles.reflectionCard}>
+            {/* Date Navigation inside card */}
+            <View style={styles.cardDateNavigation}>
+              <TouchableOpacity 
+                onPress={() => navigateDate('prev')} 
+                style={styles.cardNavButton}
+                testID="prev-day-button"
+                activeOpacity={0.7}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <ChevronLeft size={16} color={Colors.light.muted} />
+                <Text style={styles.cardNavButtonText}>Yesterday</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                onPress={() => navigateDate('next')} 
+                style={styles.cardNavButton}
+                testID="next-day-button"
+                activeOpacity={0.7}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={styles.cardNavButtonText}>Tomorrow</Text>
+                <ChevronRight size={16} color={Colors.light.muted} />
+              </TouchableOpacity>
+            </View>
+            
             <Text style={styles.reflectionTitle}>{reflection.title}</Text>
             
             <Text style={styles.quote}>"{reflection.quote}"</Text>
@@ -450,23 +452,23 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     paddingHorizontal: 8,
   },
-  dateNavigationSection: {
+  cardDateNavigation: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    marginBottom: 24,
+    marginBottom: 16,
+    paddingTop: 4,
   },
-  navButton: {
+  cardNavButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
+    padding: 4,
   },
-  navButtonText: {
-    fontSize: 16,
+  cardNavButtonText: {
+    fontSize: 12,
     color: Colors.light.muted,
-    fontWeight: adjustFontWeight('500'),
-    marginHorizontal: 4,
+    fontWeight: adjustFontWeight('400'),
+    marginHorizontal: 2,
   },
   datePickerContainer: {
     alignItems: 'center',
