@@ -380,12 +380,7 @@ export default function EveningReview() {
           </View>
         </View>
 
-        {/* Progress indicator */}
-        <View style={styles.progressIndicator}>
-          <Text style={styles.progressText}>
-            {allAnswered ? 'Complete Nightly Review' : `Answer all questions to complete (${answeredCount}/${totalQuestions})`}
-          </Text>
-        </View>
+
 
         {/* Complete Button */}
         <TouchableOpacity 
@@ -394,7 +389,7 @@ export default function EveningReview() {
           disabled={!allAnswered}
         >
           <Text style={[styles.completeButtonText, !allAnswered && styles.completeButtonTextDisabled]}>
-            {allAnswered ? 'Complete Nightly Review' : `Answer all questions (${answeredCount}/${totalQuestions})`}
+            Complete
           </Text>
         </TouchableOpacity>
 
