@@ -315,6 +315,17 @@ export default function HomeScreen() {
                 <Text style={styles.cardNavButtonText}>Yesterday</Text>
               </TouchableOpacity>
               
+              {/* Date Picker in center */}
+              <TouchableOpacity 
+                onPress={openDatePicker}
+                style={styles.centerDatePickerButton}
+                testID="date-picker-button"
+                activeOpacity={0.7}
+              >
+                <Calendar size={14} color={Colors.light.muted} />
+                <Text style={styles.centerDatePickerText}>{formatDateForPicker(selectedDate)}</Text>
+              </TouchableOpacity>
+              
               <TouchableOpacity 
                 onPress={() => navigateDate('next')} 
                 style={styles.cardNavButton}
@@ -342,18 +353,7 @@ export default function HomeScreen() {
             <Text style={styles.thought}>{reflection.thought}</Text>
           </View>
           
-          {/* Date Picker - Moved below reflection */}
-          <View style={styles.datePickerContainer}>
-            <TouchableOpacity 
-              onPress={openDatePicker}
-              style={styles.datePickerButton}
-              testID="date-picker-button"
-              activeOpacity={0.7}
-            >
-              <Calendar size={14} color={Colors.light.muted} />
-              <Text style={styles.datePickerText}>{formatDateForPicker(selectedDate)}</Text>
-            </TouchableOpacity>
-          </View>
+
         </View>
         
         {/* Copyright Notice */}
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 16,
-    paddingTop: 4,
+    paddingTop: 2,
   },
   cardNavButton: {
     flexDirection: 'row',
@@ -470,25 +470,21 @@ const styles = StyleSheet.create({
     fontWeight: adjustFontWeight('400'),
     marginHorizontal: 2,
   },
-  datePickerContainer: {
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  datePickerButton: {
+  centerDatePickerButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 20,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.4)',
   },
-  datePickerText: {
-    fontSize: 14,
+  centerDatePickerText: {
+    fontSize: 12,
     fontWeight: adjustFontWeight('500'),
     color: Colors.light.muted,
-    marginLeft: 6,
+    marginLeft: 4,
   },
   reflectionSection: {
     paddingHorizontal: 16,
