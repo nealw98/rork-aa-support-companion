@@ -156,6 +156,52 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     };
   };
 
+  const get7DayInsights = () => {
+    const today = new Date();
+    
+    let completedCount = 0;
+    let resentfulCount = 0;
+    let selfishCount = 0;
+    let fearfulCount = 0;
+    let apologyCount = 0;
+    let kindnessCount = 0;
+    let spiritualCount = 0;
+    let aaTalkCount = 0;
+    let prayerMeditationCount = 0;
+    
+    // Iterate through the last 7 days
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const dateKey = date.toISOString().split('T')[0];
+      
+      const dayData = completedDays[dateKey];
+      if (dayData) {
+        completedCount++;
+        if (dayData.resentful) resentfulCount++;
+        if (dayData.selfish) selfishCount++;
+        if (dayData.fearful) fearfulCount++;
+        if (dayData.apology) apologyCount++;
+        if (dayData.kindness) kindnessCount++;
+        if (dayData.spiritual) spiritualCount++;
+        if (dayData.aaTalk) aaTalkCount++;
+        if (dayData.prayerMeditation) prayerMeditationCount++;
+      }
+    }
+    
+    return {
+      completedDays: completedCount,
+      resentfulCount,
+      selfishCount, 
+      fearfulCount,
+      apologyCount,
+      kindnessCount,
+      spiritualCount,
+      aaTalkCount,
+      prayerMeditationCount,
+    };
+  };
+
 
 
   const getTodaysAnswers = (): DailyReviewAnswers | null => {
@@ -170,6 +216,7 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     getWeeklyProgress,
     getWeeklyStreak,
     get30DayInsights,
+    get7DayInsights,
     getTodaysAnswers
   };
 });

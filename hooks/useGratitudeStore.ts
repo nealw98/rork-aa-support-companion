@@ -122,6 +122,24 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     return Object.keys(completedDays).length;
   };
 
+  const get7DayGratitudeDaysCount = () => {
+    const today = new Date();
+    let count = 0;
+    
+    // Iterate through the last 7 days
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const dateKey = date.toISOString().split('T')[0];
+      
+      if (completedDays[dateKey]) {
+        count++;
+      }
+    }
+    
+    return count;
+  };
+
 
 
 
@@ -133,6 +151,7 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     uncompleteToday,
     addItemsToToday,
     getWeeklyGratitudeProgress,
-    getGratitudeDaysCount
+    getGratitudeDaysCount,
+    get7DayGratitudeDaysCount
   };
 });

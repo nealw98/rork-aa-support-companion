@@ -168,15 +168,15 @@ export default function InsightsScreen() {
   const eveningReviewStore = useEveningReviewStore();
   const gratitudeStore = useGratitudeStore();
   
-  const { getWeeklyProgress, getWeeklyStreak, get30DayInsights } = eveningReviewStore;
-  const { getWeeklyGratitudeProgress, getGratitudeDaysCount } = gratitudeStore;
+  const { getWeeklyProgress, getWeeklyStreak, get7DayInsights } = eveningReviewStore;
+  const { getWeeklyGratitudeProgress, get7DayGratitudeDaysCount } = gratitudeStore;
   
   const today = new Date();
   const weeklyProgress = getWeeklyProgress();
   const weeklyStreak = getWeeklyStreak();
   const gratitudeWeeklyProgress = getWeeklyGratitudeProgress();
-  const gratitudeDaysCount = getGratitudeDaysCount();
-  const counts = get30DayInsights();
+  const gratitudeDaysCount = get7DayGratitudeDaysCount();
+  const counts = get7DayInsights();
   
   const hasData = hasEnoughData(counts);
   const spiritualInsight = hasData ? makeSpiritualFitness(counts, gratitudeDaysCount) : '';
@@ -265,7 +265,7 @@ export default function InsightsScreen() {
           <View style={styles.section}>
             <View style={styles.insightCard}>
               <View style={styles.insightHeader}>
-                <Text style={styles.insightTitle}>Insights from the past 30 days</Text>
+                <Text style={styles.insightTitle}>Insights from the past 7 days</Text>
                 <Text style={styles.insightSubtitle}>Daily actions build long-term sobriety</Text>
               </View>
               {hasData ? (
@@ -283,7 +283,7 @@ export default function InsightsScreen() {
               ) : (
                 <View style={styles.noDataSection}>
                   <Text style={styles.noDataText}>
-                    Complete at least 7 days of reviews to see your insights!
+                    Complete at least 3 days of reviews to see your insights!
                   </Text>
                 </View>
               )}
