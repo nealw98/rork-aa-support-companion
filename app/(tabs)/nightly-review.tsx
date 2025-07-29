@@ -482,9 +482,6 @@ export default function NightlyReviewScreen() {
             Nightly inventory based on AA's 'When We Retire at Night' guidance
           </Text>
           <View style={styles.progressContainer}>
-            <Text style={styles.progressText}>
-              All questions must be answered to complete your nightly review
-            </Text>
             <Text style={styles.progressSubtext}>
               Progress: {answeredCount}/{totalQuestions} questions answered
             </Text>
@@ -508,7 +505,7 @@ export default function NightlyReviewScreen() {
           disabled={!allAnswered}
         >
           <Text style={styles.saveButtonText}>
-            Complete Nightly Review
+            Complete — {answeredCount}/{totalQuestions}
           </Text>
         </TouchableOpacity>
       </View>
