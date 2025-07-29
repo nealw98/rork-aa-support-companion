@@ -85,13 +85,19 @@ export const crisisTriggers = {
     "Someone's out to get me",
     "I know they're listening",
     "The walls have ears",
-    "I can’t tell who’s real",
-    "I’m being watched"
+    "I can't tell who's real",
+    "I'm being watched",
+    "They're out to get me",
+    "Voices are telling me",
+    "I can't tell what's real",
+    "They're controlling my mind",
+    "Someone is trying to control my thoughts",
+    "They put something in my head"
   ],
   psychologicalCrisis: [
     "I'm in crisis",
     "The government implanted a chip in me",
-    "I know they’re poisoning my food",
+    "I know they're poisoning my food",
     "They're in the walls and watching me",
     "I have to protect myself from them before they get me"
   ]
@@ -156,11 +162,11 @@ export function detectCrisis(text: string): {
 export const crisisResponses = {
   selfHarm: {
     "Gentle Grace": "This is really serious, and I care about your safety. Please call 988 or visit findahelpline.com. You're not alone.",
-    "Steady Eddie": "This is the time to find real support. Call 988 or go to findahelpline.com. They can help in ways I can’t.",
-    "Salty Sam": "This is serious. I’m not the right person to help—but someone out there is. Call 988 or go to findahelpline.com. Don’t wait."
+    "Steady Eddie": "This is the time to find real support. Call 988 or go to findahelpline.com. They can help in ways I can't.",
+    "Salty Sam": "This is serious. I'm not the right person to help—but someone out there is. Call 988 or go to findahelpline.com. Don't wait."
   },
   violence: {
-    all: "This is serious. If you're in danger of hurting someone, call 911 or step away now. Please don’t act on it—get help instead."
+    all: "This is serious. If you're in danger of hurting someone, call 911 or step away now. Please don't act on it—get help instead."
   },
   psychologicalCrisis: {
     "Gentle Grace": "You're describing something that sounds like a mental health emergency. Please call 911 or go to the nearest emergency room. You deserve real-time support.",
@@ -168,8 +174,8 @@ export const crisisResponses = {
     "Salty Sam": "This is a real emergency. Call 911 or get to the ER. Don't mess around with this—get real help, now."
   },
   psychologicalDistress: {
-    "Gentle Grace": "It sounds like you're overwhelmed. Take a breath. You're not alone, and you don’t have to hold this by yourself. You can call 988 or visit warmline.org to talk with someone right now.",
-    "Steady Eddie": "These moments can feel heavy, but they pass. You’re not alone. Reach out to 988 or check out warmline.org for someone to talk to.",
-    "Salty Sam": "Sounds like your head's spinning. Don’t sit in that alone. Call 988 or hit up warmline.org and talk to someone who gets it."
+    "Gentle Grace": "It sounds like you're overwhelmed. Take a breath. You're not alone, and you don't have to hold this by yourself. You can call 988 or visit warmline.org to talk with someone right now.",
+    "Steady Eddie": "These moments can feel heavy, but they pass. You're not alone. Reach out to 988 or check out warmline.org for someone to talk to.",
+    "Salty Sam": "Sounds like your head's spinning. Don't sit in that alone. Call 988 or hit up warmline.org and talk to someone who gets it."
   }
 };
