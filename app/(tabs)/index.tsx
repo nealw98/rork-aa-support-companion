@@ -293,7 +293,7 @@ export default function HomeScreen() {
           <Text style={styles.appTitle}>Sober Dailies</Text>
           
           <Text style={styles.appDescription}>
-            Everything you need to support your daily recovery practice, combining traditional AA wisdom with helpful tools for recovery.
+            This app helps you stay sober with simple daily tools for spiritual growth and self-reflection.
           </Text>
         </View>
 
