@@ -262,9 +262,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
   },
   headerContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: Colors.light.cardBackground,
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 8,
@@ -285,9 +283,9 @@ const styles = StyleSheet.create({
   topContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: Colors.light.cardBackground,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.3)',
+    borderBottomColor: Colors.light.divider,
   },
   clearButton: {
     padding: 12,
@@ -305,9 +303,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     marginHorizontal: 2,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: Colors.light.background,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: Colors.light.divider,
   },
   sponsorButtonActive: {
     backgroundColor: Colors.light.tint,
