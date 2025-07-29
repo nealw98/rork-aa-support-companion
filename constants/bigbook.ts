@@ -248,9 +248,21 @@ Amen.`,
     source: "Commonly used in AA meetings"
   },
   {
-    title: "When We Retire At Night",
-    content: `When we retire at night, we constructively review our day. Were we resentful, selfish, dishonest or afraid? Do we owe an apology? Have we kept something to ourselves which should be discussed with another person at once? Were we kind and loving toward all? What could we have done better? Were we thinking of ourselves most of the time? Or were we thinking of what we could do for others, of what we could pack into the stream of life? But we must be careful not to drift into worry, remorse or morbid reflection, for that would diminish our usefulness to others. After making our review we ask God's forgiveness and inquire what corrective measures should be taken.`,
-    source: "Alcoholics Anonymous, Pages 85-86"
+    title: "Evening Prayer",
+    content: `As this day closes:
+
+I thank the God of my understanding for the gifts, lessons, and people You placed in my path today, and for the strength to stay sober and the moments of grace I noticed.
+
+I look honestly at my day and ask forgiveness for the times I was selfish, afraid, or unkind. Place on my heart any amends I need to make, and give me willingness.
+
+I release tonight every worry, resentment, and fear of tomorrow, and ask You to grant me restful sleep that restores body, mind, and spirit.
+
+Guide my thoughts and actions tomorrow that they may align with Your will, helping me grow in usefulness to others.
+
+With gratitude and trust, I place myself in Your care, one day at a time.
+
+Thy will, not mine, be done. Amen.`,
+    source: ""
   },
   {
     title: "Morning Prayer",

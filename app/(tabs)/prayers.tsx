@@ -56,20 +56,21 @@ export default function PrayersScreen() {
                     <Text style={[styles.prayerText, styles.italicText]}>As I begin this day, I ask the God of my understanding:</Text>
                     <Text style={styles.prayerText}>{prayer.content.split('As I begin this day, I ask the God of my understanding:')[1]}</Text>
                   </View>
+                ) : prayer.title === "Evening Prayer" ? (
+                  <View>
+                    <Text style={[styles.prayerText, styles.italicText]}>As this day closes:</Text>
+                    <Text style={styles.prayerText}>{prayer.content.split('As this day closes:')[1]}</Text>
+                  </View>
                 ) : (
                   <Text style={styles.prayerText}>{prayer.content}</Text>
                 )}
-                <Text style={styles.prayerSource}>— {prayer.source}</Text>
+                {prayer.source && <Text style={styles.prayerSource}>— {prayer.source}</Text>}
               </View>
             )}
           </View>
         ))}
         
-        <View style={styles.copyrightContainer}>
-          <Text style={styles.copyrightText}>
-            Copyright © 1990 by Alcoholics Anonymous World Services, Inc. All rights reserved.
-          </Text>
-        </View>
+
       </ScrollView>
     </ScreenContainer>
   );
