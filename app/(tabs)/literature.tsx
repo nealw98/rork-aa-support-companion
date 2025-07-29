@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { Book, ChevronRight } from "lucide-react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 import ScreenContainer from "@/components/ScreenContainer";
 import Colors from "@/constants/colors";
 import { adjustFontWeight } from "@/constants/fonts";
@@ -34,6 +35,14 @@ export default function LiteratureScreen() {
 
   return (
     <ScreenContainer style={styles.container}>
+      <LinearGradient
+        colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
+        style={styles.backgroundGradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        locations={[0, 1]}
+      />
+      
       <View style={styles.content}>
         <Text style={styles.title}>AA Literature</Text>
         <Text style={styles.subtitle}>
@@ -72,6 +81,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
+  backgroundGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 20,
@@ -95,11 +111,11 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   optionCard: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 12,
     padding: 20,
     borderWidth: 1,
-    borderColor: Colors.light.divider,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   optionContent: {
     flexDirection: 'row',

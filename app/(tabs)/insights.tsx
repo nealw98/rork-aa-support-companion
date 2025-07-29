@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Heart, Moon, TrendingUp } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import {
@@ -25,11 +26,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background
   },
+  backgroundGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   header: {
     padding: 20,
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.divider
+    borderBottomColor: 'rgba(255, 255, 255, 0.3)'
   },
   titleContainer: {
     flexDirection: 'row',
@@ -60,10 +68,12 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   progressCard: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 12,
     padding: 16,
-    marginBottom: 12
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)'
   },
   progressHeader: {
     flexDirection: 'row',
@@ -119,9 +129,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.muted
   },
   insightCard: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 12,
-    padding: 20
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)'
   },
   insightHeader: {
     marginBottom: 16
@@ -187,6 +199,13 @@ export default function InsightsScreen() {
       <Stack.Screen options={{ title: 'Recovery Insights' }} />
       
       <View style={styles.container}>
+        <LinearGradient
+          colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
+          style={styles.backgroundGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          locations={[0, 1]}
+        />
         <View style={styles.header}>
           <View style={styles.titleContainer}>
             <TrendingUp size={24} color={Colors.light.tint} />

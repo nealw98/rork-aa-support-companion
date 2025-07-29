@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { Check, Heart } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -22,11 +23,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background
   },
+  backgroundGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   header: {
     padding: 20,
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.divider
+    borderBottomColor: 'rgba(255, 255, 255, 0.3)'
   },
   title: {
     fontSize: 24,
@@ -42,7 +50,7 @@ const styles = StyleSheet.create({
   },
   inputSection: {
     padding: 20,
-    backgroundColor: Colors.light.cardBackground
+    backgroundColor: 'rgba(255, 255, 255, 0.6)'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -97,13 +105,15 @@ const styles = StyleSheet.create({
     borderRadius: 16
   },
   gratitudeItem: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)'
   },
   gratitudeText: {
     flex: 1,
@@ -233,6 +243,13 @@ export default function GratitudeListScreen() {
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
+        <LinearGradient
+          colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
+          style={styles.backgroundGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          locations={[0, 1]}
+        />
         <View style={styles.header}>
           <View style={styles.titleContainer}>
             <Heart size={24} color={Colors.light.tint} />

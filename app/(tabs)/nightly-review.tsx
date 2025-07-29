@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { CheckCircle, Circle } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
@@ -32,11 +33,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background
   },
+  backgroundGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   header: {
     padding: 20,
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.divider
+    borderBottomColor: 'rgba(255, 255, 255, 0.3)'
   },
   title: {
     fontSize: 24,
@@ -76,11 +84,13 @@ const styles = StyleSheet.create({
     flex: 1
   },
   questionContainer: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     margin: 16,
     marginBottom: 8,
     borderRadius: 12,
-    padding: 20
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)'
   },
   questionText: {
     fontSize: 16,
@@ -116,10 +126,12 @@ const styles = StyleSheet.create({
     fontWeight: adjustFontWeight('600', true)
   },
   notesContainer: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     margin: 16,
     borderRadius: 12,
-    padding: 20
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)'
   },
   notesTitle: {
     fontSize: 16,
@@ -164,12 +176,14 @@ const styles = StyleSheet.create({
     padding: 20
   },
   completionCard: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 12,
     padding: 24,
     alignItems: 'center',
     maxWidth: 400,
-    width: '100%'
+    width: '100%',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)'
   },
   completionTitle: {
     fontSize: 18,
@@ -185,11 +199,13 @@ const styles = StyleSheet.create({
     lineHeight: 22
   },
   dateHeader: {
-    backgroundColor: Colors.light.cardBackground,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     margin: 16,
     borderRadius: 12,
     padding: 16,
-    alignItems: 'center'
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)'
   },
   dateText: {
     fontSize: 18,
@@ -395,6 +411,13 @@ export default function NightlyReviewScreen() {
       <ScreenContainer>
         <Stack.Screen options={{ title: 'Nightly Review' }} />
         <View style={styles.container}>
+          <LinearGradient
+            colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
+            style={styles.backgroundGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            locations={[0, 1]}
+          />
           <View style={styles.header}>
             <Text style={styles.title}>Nightly Review</Text>
             <Text style={styles.subtitle}>Loading...</Text>
@@ -410,6 +433,13 @@ export default function NightlyReviewScreen() {
       <ScreenContainer>
         <Stack.Screen options={{ title: 'Nightly Review' }} />
         <View style={styles.container}>
+          <LinearGradient
+            colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
+            style={styles.backgroundGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            locations={[0, 1]}
+          />
           <View style={styles.header}>
             <Text style={styles.title}>Nightly Review</Text>
             <Text style={styles.subtitle}>Complete</Text>
@@ -439,6 +469,13 @@ export default function NightlyReviewScreen() {
       <Stack.Screen options={{ title: 'Nightly Review' }} />
       
       <View style={styles.container}>
+        <LinearGradient
+          colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
+          style={styles.backgroundGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          locations={[0, 1]}
+        />
         <View style={styles.header}>
           <Text style={styles.title}>Nightly Review</Text>
           <Text style={styles.subtitle}>
