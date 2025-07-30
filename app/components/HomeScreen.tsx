@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reflectionButtonTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
     color: 'white',
     textAlign: 'center',
