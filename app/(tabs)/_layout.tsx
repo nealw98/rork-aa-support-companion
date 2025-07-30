@@ -11,11 +11,16 @@ const styles = StyleSheet.create({
   headerTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8
+    justifyContent: 'center',
+    gap: 8,
+    flex: 1,
+    maxWidth: '100%'
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: adjustFontWeight('600', true)
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true),
+    flexShrink: 0,
+    textAlign: 'center'
   },
   screenContainer: {
     ...getScreenPadding()
