@@ -13,8 +13,6 @@ const HomeScreen = () => {
   const router = useRouter();
   const [todaysReflection, setTodaysReflection] = useState<Reflection | null>(null);
 
-
-
   const today = new Date();
   const formattedDate = formatDateDisplay(today);
 
