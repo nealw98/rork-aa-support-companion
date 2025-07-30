@@ -11,6 +11,7 @@ import {
   Platform,
   Share
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { Stack, router } from 'expo-router';
 import { Check, Heart, Share2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -269,10 +270,21 @@ export default function GratitudeListScreen() {
     const shareMessage = `My Gratitude List - ${today}\n\n${gratitudeText}\n\n"Gratitude makes sense of our past, brings peace for today, and creates a vision for tomorrow." - Melody Beattie`;
 
     try {
-      await Share.share({
-        message: shareMessage,
-        title: 'My Daily Gratitude List'
-      });
+      if (Platform.OS === 'web') {
+        // For web, copy to clipboard since Share API doesn't work in iframes
+        await Clipboard.setStringAsync(shareMessage);
+        Alert.alert(
+          'Copied to Clipboard',
+          'Your gratitude list has been copied to the clipboard. You can now paste it in any messaging app or text field.',
+          [{ text: 'OK' }]
+        );
+      } else {
+        // For mobile, use native Share API
+        await Share.share({
+          message: shareMessage,
+          title: 'My Daily Gratitude List'
+        });
+      }
     } catch (error) {
       console.error('Error sharing gratitude list:', error);
       Alert.alert(
