@@ -9,7 +9,7 @@ import {
   Alert
 } from 'react-native';
 import { Stack, router } from 'expo-router';
-import { CheckCircle, Circle } from 'lucide-react-native';
+import { CheckCircle, Circle, Moon } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import { formatDateDisplay } from '@/utils/dateUtils';
@@ -46,11 +46,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255, 255, 255, 0.3)'
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8
+  },
   title: {
     fontSize: 24,
     fontWeight: adjustFontWeight('700', true),
-    color: Colors.light.text,
-    marginBottom: 8
+    color: Colors.light.text
   },
   subtitle: {
     fontSize: 16,
@@ -424,7 +429,10 @@ export default function NightlyReviewScreen() {
             locations={[0, 1]}
           />
           <View style={styles.header}>
-            <Text style={styles.title}>Nightly Review</Text>
+            <View style={styles.titleContainer}>
+              <Moon size={24} color={Colors.light.tint} />
+              <Text style={styles.title}>Nightly Review</Text>
+            </View>
             <Text style={styles.subtitle}>Loading...</Text>
           </View>
         </View>
@@ -446,7 +454,10 @@ export default function NightlyReviewScreen() {
             locations={[0, 1]}
           />
           <View style={styles.header}>
-            <Text style={styles.title}>Nightly Review</Text>
+            <View style={styles.titleContainer}>
+              <Moon size={24} color={Colors.light.tint} />
+              <Text style={styles.title}>Nightly Review</Text>
+            </View>
             <Text style={styles.subtitle}>Complete</Text>
           </View>
           
@@ -482,7 +493,10 @@ export default function NightlyReviewScreen() {
           locations={[0, 1]}
         />
         <View style={styles.header}>
-          <Text style={styles.title}>Nightly Review</Text>
+          <View style={styles.titleContainer}>
+            <Moon size={24} color={Colors.light.tint} />
+            <Text style={styles.title}>Nightly Review</Text>
+          </View>
           <Text style={styles.subtitle}>
             Nightly inventory based on AA's 'When We Retire at Night' guidance
           </Text>
