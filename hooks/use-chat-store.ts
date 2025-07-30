@@ -436,6 +436,10 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     if (crisisType) {
       console.log(`Crisis detected: ${crisisType}, matched trigger: "${matchedTrigger}"`);
       
+      // Capture current sponsor type and messages to avoid closure issues
+      const currentSponsorType = sponsorType;
+      const currentMessages = [...updatedMessages];
+      
       // Add a realistic wait time to simulate AI sponsor thinking (2-4 seconds)
       const waitTime = 2000 + Math.random() * 2000; // Random between 2-4 seconds
       
@@ -445,7 +449,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
         if (crisisType === 'violence') {
           responseText = crisisResponses.violence.all;
         } else if (crisisType === 'selfHarm') {
-          switch (sponsorType) {
+          switch (currentSponsorType) {
             case 'salty':
               responseText = crisisResponses.selfHarm['Salty Sam'];
               break;
@@ -459,7 +463,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
               responseText = crisisResponses.selfHarm['Steady Eddie'];
           }
         } else if (crisisType === 'psychologicalCrisis') {
-          switch (sponsorType) {
+          switch (currentSponsorType) {
             case 'salty':
               responseText = crisisResponses.psychologicalCrisis['Salty Sam'];
               break;
@@ -473,7 +477,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
               responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
           }
         } else if (crisisType === 'psychologicalDistress') {
-          switch (sponsorType) {
+          switch (currentSponsorType) {
             case 'salty':
               responseText = crisisResponses.psychologicalDistress['Salty Sam'];
               break;
@@ -495,8 +499,8 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
           timestamp: Date.now() + 1,
         };
         
-        // Get the current messages again in case they've changed during the wait
-        setMessages((prevMessages: ChatMessage[]) => [...prevMessages, crisisResponse]);
+        // Use the captured messages to avoid state inconsistencies
+        setMessages([...currentMessages, crisisResponse]);
         setIsLoading(false);
       }, waitTime);
       
