@@ -161,6 +161,13 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8
   },
+  quoteSubtitle: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    color: Colors.light.muted,
+    textAlign: 'center',
+    marginBottom: 8
+  },
   buttonContainer: {
     padding: 20,
     gap: 12
@@ -355,6 +362,9 @@ export default function GratitudeListScreen() {
             <Heart size={24} color={Colors.light.tint} />
             <Text style={styles.title}>Gratitude List</Text>
           </View>
+          <Text style={styles.quoteSubtitle}>
+            &ldquo;A full and thankful heart cannot entertain great conceits.&rdquo;
+          </Text>
         </View>
 
         <View style={styles.inputSection}>
