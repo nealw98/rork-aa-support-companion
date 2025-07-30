@@ -8,10 +8,11 @@ import {
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Share
 } from 'react-native';
 import { Stack, router } from 'expo-router';
-import { Check, Heart } from 'lucide-react-native';
+import { Check, Heart, Share2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import Colors from '@/constants/colors';
@@ -163,6 +164,26 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 12
   },
+  shareButton: {
+    backgroundColor: Colors.light.tint,
+    borderRadius: 12,
+    padding: 16,
+    margin: 20,
+    marginTop: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8
+  },
+  shareButtonDisabled: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.6
+  },
+  shareButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true)
+  },
 
 });
 
@@ -222,6 +243,44 @@ export default function GratitudeListScreen() {
         }
       ]
     );
+  };
+
+  const handleShare = async () => {
+    if (gratitudeItems.length === 0) {
+      Alert.alert(
+        'Share Gratitude List',
+        'Please add at least one gratitude item before sharing.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    const today = new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    const gratitudeText = gratitudeItems
+      .map((item, index) => `${index + 1}. ${item}`)
+      .join('\n');
+
+    const shareMessage = `My Gratitude List - ${today}\n\n${gratitudeText}\n\n"Gratitude makes sense of our past, brings peace for today, and creates a vision for tomorrow." - Melody Beattie`;
+
+    try {
+      await Share.share({
+        message: shareMessage,
+        title: 'My Daily Gratitude List'
+      });
+    } catch (error) {
+      console.error('Error sharing gratitude list:', error);
+      Alert.alert(
+        'Share Error',
+        'Unable to share your gratitude list. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
   };
 
 
@@ -297,6 +356,18 @@ export default function GratitudeListScreen() {
             />
           )}
         </View>
+
+        <TouchableOpacity
+          style={[
+            styles.shareButton,
+            gratitudeItems.length === 0 && styles.shareButtonDisabled
+          ]}
+          onPress={handleShare}
+          disabled={gratitudeItems.length === 0}
+        >
+          <Share2 size={20} color="white" />
+          <Text style={styles.shareButtonText}>Share</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={[
