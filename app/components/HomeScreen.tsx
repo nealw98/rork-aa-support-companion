@@ -28,7 +28,7 @@ const HomeScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
       {/* Hero Section */}
       <View style={styles.heroSection}>
-        <SunIcon size={60} />
+        <SunIcon size={100} />
         <Text style={styles.heroTitle}>Sober Dailies</Text>
         <Text style={styles.heroSubtitle}>
           This app helps you practice your dailies — the daily habits that maintain your sobriety.
@@ -131,23 +131,32 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   heroSection: {
-    padding: 40,
+    padding: 50,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   heroTitle: {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 10,
+    marginBottom: 15,
+    marginTop: 20,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+    letterSpacing: 1,
   },
   heroSubtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#fff',
     textAlign: 'center',
     paddingHorizontal: 20,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+    lineHeight: 24,
   },
   reflectionCardContainer: {
     paddingHorizontal: 16,
