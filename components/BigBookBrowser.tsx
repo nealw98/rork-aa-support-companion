@@ -269,7 +269,7 @@ function BigBookBrowserContent() {
               <Text style={styles.title}>Alcoholics Anonymous</Text>
               <Text style={styles.subtitle}>The Big Book - Fourth Edition</Text>
               <Text style={styles.description}>
-                The basic text for Alcoholics Anonymous. Tap any section to open the official PDF.
+                The basic textbook of Alcoholics Anonymous. Tap any section to open the official PDF.
               </Text>
             </View>
             
