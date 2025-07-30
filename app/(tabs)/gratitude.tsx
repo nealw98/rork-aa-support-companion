@@ -163,9 +163,8 @@ const styles = StyleSheet.create({
   },
   quoteSubtitle: {
     fontSize: 14,
-    fontStyle: 'italic',
     color: Colors.light.muted,
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 8
   },
   buttonContainer: {
@@ -363,8 +362,7 @@ export default function GratitudeListScreen() {
             <Text style={styles.title}>Gratitude List</Text>
           </View>
           <Text style={styles.quoteSubtitle}>
-            &ldquo;A full and thankful heart cannot entertain great conceits.&rdquo;
-            {"\n"}— As Bill Sees It, p 37
+            &ldquo;A full and thankful heart cannot entertain great conceits.&rdquo; — As Bill Sees It, p 37
           </Text>
         </View>
 
