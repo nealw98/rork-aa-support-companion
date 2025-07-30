@@ -236,7 +236,6 @@ export default function ChatInterface() {
           multiline={false}
           maxLength={500}
           returnKeyType="done"
-          onSubmitEditing={handleSend}
           blurOnSubmit={true}
           testID="chat-input"
         />
