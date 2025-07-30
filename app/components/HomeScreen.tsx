@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, LinearGradient } from 'react-native';
 import { ChevronDown } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import { SunIcon } from './SunIcon';
+import { formatDate } from '../utils/dateUtils';
 import Colors from '@/constants/colors';
 import DailyReflection from '@/components/DailyReflection';
 
 const HomeScreen = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
 
   const navigateTo = (path: string) => {
     router.push(path as any);
   };
 
+  const today = new Date();
+  const formattedDate = formatDate(today);
+
   return (
-    <ScrollView style={styles.container}>
+    <LinearGradient
+      colors={['#4A90E2', '#87CEEB']}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent}>
       {/* Hero Section */}
       <View style={styles.heroSection}>
+        <SunIcon size={60} color="#FFD700" />
         <Text style={styles.heroTitle}>Sober Dailies</Text>
         <Text style={styles.heroSubtitle}>
           This app helps you practice your dailies — the daily habits that maintain your sobriety.
@@ -26,23 +35,16 @@ const HomeScreen = () => {
       {/* Daily Reflection Preview Card */}
       <View style={styles.reflectionCardContainer}>
         <TouchableOpacity 
-          style={styles.cardHeader} 
-          onPress={() => setIsExpanded(!isExpanded)}
+          style={styles.cardHeader}
+          onPress={() => navigateTo('/(tabs)/reflection')}
         >
-          <Text style={styles.sectionTitle}>Daily Reflection</Text>
-          <ChevronDown 
-            size={24} 
-            color={Colors.light.tint} 
-            style={{ transform: [{ rotate: isExpanded ? '180deg' : '0deg' }] }} 
-          />
+          <Text style={styles.sectionTitle}>Daily Reflection for {formattedDate}</Text>
+          <Text style={styles.sectionSubtitle}>Today&apos;s Reflection Title</Text>
         </TouchableOpacity>
-        {isExpanded && (
-          <DailyReflection />
-        )}
       </View>
 
       {/* Daily Practice Section */}
-      <View style={[styles.sectionContainerMorning, { backgroundColor: '#F5F5F5' }]}>
+      <View style={{ alignItems: 'center', marginVertical: 20 }}>
         <Text style={styles.sectionTitle}>Daily Practice</Text>
         <Text style={styles.sectionSubtitle}>Daily actions build long-term sobriety.</Text>
       </View>
@@ -112,18 +114,22 @@ const HomeScreen = () => {
           <Text style={styles.cardButton}>Go to Prayers</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 16,
   },
   heroSection: {
     padding: 40,
-    backgroundColor: Colors.light.tint,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
