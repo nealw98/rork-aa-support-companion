@@ -218,6 +218,8 @@ export default function GratitudeListScreen() {
 
 
   const handleComplete = () => {
+    console.log('Complete button pressed, items:', gratitudeItems.length);
+    
     if (gratitudeItems.length === 0) {
       Alert.alert(
         'Complete Gratitude List',
@@ -234,12 +236,20 @@ export default function GratitudeListScreen() {
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Save & Continue',
-          onPress: () => {
-            completeToday(gratitudeItems);
-            // Add delay to ensure data is saved before navigation
-            setTimeout(() => {
-              router.push('/(tabs)/insights');
-            }, 200);
+          onPress: async () => {
+            try {
+              console.log('Completing gratitude with items:', gratitudeItems);
+              completeToday(gratitudeItems);
+              
+              // Add delay to ensure data is saved before navigation
+              setTimeout(() => {
+                console.log('Navigating to insights');
+                router.push('/(tabs)/insights');
+              }, 300);
+            } catch (error) {
+              console.error('Error completing gratitude:', error);
+              Alert.alert('Error', 'Failed to save gratitude list. Please try again.');
+            }
           }
         }
       ]
@@ -247,6 +257,8 @@ export default function GratitudeListScreen() {
   };
 
   const handleShare = async () => {
+    console.log('Share button pressed, items:', gratitudeItems.length);
+    
     if (gratitudeItems.length === 0) {
       Alert.alert(
         'Share Gratitude List',
@@ -270,6 +282,8 @@ export default function GratitudeListScreen() {
     const shareMessage = `My Gratitude List - ${today}\n\n${gratitudeText}\n\n"Gratitude makes sense of our past, brings peace for today, and creates a vision for tomorrow." - Melody Beattie`;
 
     try {
+      console.log('Attempting to share:', Platform.OS);
+      
       if (Platform.OS === 'web') {
         // For web, copy to clipboard since Share API doesn't work in iframes
         await Clipboard.setStringAsync(shareMessage);
@@ -280,18 +294,31 @@ export default function GratitudeListScreen() {
         );
       } else {
         // For mobile, use native Share API
-        await Share.share({
+        const result = await Share.share({
           message: shareMessage,
           title: 'My Daily Gratitude List'
         });
+        console.log('Share result:', result);
       }
     } catch (error) {
       console.error('Error sharing gratitude list:', error);
-      Alert.alert(
-        'Share Error',
-        'Unable to share your gratitude list. Please try again.',
-        [{ text: 'OK' }]
-      );
+      
+      // Fallback to clipboard for any platform if sharing fails
+      try {
+        await Clipboard.setStringAsync(shareMessage);
+        Alert.alert(
+          'Copied to Clipboard',
+          'Sharing failed, but your gratitude list has been copied to the clipboard.',
+          [{ text: 'OK' }]
+        );
+      } catch (clipboardError) {
+        console.error('Clipboard fallback failed:', clipboardError);
+        Alert.alert(
+          'Share Error',
+          'Unable to share your gratitude list. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
     }
   };
 
@@ -376,9 +403,10 @@ export default function GratitudeListScreen() {
           ]}
           onPress={handleShare}
           disabled={gratitudeItems.length === 0}
+          activeOpacity={0.7}
         >
           <Share2 size={20} color="white" />
-          <Text style={styles.shareButtonText}>Share</Text>
+          <Text style={styles.shareButtonText}>Share Gratitude List</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -388,9 +416,10 @@ export default function GratitudeListScreen() {
           ]}
           onPress={handleComplete}
           disabled={gratitudeItems.length === 0}
+          activeOpacity={0.7}
         >
           <Check size={20} color="white" />
-          <Text style={styles.completeButtonText}>Complete</Text>
+          <Text style={styles.completeButtonText}>Complete & Continue</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </ScreenContainer>
