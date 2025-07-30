@@ -235,6 +235,9 @@ export default function ChatInterface() {
           placeholderTextColor={Colors.light.muted}
           multiline={false}
           maxLength={500}
+          returnKeyType="done"
+          onSubmitEditing={handleSend}
+          blurOnSubmit={true}
           testID="chat-input"
         />
         <TouchableOpacity
