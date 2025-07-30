@@ -440,8 +440,8 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
       const currentSponsorType = sponsorType;
       const currentMessages = [...updatedMessages];
       
-      // Add a short wait time to simulate AI sponsor thinking (1-2 seconds)
-      const waitTime = 1000 + Math.random() * 1000; // Random between 1-2 seconds
+      // Add a short wait time to simulate AI sponsor thinking (800-1500ms)
+      const waitTime = 800 + Math.random() * 700; // Random between 800-1500ms
       
       setTimeout(() => {
         let responseText = '';
