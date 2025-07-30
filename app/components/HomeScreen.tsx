@@ -50,7 +50,7 @@ const HomeScreen = () => {
         {/* Daily Reflection Button */}
         <TouchableOpacity 
           style={styles.dailyReflectionButton}
-          onPress={() => router.push('/reflection')}
+          onPress={() => router.push('/(tabs)/reflection')}
         >
           <BookOpen size={24} color="white" style={styles.reflectionIcon} />
           <Text style={styles.reflectionButtonTitle}>
@@ -72,25 +72,25 @@ const HomeScreen = () => {
         <Text style={styles.sectionTitle}>Morning Routine</Text>
         <Text style={styles.sectionSubtitle}>Start your day with intention and spiritual focus.</Text>
         
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/prayers')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/prayers')}>
           <Text style={styles.cardTitle}>Morning Prayer</Text>
           <Text style={styles.cardDescription}>Invite your higher power to help you through the day.</Text>
           <Text style={styles.cardButton}>Go to Prayers</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/reflection')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/reflection')}>
           <Text style={styles.cardTitle}>Daily Reflection & Meditation</Text>
           <Text style={styles.cardDescription}>Read the daily message and meditate on it.</Text>
           <Text style={styles.cardButton}>Go to Reflection</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/literature')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/literature')}>
           <Text style={styles.cardTitle}>Literature</Text>
           <Text style={styles.cardDescription}>Read something out of the literature every day.</Text>
           <Text style={styles.cardButton}>Go to Literature</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/gratitude')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/gratitude')}>
           <Text style={styles.cardTitle}>Gratitude List</Text>
           <Text style={styles.cardDescription}>Start your day with gratitude and stay in the solution.</Text>
           <Text style={styles.cardButton}>Go to Gratitude List</Text>
@@ -102,13 +102,13 @@ const HomeScreen = () => {
         <Text style={styles.sectionTitle}>Throughout the Day</Text>
         <Text style={styles.sectionSubtitle}>Stay connected and mindful during your daily activities.</Text>
         
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/chat')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/chat')}>
           <Text style={styles.cardTitle}>Sober Chat</Text>
           <Text style={styles.cardDescription}>Talk with an AI sponsor voice when you need support.</Text>
           <Text style={styles.cardButton}>Go to Chat</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/insights')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/insights')}>
           <Text style={styles.cardTitle}>Insight Summary</Text>
           <Text style={styles.cardDescription}>Spot-check your emotional and spiritual growth.</Text>
           <Text style={styles.cardButton}>Go to Insights</Text>
@@ -120,13 +120,13 @@ const HomeScreen = () => {
         <Text style={styles.sectionTitle}>Evening Routine</Text>
         <Text style={styles.sectionSubtitle}>Reflect and close your day with peace.</Text>
         
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/nightly-review')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/nightly-review')}>
           <Text style={styles.cardTitle}>Nightly Review</Text>
           <Text style={styles.cardDescription}>Reflect on your day and practice Step 10.</Text>
           <Text style={styles.cardButton}>Go to Nightly Review</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/prayers')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/prayers')}>
           <Text style={styles.cardTitle}>Evening Prayer</Text>
           <Text style={styles.cardDescription}>End your day with gratitude and humility.</Text>
           <Text style={styles.cardButton}>Go to Prayers</Text>
