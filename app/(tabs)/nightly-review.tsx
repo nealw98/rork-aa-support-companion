@@ -399,6 +399,11 @@ export default function NightlyReviewScreen() {
             placeholderTextColor={Colors.light.muted}
             multiline
             textAlignVertical="top"
+            returnKeyType="done"
+            blurOnSubmit={true}
+            onSubmitEditing={() => {
+              // Dismiss keyboard when done is pressed
+            }}
           />
         )}
       </View>
