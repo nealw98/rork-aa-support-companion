@@ -364,6 +364,7 @@ export default function GratitudeListScreen() {
           </View>
           <Text style={styles.quoteSubtitle}>
             &ldquo;A full and thankful heart cannot entertain great conceits.&rdquo;
+            {"\n"}— As Bill Sees It, p 37
           </Text>
         </View>
 
