@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronDown } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import SunIcon from '@/components/SunIcon';
-import { formatDate } from '@/utils/dateUtils';
+// import { formatDate } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
 import DailyReflection from '@/components/DailyReflection';
 
@@ -16,7 +16,7 @@ const HomeScreen = () => {
   };
 
   const today = new Date();
-  const formattedDate = formatDate(today);
+  const formattedDate = today.toLocaleDateString();
 
   return (
     <LinearGradient
@@ -26,7 +26,7 @@ const HomeScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
       {/* Hero Section */}
       <View style={styles.heroSection}>
-        <SunIcon size={60} color="#FFD700" />
+        <SunIcon size={60} />
         <Text style={styles.heroTitle}>Sober Dailies</Text>
         <Text style={styles.heroSubtitle}>
           This app helps you practice your dailies — the daily habits that maintain your sobriety.
