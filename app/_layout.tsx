@@ -18,7 +18,10 @@ const queryClient = new QueryClient();
 function RootLayoutNav() {
   const { isOnboardingComplete, isLoading } = useOnboarding();
 
+  console.log('RootLayoutNav - isLoading:', isLoading, 'isOnboardingComplete:', isOnboardingComplete);
+
   if (isLoading) {
+    console.log('Showing loading screen');
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#667eea" />
@@ -27,8 +30,11 @@ function RootLayoutNav() {
   }
 
   if (!isOnboardingComplete) {
+    console.log('Showing welcome screen');
     return <WelcomeScreen />;
   }
+
+  console.log('Showing main app');
 
   return (
     <Stack screenOptions={{ 
