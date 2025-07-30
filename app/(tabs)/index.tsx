@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingTop: 12,
-    paddingBottom: 12,
+    paddingBottom: 32,
   },
   appTitle: {
     fontSize: 42,
