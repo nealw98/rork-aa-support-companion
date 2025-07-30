@@ -106,6 +106,18 @@ export default function TabLayout() {
           href: null
         }}
       />
+      <Tabs.Screen
+        name="bigbook"
+        options={{
+          href: null
+        }}
+      />
+      <Tabs.Screen
+        name="twelve-and-twelve"
+        options={{
+          href: null
+        }}
+      />
     </Tabs>
   );
 }

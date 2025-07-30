@@ -18,13 +18,13 @@ const literatureOptions: LiteratureOption[] = [
     id: "bigbook",
     title: "Big Book",
     description: "The basic textbook of Alcoholics Anonymous",
-    route: "/bigbook"
+    route: "/(tabs)/bigbook"
   },
   {
     id: "twelve-and-twelve",
     title: "Twelve Steps and Twelve Traditions",
     description: "In-depth exploration of the Steps and Traditions",
-    route: "/twelve-and-twelve"
+    route: "/(tabs)/twelve-and-twelve"
   }
 ];
 

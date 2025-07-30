@@ -1,14 +1,14 @@
 import { StyleSheet } from "react-native";
 import { Stack } from "expo-router";
-import BigBookBrowser from "@/components/BigBookBrowser";
+import TwelveAndTwelveBrowser from "@/components/TwelveAndTwelveBrowser";
 import ScreenContainer from "@/components/ScreenContainer";
 
-export default function BigBookScreen() {
+export default function TwelveAndTwelveScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: "Big Book", headerTitle: "Alcoholics Anonymous" }} />
+      <Stack.Screen options={{ title: "Twelve & Twelve", headerTitle: "Twelve Steps and Twelve Traditions" }} />
       <ScreenContainer style={styles.container}>
-        <BigBookBrowser />
+        <TwelveAndTwelveBrowser />
       </ScreenContainer>
     </>
   );
