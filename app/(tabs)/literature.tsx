@@ -17,7 +17,7 @@ const literatureOptions: LiteratureOption[] = [
   {
     id: "bigbook",
     title: "Big Book",
-    description: "Alcoholics Anonymous - The basic text of AA",
+    description: "The basic textbook of Alcoholics Anonymous",
     route: "/bigbook"
   },
   {
