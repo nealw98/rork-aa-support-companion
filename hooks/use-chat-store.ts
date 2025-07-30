@@ -436,63 +436,70 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     if (crisisType) {
       console.log(`Crisis detected: ${crisisType}, matched trigger: "${matchedTrigger}"`);
       
-      let responseText = '';
+      // Add a realistic wait time to simulate AI sponsor thinking (2-4 seconds)
+      const waitTime = 2000 + Math.random() * 2000; // Random between 2-4 seconds
       
-      if (crisisType === 'violence') {
-        responseText = crisisResponses.violence.all;
-      } else if (crisisType === 'selfHarm') {
-        switch (sponsorType) {
-          case 'salty':
-            responseText = crisisResponses.selfHarm['Salty Sam'];
-            break;
-          case 'supportive':
-            responseText = crisisResponses.selfHarm['Steady Eddie'];
-            break;
-          case 'grace':
-            responseText = crisisResponses.selfHarm['Gentle Grace'];
-            break;
-          default:
-            responseText = crisisResponses.selfHarm['Steady Eddie'];
+      setTimeout(() => {
+        let responseText = '';
+        
+        if (crisisType === 'violence') {
+          responseText = crisisResponses.violence.all;
+        } else if (crisisType === 'selfHarm') {
+          switch (sponsorType) {
+            case 'salty':
+              responseText = crisisResponses.selfHarm['Salty Sam'];
+              break;
+            case 'supportive':
+              responseText = crisisResponses.selfHarm['Steady Eddie'];
+              break;
+            case 'grace':
+              responseText = crisisResponses.selfHarm['Gentle Grace'];
+              break;
+            default:
+              responseText = crisisResponses.selfHarm['Steady Eddie'];
+          }
+        } else if (crisisType === 'psychologicalCrisis') {
+          switch (sponsorType) {
+            case 'salty':
+              responseText = crisisResponses.psychologicalCrisis['Salty Sam'];
+              break;
+            case 'supportive':
+              responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
+              break;
+            case 'grace':
+              responseText = crisisResponses.psychologicalCrisis['Gentle Grace'];
+              break;
+            default:
+              responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
+          }
+        } else if (crisisType === 'psychologicalDistress') {
+          switch (sponsorType) {
+            case 'salty':
+              responseText = crisisResponses.psychologicalDistress['Salty Sam'];
+              break;
+            case 'supportive':
+              responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
+              break;
+            case 'grace':
+              responseText = crisisResponses.psychologicalDistress['Gentle Grace'];
+              break;
+            default:
+              responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
+          }
         }
-      } else if (crisisType === 'psychologicalCrisis') {
-        switch (sponsorType) {
-          case 'salty':
-            responseText = crisisResponses.psychologicalCrisis['Salty Sam'];
-            break;
-          case 'supportive':
-            responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
-            break;
-          case 'grace':
-            responseText = crisisResponses.psychologicalCrisis['Gentle Grace'];
-            break;
-          default:
-            responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
-        }
-      } else if (crisisType === 'psychologicalDistress') {
-        switch (sponsorType) {
-          case 'salty':
-            responseText = crisisResponses.psychologicalDistress['Salty Sam'];
-            break;
-          case 'supportive':
-            responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
-            break;
-          case 'grace':
-            responseText = crisisResponses.psychologicalDistress['Gentle Grace'];
-            break;
-          default:
-            responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
-        }
-      }
+        
+        const crisisResponse: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          text: responseText,
+          sender: 'bot',
+          timestamp: Date.now() + 1,
+        };
+        
+        // Get the current messages again in case they've changed during the wait
+        setMessages(prevMessages => [...prevMessages, crisisResponse]);
+        setIsLoading(false);
+      }, waitTime);
       
-      const crisisResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        text: responseText,
-        sender: 'bot',
-        timestamp: Date.now() + 1,
-      };
-      
-      setMessages([...updatedMessages, crisisResponse]);
-      setIsLoading(false);
       return;
     }
     
