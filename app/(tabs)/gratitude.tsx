@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   quoteSubtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.light.muted,
     textAlign: 'left',
     marginBottom: 8
