@@ -51,8 +51,11 @@ const HomeScreen = () => {
           onPress={() => router.push('/reflection')}
         >
           <BookOpen size={24} color="white" style={styles.reflectionIcon} />
+          <Text style={styles.reflectionButtonDate}>
+            Daily Reflection
+          </Text>
           <Text style={styles.reflectionButtonTitle}>
-            Daily Reflection for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
+            {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
           </Text>
           <Text style={styles.reflectionButtonSubtitle}>
             {todaysReflection?.title || 'Loading...'}
@@ -183,8 +186,15 @@ const styles = StyleSheet.create({
   reflectionIcon: {
     marginBottom: 8,
   },
+  reflectionButtonDate: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
   reflectionButtonTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: 'white',
     textAlign: 'center',
