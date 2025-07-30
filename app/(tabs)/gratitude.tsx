@@ -276,10 +276,10 @@ export default function GratitudeListScreen() {
     });
 
     const gratitudeText = gratitudeItems
-      .map((item, index) => `${index + 1}. ${item}`)
+      .map((item) => `• ${item}`)
       .join('\n');
 
-    const shareMessage = `My Gratitude List - ${today}\n\n${gratitudeText}\n\n"Gratitude makes sense of our past, brings peace for today, and creates a vision for tomorrow." - Melody Beattie`;
+    const shareMessage = `${today}\n\nToday I'm grateful for:\n${gratitudeText}`;
 
     try {
       console.log('Attempting to share:', Platform.OS);
