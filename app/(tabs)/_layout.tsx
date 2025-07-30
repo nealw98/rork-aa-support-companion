@@ -1,7 +1,7 @@
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import { Home, MessageCircle, Book, Heart, Moon, Smile, BarChart3 } from "lucide-react-native";
 import React from "react";
-import { Text, View, StyleSheet, Platform } from "react-native";
+import { Text, View, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import SunIcon from "@/components/SunIcon";
 
 import Colors from "@/constants/colors";
@@ -22,8 +22,22 @@ const styles = StyleSheet.create({
   },
   tabIcon: {
     ...(Platform.OS === 'android' ? { marginTop: 2 } : {})
+  },
+  homeButton: {
+    padding: 8,
+    marginRight: 4
   }
 });
+
+const HomeButton = () => (
+  <TouchableOpacity 
+    style={styles.homeButton}
+    onPress={() => router.push('/')}
+    testID="home-button"
+  >
+    <Home color={Colors.light.tint} size={24} />
+  </TouchableOpacity>
+);
 
 export default function TabLayout() {
   return (
@@ -57,6 +71,7 @@ export default function TabLayout() {
         options={{
           title: "Reflection",
           headerTitle: "Daily Reflection",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -65,6 +80,7 @@ export default function TabLayout() {
         options={{
           title: "Gratitude",
           headerTitle: "Daily Gratitude",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Smile color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -73,6 +89,7 @@ export default function TabLayout() {
         options={{
           title: "Review",
           headerTitle: "Evening Review",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -81,6 +98,7 @@ export default function TabLayout() {
         options={{
           title: "Insights",
           headerTitle: "Recovery Insights",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <BarChart3 color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -89,6 +107,7 @@ export default function TabLayout() {
         options={{
           title: "AI Sponsor",
           headerTitle: "AI Sponsor",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -97,6 +116,7 @@ export default function TabLayout() {
         options={{
           title: "Prayers",
           headerTitle: "AA Prayers",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Heart color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -105,6 +125,7 @@ export default function TabLayout() {
         options={{
           title: "Literature",
           headerTitle: "AA Literature",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
         }}
       />
