@@ -500,7 +500,8 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
         };
         
         // Use the captured messages to avoid state inconsistencies
-        setMessages([...currentMessages, crisisResponse]);
+        const finalMessages = [...currentMessages, crisisResponse];
+        setMessages(finalMessages);
         setIsLoading(false);
       }, waitTime);
       
