@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   sectionContainerDay: {
     paddingHorizontal: 16,
     marginBottom: 30,
-    backgroundColor: 'rgba(255, 215, 0, 0.2)', // Soft yellow
+    backgroundColor: 'rgba(135, 206, 235, 0.2)', // Soft blue
     paddingVertical: 20,
     borderRadius: 10,
   },
