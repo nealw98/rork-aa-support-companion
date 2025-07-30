@@ -52,10 +52,7 @@ const HomeScreen = () => {
         >
           <BookOpen size={24} color="white" style={styles.reflectionIcon} />
           <Text style={styles.reflectionButtonTitle}>
-            Daily Reflection for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
-          </Text>
-          <Text style={styles.reflectionButtonSubtitle}>
-            {todaysReflection?.title || 'Loading...'}
+            Daily Reflection{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
           </Text>
         </TouchableOpacity>
 
