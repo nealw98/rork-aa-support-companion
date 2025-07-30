@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   sectionContainerDay: {
     paddingHorizontal: 16,
     marginBottom: 30,
-    backgroundColor: 'rgba(135, 206, 235, 0.3)', // Soft blue
+    backgroundColor: 'rgba(135, 206, 235, 0.7)', // Soft blue with stronger opacity
     paddingVertical: 20,
     borderRadius: 16,
     marginHorizontal: 16,
