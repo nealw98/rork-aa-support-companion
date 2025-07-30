@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, LinearGradient } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronDown } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { SunIcon } from './SunIcon';
-import { formatDate } from '../utils/dateUtils';
+import SunIcon from '@/components/SunIcon';
+import { formatDate } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
 import DailyReflection from '@/components/DailyReflection';
 
