@@ -496,7 +496,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
         };
         
         // Get the current messages again in case they've changed during the wait
-        setMessages(prevMessages => [...prevMessages, crisisResponse]);
+        setMessages((prevMessages: ChatMessage[]) => [...prevMessages, crisisResponse]);
         setIsLoading(false);
       }, waitTime);
       
