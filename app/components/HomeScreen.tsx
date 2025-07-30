@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, useState } from 'react-native';
+import { ChevronDown } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 import DailyReflection from '@/components/DailyReflection';
 
 const HomeScreen = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
 
   const navigateTo = (path: string) => {
@@ -23,8 +25,20 @@ const HomeScreen = () => {
 
       {/* Daily Reflection Preview Card */}
       <View style={styles.reflectionCardContainer}>
-        <Text style={styles.sectionTitle}>Daily Reflection</Text>
-        <DailyReflection />
+        <TouchableOpacity 
+          style={styles.cardHeader} 
+          onPress={() => setIsExpanded(!isExpanded)}
+        >
+          <Text style={styles.sectionTitle}>Daily Reflection</Text>
+          <ChevronDown 
+            size={24} 
+            color={Colors.light.tint} 
+            style={{ transform: [{ rotate: isExpanded ? '180deg' : '0deg' }] }} 
+          />
+        </TouchableOpacity>
+        {isExpanded && (
+          <DailyReflection />
+        )}
       </View>
 
       {/* Morning Routine Section */}
@@ -123,6 +137,19 @@ const styles = StyleSheet.create({
   reflectionCardContainer: {
     paddingHorizontal: 16,
     marginBottom: 30,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
   },
   sectionContainerMorning: {
     paddingHorizontal: 16,
