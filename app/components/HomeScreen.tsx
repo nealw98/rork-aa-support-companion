@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ChevronDown } from 'lucide-react-native';
+import { BookOpen } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import SunIcon from '@/components/SunIcon';
-// import { formatDate } from '@/utils/dateUtils';
+import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
-import DailyReflection from '@/components/DailyReflection';
+import { getTodaysReflection } from '@/constants/reflections';
+import { Reflection } from '@/types';
 
 const HomeScreen = () => {
   const router = useRouter();
+  const [todaysReflection, setTodaysReflection] = useState<Reflection | null>(null);
 
   const navigateTo = (path: string) => {
-    router.push(path as any);
+    router.push(path);
   };
 
   const today = new Date();
-  const formattedDate = today.toLocaleDateString();
+  const formattedDate = formatDateDisplay(today);
+
+  useEffect(() => {
+    const loadTodaysReflection = async () => {
+      try {
+        const reflection = await getTodaysReflection();
+        setTodaysReflection(reflection);
+      } catch (error) {
+        console.error('Error loading today\'s reflection:', error);
+      }
+    };
+    loadTodaysReflection();
+  }, []);
 
   return (
     <LinearGradient
@@ -26,34 +40,37 @@ const HomeScreen = () => {
       end={{ x: 1, y: 1 }}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
-      {/* Hero Section */}
-      <View style={styles.heroSection}>
-        <SunIcon size={100} />
-        <Text style={styles.heroTitle}>Sober Dailies</Text>
-        <Text style={styles.heroSubtitle}>
-          This app helps you practice your dailies — the daily habits that maintain your sobriety.
-        </Text>
-      </View>
+        {/* Hero Section */}
+        <View style={styles.heroSection}>
+          <SunIcon size={120} />
+          <Text style={styles.heroTitle}>Sober Dailies</Text>
+          <Text style={styles.heroSubtitle}>
+            This app helps you practice your dailies — the daily habits that maintain your sobriety. Doing these things consistently will support your continued sobriety and spiritual growth.
+          </Text>
+        </View>
 
-      {/* Daily Reflection Preview Card */}
-      <View style={styles.reflectionCardContainer}>
+        {/* Daily Reflection Button */}
         <TouchableOpacity 
-          style={styles.cardHeader}
+          style={styles.dailyReflectionButton}
           onPress={() => navigateTo('/(tabs)/reflection')}
         >
-          <Text style={styles.sectionTitle}>Daily Reflection for {formattedDate}</Text>
-          <Text style={styles.sectionSubtitle}>Today&apos;s Reflection Title</Text>
+          <BookOpen size={24} color="white" style={styles.reflectionIcon} />
+          <Text style={styles.reflectionButtonTitle}>
+            Daily Reflection for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
+          </Text>
+          <Text style={styles.reflectionButtonSubtitle}>
+            {todaysReflection?.title || 'Loading...'}
+          </Text>
         </TouchableOpacity>
-      </View>
 
-      {/* Daily Practice Section */}
-      <View style={{ alignItems: 'center', marginVertical: 20 }}>
-        <Text style={styles.sectionTitle}>Daily Practice</Text>
-        <Text style={styles.sectionSubtitle}>Daily actions build long-term sobriety.</Text>
-      </View>
+        {/* Daily Practice Section */}
+        <View style={styles.dailyPracticeHeader}>
+          <Text style={styles.dailyPracticeTitle}>Daily Practice</Text>
+          <Text style={styles.dailyPracticeSubtitle}>Daily actions build long-term sobriety.</Text>
+        </View>
 
-      {/* Morning Routine Section */}
-      <View style={styles.sectionContainerMorning}>
+        {/* Morning Routine Section */}
+        <View style={styles.sectionContainerMorning}>
         <Text style={styles.sectionTitle}>Morning Routine</Text>
         <Text style={styles.sectionSubtitle}>Start your day with intention and spiritual focus.</Text>
         
@@ -82,8 +99,8 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Throughout the Day Section */}
-      <View style={styles.sectionContainerDay}>
+        {/* Throughout the Day Section */}
+        <View style={styles.sectionContainerDay}>
         <Text style={styles.sectionTitle}>Throughout the Day</Text>
         <Text style={styles.sectionSubtitle}>Stay connected and mindful during your daily activities.</Text>
         
@@ -100,8 +117,8 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Evening Routine Section */}
-      <View style={styles.sectionContainerEvening}>
+        {/* Evening Routine Section */}
+        <View style={styles.sectionContainerEvening}>
         <Text style={styles.sectionTitle}>Evening Routine</Text>
         <Text style={styles.sectionSubtitle}>Reflect and close your day with peace.</Text>
         
@@ -116,7 +133,7 @@ const HomeScreen = () => {
           <Text style={styles.cardDescription}>End your day with gratitude and humility.</Text>
           <Text style={styles.cardButton}>Go to Prayers</Text>
         </TouchableOpacity>
-      </View>
+        </View>
       </ScrollView>
     </LinearGradient>
   );
@@ -131,14 +148,16 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   heroSection: {
-    padding: 50,
+    paddingTop: 40,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 30,
   },
   heroTitle: {
-    fontSize: 42,
+    fontSize: 48,
     fontWeight: 'bold',
     color: Colors.light.text,
     marginBottom: 15,
@@ -146,49 +165,81 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   heroSubtitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: Colors.light.muted,
     textAlign: 'center',
-    paddingHorizontal: 20,
-    lineHeight: 24,
+    paddingHorizontal: 10,
+    lineHeight: 22,
   },
-  reflectionCardContainer: {
-    paddingHorizontal: 16,
+  dailyReflectionButton: {
+    backgroundColor: '#4A90E2',
+    borderRadius: 16,
+    padding: 24,
+    marginHorizontal: 16,
     marginBottom: 30,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 2,
+    alignItems: 'center',
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  reflectionIcon: {
+    marginBottom: 8,
+  },
+  reflectionButtonTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  reflectionButtonSubtitle: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  dailyPracticeHeader: {
     alignItems: 'center',
-    padding: 16,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+  },
+  dailyPracticeTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: Colors.light.text,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  dailyPracticeSubtitle: {
+    fontSize: 16,
+    color: Colors.light.muted,
+    textAlign: 'center',
   },
   sectionContainerMorning: {
     paddingHorizontal: 16,
     marginBottom: 30,
-    backgroundColor: '#FFF8DC', // Soft yellow
+    backgroundColor: 'rgba(255, 248, 220, 0.8)', // Soft yellow with transparency
     paddingVertical: 20,
-    borderRadius: 10,
+    borderRadius: 16,
+    marginHorizontal: 16,
   },
   sectionContainerDay: {
     paddingHorizontal: 16,
     marginBottom: 30,
-    backgroundColor: 'rgba(135, 206, 235, 0.2)', // Soft blue
+    backgroundColor: 'rgba(135, 206, 235, 0.3)', // Soft blue
     paddingVertical: 20,
-    borderRadius: 10,
+    borderRadius: 16,
+    marginHorizontal: 16,
   },
   sectionContainerEvening: {
     paddingHorizontal: 16,
     marginBottom: 30,
-    backgroundColor: 'rgba(147, 51, 234, 0.2)', // Soft purple
+    backgroundColor: 'rgba(147, 51, 234, 0.3)', // Soft purple
     paddingVertical: 20,
-    borderRadius: 10,
+    borderRadius: 16,
+    marginHorizontal: 16,
   },
   sectionTitle: {
     fontSize: 22,
