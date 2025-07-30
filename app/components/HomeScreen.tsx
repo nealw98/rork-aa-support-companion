@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   sectionContainerMorning: {
     paddingHorizontal: 16,
     marginBottom: 30,
-    backgroundColor: 'rgba(135, 206, 235, 0.2)', // Soft blue
+    backgroundColor: '#FFF8DC', // Soft yellow
     paddingVertical: 20,
     borderRadius: 10,
   },
