@@ -41,6 +41,12 @@ const HomeScreen = () => {
         )}
       </View>
 
+      {/* Daily Practice Section */}
+      <View style={[styles.sectionContainerMorning, { backgroundColor: '#F5F5F5' }]}>
+        <Text style={styles.sectionTitle}>Daily Practice</Text>
+        <Text style={styles.sectionSubtitle}>Daily actions build long-term sobriety.</Text>
+      </View>
+
       {/* Morning Routine Section */}
       <View style={styles.sectionContainerMorning}>
         <Text style={styles.sectionTitle}>Morning Routine</Text>
