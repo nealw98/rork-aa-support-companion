@@ -111,10 +111,10 @@ const HomeScreen = () => {
           <Text style={styles.cardButton}>Go to Literature</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/insights')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/inventory')}>
           <Text style={styles.cardTitle}>Spot Check Inventory</Text>
-          <Text style={styles.cardDescription}>Quickly assess your emotions and actions throughout the day.</Text>
-          <Text style={styles.cardButton}>Go to Inventory</Text>
+          <Text style={styles.cardDescription}>When we\'re upset, there\'s something wrong with us — are you “On the Beam”?</Text>
+          <Text style={styles.cardButton}>Go to On the Beam</Text>
         </TouchableOpacity>
       </View>
 
