@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
+import React, { useEffect, useCallback } from "react";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { EveningReviewProvider } from "@/hooks/useEveningReviewStore";
 import { GratitudeProvider } from "@/hooks/useGratitudeStore";
@@ -20,13 +20,22 @@ function RootLayoutNav() {
 
   console.log('RootLayoutNav - isLoading:', isLoading, 'isOnboardingComplete:', isOnboardingComplete);
 
+  // Hide splash screen when app is ready
+  const hideSplashScreen = useCallback(async () => {
+    if (!isLoading) {
+      console.log('Hiding splash screen');
+      await SplashScreen.hideAsync();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    hideSplashScreen();
+  }, [hideSplashScreen]);
+
   if (isLoading) {
-    console.log('Showing loading screen');
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#667eea" />
-      </View>
-    );
+    console.log('Still loading, keeping splash screen visible');
+    // Return null to keep splash screen visible while loading
+    return null;
   }
 
   if (!isOnboardingComplete) {
@@ -72,10 +81,6 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <OnboardingProvider>
