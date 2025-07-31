@@ -418,7 +418,7 @@ export default function NightlyReviewScreen() {
   // Show loading state
   if (isLoading) {
     return (
-      <ScreenContainer>
+      <ScreenContainer noPadding>
         <Stack.Screen options={{ title: 'Nightly Review' }} />
         <View style={styles.container}>
           <LinearGradient
@@ -443,7 +443,7 @@ export default function NightlyReviewScreen() {
   // Show completion message if already submitted or completed today
   if (submitted || isCompleted) {
     return (
-      <ScreenContainer>
+      <ScreenContainer noPadding>
         <Stack.Screen options={{ title: 'Nightly Review' }} />
         <View style={styles.container}>
           <LinearGradient
@@ -481,7 +481,7 @@ export default function NightlyReviewScreen() {
   }
 
   return (
-    <ScreenContainer>
+    <ScreenContainer noPadding>
       <Stack.Screen options={{ title: 'Nightly Review' }} />
       
       <View style={styles.container}>

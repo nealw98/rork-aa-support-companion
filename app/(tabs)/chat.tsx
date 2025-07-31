@@ -7,7 +7,7 @@ import Colors from "@/constants/colors";
 
 export default function ChatScreen() {
   return (
-    <ScreenContainer style={styles.container}>
+    <ScreenContainer style={styles.container} noPadding={true}>
       <LinearGradient
         colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
         style={styles.backgroundGradient}

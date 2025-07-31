@@ -20,9 +20,10 @@ export default function BigBookScreen() {
     <>
       <Stack.Screen options={{ 
         title: "Big Book",
+        headerTitle: "Big Book",
         headerRight: () => <HomeButton />
       }} />
-      <ScreenContainer style={styles.container}>
+      <ScreenContainer style={styles.container} noPadding={true}>
         <BigBookBrowser />
       </ScreenContainer>
     </>

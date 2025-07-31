@@ -20,9 +20,10 @@ export default function TwelveAndTwelveScreen() {
     <>
       <Stack.Screen options={{ 
         title: "Twelve and Twelve",
+        headerTitle: "Twelve and Twelve",
         headerRight: () => <HomeButton />
       }} />
-      <ScreenContainer style={styles.container}>
+      <ScreenContainer style={styles.container} noPadding={true}>
         <TwelveAndTwelveBrowser />
       </ScreenContainer>
     </>
