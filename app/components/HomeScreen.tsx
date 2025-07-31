@@ -135,6 +135,9 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: -24,
+    marginBottom: -24,
+    marginHorizontal: -16,
   },
   scrollContent: {
     flexGrow: 1,
