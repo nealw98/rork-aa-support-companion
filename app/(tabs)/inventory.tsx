@@ -43,31 +43,19 @@ const Inventory = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>Are you</Text>
           <Text style={styles.subtitle}>"ON THE BEAM"</Text>
-          <View style={styles.card}>
+          <View style={styles.cardContainer}>
             <View style={styles.gridContainer}>
               <View style={styles.columnContainer}>
-                <View style={styles.columnHeaderOn}>
-                  <Text style={styles.columnTitle}>ON THE BEAM</Text>
-                </View>
-                <View style={styles.listContainerOn}>
-                  {onTheBeam.map((item, index) => (
-                    <View key={index} style={styles.itemContainer}>
-                      <Text style={[styles.itemText, styles.noWrap]}>{item}</Text>
-                    </View>
-                  ))}
-                </View>
+                <Text style={styles.columnTitleOn}>ON THE BEAM</Text>
+                {onTheBeam.map((item, index) => (
+                  <Text key={index} style={[styles.itemText, styles.noWrap, styles.itemOn]}>{item}</Text>
+                ))}
               </View>
               <View style={styles.columnContainer}>
-                <View style={styles.columnHeaderOff}>
-                  <Text style={styles.columnTitle}>OFF THE BEAM</Text>
-                </View>
-                <View style={styles.listContainerOff}>
-                  {offTheBeam.map((item, index) => (
-                    <View key={index} style={styles.itemContainer}>
-                      <Text style={[styles.itemText, styles.noWrap]}>{item}</Text>
-                    </View>
-                  ))}
-                </View>
+                <Text style={styles.columnTitleOff}>OFF THE BEAM</Text>
+                {offTheBeam.map((item, index) => (
+                  <Text key={index} style={[styles.itemText, styles.noWrap, styles.itemOff]}>{item}</Text>
+                ))}
               </View>
             </View>
           </View>
@@ -86,17 +74,6 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'center',
   },
-  card: {
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
   contentContainer: {
     backgroundColor: 'white',
     borderRadius: 20,
@@ -108,6 +85,17 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     alignItems: 'center',
+  },
+  cardContainer: {
+    width: '100%',
+    backgroundColor: 'rgba(135, 206, 235, 0.7)',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
   },
   title: {
     fontSize: 28,
@@ -133,51 +121,36 @@ const styles = StyleSheet.create({
     width: '48%',
     marginBottom: 16,
   },
-  columnHeaderOn: {
-    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-    padding: 16,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  columnHeaderOff: {
-    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-    padding: 16,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  columnTitle: {
+  columnTitleOn: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.light.text,
+    color: '#2e7d32',
+    textAlign: 'center',
+    marginBottom: 12,
   },
-  listContainerOn: {
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
-    padding: 12,
-  },
-  listContainerOff: {
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
-    padding: 12,
-  },
-  itemContainer: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginBottom: 4,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  columnTitleOff: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#d32f2f',
+    textAlign: 'center',
+    marginBottom: 12,
   },
   itemText: {
     fontSize: 16,
     fontWeight: '500',
     color: Colors.light.text,
     textAlign: 'center',
+    paddingVertical: 8,
+  },
+  itemOn: {
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  itemOff: {
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    borderRadius: 8,
+    marginBottom: 8,
   },
   noWrap: {
     flexShrink: 0,
