@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 24,
-    marginHorizontal: 0,
+    padding: 16,
+    marginHorizontal: -16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
