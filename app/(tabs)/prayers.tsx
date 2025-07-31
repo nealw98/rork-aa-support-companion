@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -18,6 +18,8 @@ import ScreenContainer from "@/components/ScreenContainer";
 export default function PrayersScreen() {
   const { prayer } = useLocalSearchParams();
   const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const prayerRefs = useRef<{ [key: number]: View | null }>({});
 
   useEffect(() => {
     if (prayer) {
@@ -30,9 +32,26 @@ export default function PrayersScreen() {
       });
       if (prayerIndex !== -1) {
         setExpandedPrayer(prayerIndex);
+        // Scroll to the prayer after a short delay to ensure the component is rendered
+        setTimeout(() => {
+          scrollToPrayer(prayerIndex);
+        }, 100);
       }
     }
   }, [prayer]);
+
+  const scrollToPrayer = (index: number) => {
+    const prayerRef = prayerRefs.current[index];
+    if (prayerRef && scrollViewRef.current) {
+      prayerRef.measureLayout(
+        scrollViewRef.current.getInnerViewNode(),
+        (x, y) => {
+          scrollViewRef.current?.scrollTo({ y: y - 20, animated: true });
+        },
+        () => {}
+      );
+    }
+  };
 
   return (
     <ScreenContainer style={styles.container}>
@@ -44,14 +63,22 @@ export default function PrayersScreen() {
         locations={[0, 1]}
       />
       
-      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.contentContainer}>
+      <ScrollView 
+        ref={scrollViewRef}
+        style={styles.scrollContainer} 
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>AA Prayers</Text>
           <Text style={styles.subtitle}>Essential prayers for recovery and reflection</Text>
         </View>
         
         {aaPrayers.map((prayer, index) => (
-          <View key={index} style={styles.prayerCard}>
+          <View 
+            key={index} 
+            style={styles.prayerCard}
+            ref={(ref) => { prayerRefs.current[index] = ref; }}
+          >
             <TouchableOpacity
               style={styles.prayerHeader}
               onPress={() => setExpandedPrayer(expandedPrayer === index ? null : index)}
