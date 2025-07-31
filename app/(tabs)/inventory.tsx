@@ -73,20 +73,19 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 16,
     justifyContent: 'center',
   },
   contentContainer: {
     backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 16,
-    marginHorizontal: -16,
+    padding: 20,
+    flex: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 5,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   cardContainer: {
     width: '100%',
