@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%'
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: adjustFontWeight('600', true),
     flexShrink: 0,
     textAlign: 'center'
@@ -143,13 +143,19 @@ export default function TabLayout() {
       <Tabs.Screen
         name="bigbook"
         options={{
-          href: null
+          href: null,
+          title: "Big Book",
+          headerTitle: "Big Book",
+          headerRight: () => <HomeButton />
         }}
       />
       <Tabs.Screen
         name="twelve-and-twelve"
         options={{
-          href: null
+          href: null,
+          title: "Twelve and Twelve",
+          headerTitle: "Twelve and Twelve",
+          headerRight: () => <HomeButton />
         }}
       />
     </Tabs>
