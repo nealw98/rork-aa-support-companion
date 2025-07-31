@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { ChevronDown, ChevronRight } from "lucide-react-native";
 import { LinearGradient } from 'expo-linear-gradient';
+import { useLocalSearchParams } from 'expo-router';
 
 import Colors from "@/constants/colors";
 import { aaPrayers } from "@/constants/bigbook";
@@ -15,7 +16,19 @@ import { adjustFontWeight } from "@/constants/fonts";
 import ScreenContainer from "@/components/ScreenContainer";
 
 export default function PrayersScreen() {
+  const { prayer } = useLocalSearchParams();
   const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (prayer) {
+      const prayerIndex = aaPrayers.findIndex(p => 
+        p.title.toLowerCase().includes(prayer.toString().toLowerCase())
+      );
+      if (prayerIndex !== -1) {
+        setExpandedPrayer(prayerIndex);
+      }
+    }
+  }, [prayer]);
 
   return (
     <ScreenContainer style={styles.container}>
