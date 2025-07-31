@@ -70,7 +70,7 @@ const HomeScreen = () => {
         <TouchableOpacity style={styles.card} onPress={() => router.push('/prayers?prayer=morning')}>
           <Text style={styles.cardTitle}>Morning Prayer</Text>
           <Text style={styles.cardDescription}>Invite your higher power to help you through the day.</Text>
-          <Text style={styles.cardButton}>Go to Prayers</Text>
+          <Text style={styles.cardButton}>Go to Morning Prayer</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.card} onPress={() => router.push('/reflection')}>
@@ -98,7 +98,7 @@ const HomeScreen = () => {
         <Text style={styles.sectionSubtitle}>Stay connected and mindful during your daily activities.</Text>
         
         <TouchableOpacity style={styles.card} onPress={() => router.push('/chat')}>
-          <Text style={styles.cardTitle}>Sober Chat</Text>
+          <Text style={styles.cardTitle}>AI Sponsor</Text>
           <Text style={styles.cardDescription}>Talk with an AI sponsor voice when you need support.</Text>
           <Text style={styles.cardButton}>Go to Chat</Text>
         </TouchableOpacity>
@@ -124,7 +124,7 @@ const HomeScreen = () => {
         <TouchableOpacity style={styles.card} onPress={() => router.push('/prayers?prayer=evening')}>
           <Text style={styles.cardTitle}>Evening Prayer</Text>
           <Text style={styles.cardDescription}>End your day with gratitude and humility.</Text>
-          <Text style={styles.cardButton}>Go to Prayers</Text>
+          <Text style={styles.cardButton}>Go to Evening Prayer</Text>
         </TouchableOpacity>
         </View>
       </ScrollView>
