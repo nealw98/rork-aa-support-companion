@@ -79,11 +79,7 @@ const HomeScreen = () => {
           <Text style={styles.cardButton}>Go to Reflection</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/literature')}>
-          <Text style={styles.cardTitle}>Literature</Text>
-          <Text style={styles.cardDescription}>Read something out of the literature every day.</Text>
-          <Text style={styles.cardButton}>Go to Literature</Text>
-        </TouchableOpacity>
+        
 
         <TouchableOpacity style={styles.card} onPress={() => router.push('/gratitude')}>
           <Text style={styles.cardTitle}>Gratitude List</Text>
@@ -107,6 +103,18 @@ const HomeScreen = () => {
           <Text style={styles.cardTitle}>Insight Summary</Text>
           <Text style={styles.cardDescription}>Spot-check your emotional and spiritual growth.</Text>
           <Text style={styles.cardButton}>Go to Insights</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/literature')}>
+          <Text style={styles.cardTitle}>Literature</Text>
+          <Text style={styles.cardDescription}>Read something out of the literature every day.</Text>
+          <Text style={styles.cardButton}>Go to Literature</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/inventory')}>
+          <Text style={styles.cardTitle}>Spot Check Inventory</Text>
+          <Text style={styles.cardDescription}>Quickly assess your emotions and actions throughout the day.</Text>
+          <Text style={styles.cardButton}>Go to Inventory</Text>
         </TouchableOpacity>
       </View>
 
