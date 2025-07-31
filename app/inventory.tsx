@@ -34,7 +34,7 @@ const Inventory = () => {
 
   return (
     <>
-      <Stack.Screen options={{ title: "On the Beam" }} />
+      <Stack.Screen options={{ title: "Spot Check Inventory" }} />
       <ScreenContainer style={styles.container}>
         <LinearGradient
           colors={['rgba(74, 144, 226, 0.3)', 'rgba(78, 205, 196, 0.2)', 'rgba(92, 184, 92, 0.1)']}
@@ -82,12 +82,12 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'flex-start',
-    paddingTop: 40,
+    paddingTop: 0,
   },
   contentContainer: {
     backgroundColor: 'white',
     padding: 20,
-    minHeight: '85%',
+    minHeight: '100%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 30,
+    paddingTop: 20,
   },
   cardContainer: {
     width: '100%',
