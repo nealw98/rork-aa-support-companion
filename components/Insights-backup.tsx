@@ -24,7 +24,7 @@ export default function Insights() {
     
     const recentEntries = reviewEntries.filter(entry => {
       const entryDate = new Date(entry.date);
-      return entryDate >= cutoff && entry.completed;
+      return entryDate >= cutoff;
     });
 
     const counts: ThirtyDayCounts = {
