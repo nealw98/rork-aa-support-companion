@@ -47,14 +47,16 @@ const Inventory = () => {
             <View style={styles.gridContainer}>
               <View style={styles.columnContainer}>
                 <Text style={styles.columnTitleOn}>ON THE BEAM</Text>
+                <View style={styles.underline} />
                 {onTheBeam.map((item, index) => (
-                  <Text key={index} style={[styles.itemText, styles.noWrap, styles.itemOn]}>{item}</Text>
+                  <Text key={index} style={[styles.itemText, styles.noWrap]}>{item}</Text>
                 ))}
               </View>
               <View style={styles.columnContainer}>
                 <Text style={styles.columnTitleOff}>OFF THE BEAM</Text>
+                <View style={styles.underline} />
                 {offTheBeam.map((item, index) => (
-                  <Text key={index} style={[styles.itemText, styles.noWrap, styles.itemOff]}>{item}</Text>
+                  <Text key={index} style={[styles.itemText, styles.noWrap]}>{item}</Text>
                 ))}
               </View>
             </View>
@@ -124,16 +126,24 @@ const styles = StyleSheet.create({
   columnTitleOn: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2e7d32',
+    color: '#333',
     textAlign: 'center',
     marginBottom: 12,
   },
   columnTitleOff: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#d32f2f',
+    color: '#333',
     textAlign: 'center',
     marginBottom: 12,
+  },
+  underline: {
+    height: 2,
+    backgroundColor: '#333',
+    marginBottom: 12,
+    marginTop: -10,
+    width: '80%',
+    alignSelf: 'center',
   },
   itemText: {
     fontSize: 16,
@@ -142,16 +152,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 8,
   },
-  itemOn: {
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  itemOff: {
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-    borderRadius: 8,
-    marginBottom: 8,
-  },
+
   noWrap: {
     flexShrink: 0,
   },
