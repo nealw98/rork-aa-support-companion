@@ -21,9 +21,13 @@ export default function PrayersScreen() {
 
   useEffect(() => {
     if (prayer) {
-      const prayerIndex = aaPrayers.findIndex(p => 
-        p.title.toLowerCase().includes(prayer.toString().toLowerCase())
-      );
+      const prayerParam = prayer.toString().toLowerCase();
+      const prayerIndex = aaPrayers.findIndex(p => {
+        const title = p.title.toLowerCase();
+        return title.includes(prayerParam) || 
+               (prayerParam === 'morning' && title.includes('morning')) ||
+               (prayerParam === 'evening' && title.includes('evening'));
+      });
       if (prayerIndex !== -1) {
         setExpandedPrayer(prayerIndex);
       }
