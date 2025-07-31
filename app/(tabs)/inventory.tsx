@@ -43,29 +43,31 @@ const Inventory = () => {
         <View style={styles.contentContainer}>
           <Text style={styles.title}>Are you</Text>
           <Text style={styles.subtitle}>"ON THE BEAM"</Text>
-          <View style={styles.gridContainer}>
-            <View style={styles.columnContainer}>
-              <View style={styles.columnHeaderOn}>
-                <Text style={styles.columnTitle}>ON THE BEAM</Text>
+          <View style={styles.card}>
+            <View style={styles.gridContainer}>
+              <View style={styles.columnContainer}>
+                <View style={styles.columnHeaderOn}>
+                  <Text style={styles.columnTitle}>ON THE BEAM</Text>
+                </View>
+                <View style={styles.listContainerOn}>
+                  {onTheBeam.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text style={[styles.itemText, styles.noWrap]}>{item}</Text>
+                    </View>
+                  ))}
+                </View>
               </View>
-              <View style={styles.listContainerOn}>
-                {onTheBeam.map((item, index) => (
-                  <View key={index} style={styles.itemContainer}>
-                    <Text style={styles.itemText}>{item}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.columnHeaderOff}>
-                <Text style={styles.columnTitle}>OFF THE BEAM</Text>
-              </View>
-              <View style={styles.listContainerOff}>
-                {offTheBeam.map((item, index) => (
-                  <View key={index} style={styles.itemContainer}>
-                    <Text style={styles.itemText}>{item}</Text>
-                  </View>
-                ))}
+              <View style={styles.columnContainer}>
+                <View style={styles.columnHeaderOff}>
+                  <Text style={styles.columnTitle}>OFF THE BEAM</Text>
+                </View>
+                <View style={styles.listContainerOff}>
+                  {offTheBeam.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text style={[styles.itemText, styles.noWrap]}>{item}</Text>
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
           </View>
@@ -84,11 +86,22 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'center',
   },
+  card: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
   contentContainer: {
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 24,
-    marginHorizontal: 16,
+    marginHorizontal: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -165,6 +178,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.light.text,
     textAlign: 'center',
+  },
+  noWrap: {
+    flexShrink: 0,
   },
 });
 
