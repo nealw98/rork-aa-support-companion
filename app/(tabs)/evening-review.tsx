@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
+  Alert,
+  Platform,
+  Share
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle, Calendar } from 'lucide-react-native';
+import { CheckCircle, Calendar, Share2 } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
-import { router } from 'expo-router';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
@@ -29,7 +32,7 @@ const formatDateDisplay = (date: Date): string => {
 
 export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
-  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, getTodaysAnswers } = eveningReviewStore;
+  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = eveningReviewStore;
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   
@@ -141,11 +144,6 @@ export default function EveningReview() {
     completeToday(answers);
     setShowConfirmation(true);
     setShowAlert(false);
-    
-    // Add delay to ensure data is saved before navigation
-    setTimeout(() => {
-      router.push('/insights');
-    }, 100);
   };
 
   const handleStartNew = () => {
@@ -169,6 +167,112 @@ export default function EveningReview() {
   const handleUnsubmit = () => {
     uncompleteToday();
     handleStartNew();
+  };
+
+  const handleShare = async () => {
+    console.log('Share button pressed');
+    
+    if (!allAnswered) {
+      Alert.alert(
+        'Share Nightly Review',
+        'Please complete all questions before sharing your review.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    const today = new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Create a summary of the review
+    const reviewSummary = [];
+    
+    if (resentfulFlag === 'yes') {
+      reviewSummary.push(`• Experienced resentment${resentfulNote ? `: ${resentfulNote}` : ''}`);
+    }
+    if (selfishFlag === 'yes') {
+      reviewSummary.push(`• Was selfish or self-centered${selfishNote ? `: ${selfishNote}` : ''}`);
+    }
+    if (fearfulFlag === 'yes') {
+      reviewSummary.push(`• Felt fearful or worried${fearfulNote ? `: ${fearfulNote}` : ''}`);
+    }
+    if (apologyFlag === 'yes') {
+      reviewSummary.push(`• Need to make amends${apologyName ? ` to ${apologyName}` : ''}`);
+    }
+    if (kindnessFlag === 'yes') {
+      reviewSummary.push(`• Performed acts of service${kindnessNote ? `: ${kindnessNote}` : ''}`);
+    }
+    if (spiritualFlag === 'yes') {
+      reviewSummary.push(`• Felt spiritually connected${spiritualNote ? `: ${spiritualNote}` : ''}`);
+    }
+    if (aaTalkFlag === 'yes') {
+      reviewSummary.push('• Talked to someone in recovery');
+    }
+    if (prayerMeditationFlag === 'yes') {
+      reviewSummary.push('• Prayed or meditated');
+    }
+
+    const positiveActions = [];
+    if (kindnessFlag === 'yes') positiveActions.push('service');
+    if (spiritualFlag === 'yes') positiveActions.push('spiritual connection');
+    if (aaTalkFlag === 'yes') positiveActions.push('fellowship');
+    if (prayerMeditationFlag === 'yes') positiveActions.push('prayer/meditation');
+
+    let shareMessage = `${today}\n\nEvening Review Summary:\n`;
+    
+    if (reviewSummary.length > 0) {
+      shareMessage += reviewSummary.join('\n') + '\n\n';
+    }
+    
+    if (positiveActions.length > 0) {
+      shareMessage += `Today I practiced: ${positiveActions.join(', ')}\n\n`;
+    }
+    
+    shareMessage += 'Continuing to work my program one day at a time.';
+
+    try {
+      console.log('Attempting to share:', Platform.OS);
+      
+      if (Platform.OS === 'web') {
+        // For web, copy to clipboard since Share API doesn't work in iframes
+        await Clipboard.setStringAsync(shareMessage);
+        Alert.alert(
+          'Copied to Clipboard',
+          'Your nightly review has been copied to the clipboard. You can now paste it in any messaging app or text field.',
+          [{ text: 'OK' }]
+        );
+      } else {
+        // For mobile, use native Share API
+        const result = await Share.share({
+          message: shareMessage,
+          title: 'My Nightly Review'
+        });
+        console.log('Share result:', result);
+      }
+    } catch (error) {
+      console.error('Error sharing nightly review:', error);
+      
+      // Fallback to clipboard for any platform if sharing fails
+      try {
+        await Clipboard.setStringAsync(shareMessage);
+        Alert.alert(
+          'Copied to Clipboard',
+          'Sharing failed, but your nightly review has been copied to the clipboard.',
+          [{ text: 'OK' }]
+        );
+      } catch (clipboardError) {
+        console.error('Clipboard fallback failed:', clipboardError);
+        Alert.alert(
+          'Share Error',
+          'Unable to share your nightly review. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
+    }
   };
 
   // Check if all questions are answered
@@ -269,9 +373,6 @@ export default function EveningReview() {
 
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.completeButton} onPress={() => router.push('/insights')}>
-              <Text style={styles.completeButtonText}>View Insights</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={styles.outlineButton} onPress={handleUnsubmit}>
               <Text style={styles.outlineButtonText}>Edit Review</Text>
             </TouchableOpacity>
@@ -381,6 +482,24 @@ export default function EveningReview() {
         </View>
 
 
+
+        {/* Share Button */}
+        <TouchableOpacity 
+          style={[
+            styles.shareButton,
+            !allAnswered && styles.shareButtonDisabled
+          ]} 
+          onPress={handleShare}
+          disabled={!allAnswered}
+        >
+          <Share2 size={20} color="white" />
+          <Text style={[
+            styles.shareButtonText,
+            !allAnswered && styles.shareButtonTextDisabled
+          ]}>
+            Share Nightly Review
+          </Text>
+        </TouchableOpacity>
 
         {/* Complete Button */}
         <TouchableOpacity 
@@ -739,6 +858,29 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   completeButtonTextDisabled: {
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  shareButton: {
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginHorizontal: 32,
+    marginBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  shareButtonDisabled: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.6,
+  },
+  shareButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600'),
+  },
+  shareButtonTextDisabled: {
     color: 'rgba(255, 255, 255, 0.7)',
   },
 });

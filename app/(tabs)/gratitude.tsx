@@ -12,8 +12,8 @@ import {
   Share
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { Stack, router } from 'expo-router';
-import { Check, Heart, Share2 } from 'lucide-react-native';
+import { Stack } from 'expo-router';
+import { Heart, Share2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import Colors from '@/constants/colors';
@@ -136,25 +136,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16
   },
-  completeButton: {
-    backgroundColor: Colors.light.accent,
-    borderRadius: 12,
-    padding: 16,
-    margin: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8
-  },
-  completeButtonDisabled: {
-    backgroundColor: Colors.light.muted,
-    opacity: 0.6
-  },
-  completeButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600', true)
-  },
+
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -176,7 +158,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     margin: 20,
-    marginTop: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -198,7 +179,6 @@ export default function GratitudeListScreen() {
   const gratitudeStore = useGratitudeStore();
   const {
     getTodaysItems,
-    completeToday,
     addItemsToToday
   } = gratitudeStore;
   
@@ -223,44 +203,7 @@ export default function GratitudeListScreen() {
 
 
 
-  const handleComplete = () => {
-    console.log('Complete button pressed, items:', gratitudeItems.length);
-    
-    if (gratitudeItems.length === 0) {
-      Alert.alert(
-        'Complete Gratitude List',
-        'Please add at least one gratitude item before completing.',
-        [{ text: 'OK' }]
-      );
-      return;
-    }
-    
-    Alert.alert(
-      'Complete Today\'s Gratitude List?',
-      'Mark today\'s gratitude practice as complete and view your weekly insights and progress.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Save & Continue',
-          onPress: async () => {
-            try {
-              console.log('Completing gratitude with items:', gratitudeItems);
-              completeToday(gratitudeItems);
-              
-              // Add delay to ensure data is saved before navigation
-              setTimeout(() => {
-                console.log('Navigating to insights');
-                router.push('/(tabs)/insights');
-              }, 300);
-            } catch (error) {
-              console.error('Error completing gratitude:', error);
-              Alert.alert('Error', 'Failed to save gratitude list. Please try again.');
-            }
-          }
-        }
-      ]
-    );
-  };
+
 
   const handleShare = async () => {
     console.log('Share button pressed, items:', gratitudeItems.length);
@@ -416,19 +359,6 @@ export default function GratitudeListScreen() {
         >
           <Share2 size={20} color="white" />
           <Text style={styles.shareButtonText}>Share Gratitude List</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.completeButton,
-            gratitudeItems.length === 0 && styles.completeButtonDisabled
-          ]}
-          onPress={handleComplete}
-          disabled={gratitudeItems.length === 0}
-          activeOpacity={0.7}
-        >
-          <Check size={20} color="white" />
-          <Text style={styles.completeButtonText}>Complete & Continue</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </ScreenContainer>
