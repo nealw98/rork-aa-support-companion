@@ -113,8 +113,6 @@ export default function PrayersScreen() {
             )}
           </View>
         ))}
-        
-
       </ScrollView>
     </ScreenContainer>
   );
