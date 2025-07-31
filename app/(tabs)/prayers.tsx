@@ -20,6 +20,7 @@ export default function PrayersScreen() {
   const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const prayerRefs = useRef<{ [key: number]: View | null }>({});
+  const prayerPositions = useRef<{ [key: number]: number }>({});
 
   useEffect(() => {
     if (prayer) {
@@ -41,15 +42,9 @@ export default function PrayersScreen() {
   }, [prayer]);
 
   const scrollToPrayer = (index: number) => {
-    const prayerRef = prayerRefs.current[index];
-    if (prayerRef && scrollViewRef.current) {
-      prayerRef.measureLayout(
-        scrollViewRef.current.getInnerViewNode(),
-        (x, y) => {
-          scrollViewRef.current?.scrollTo({ y: y - 20, animated: true });
-        },
-        () => {}
-      );
+    const position = prayerPositions.current[index];
+    if (position !== undefined && scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: Math.max(0, position - 20), animated: true });
     }
   };
 
@@ -78,6 +73,10 @@ export default function PrayersScreen() {
             key={index} 
             style={styles.prayerCard}
             ref={(ref) => { prayerRefs.current[index] = ref; }}
+            onLayout={(event) => {
+              const { y } = event.nativeEvent.layout;
+              prayerPositions.current[index] = y;
+            }}
           >
             <TouchableOpacity
               style={styles.prayerHeader}
