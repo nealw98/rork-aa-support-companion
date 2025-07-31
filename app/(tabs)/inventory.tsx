@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '@/constants/colors';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
+import { Home } from 'lucide-react-native';
 
 const Inventory = () => {
   const onTheBeam = [
@@ -38,7 +39,19 @@ const Inventory = () => {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >
-      <Stack.Screen options={{ title: 'Spot Check Inventory' }} />
+      <Stack.Screen 
+        options={{ 
+          title: 'On the Beam',
+          headerLeft: () => (
+            <TouchableOpacity 
+              onPress={() => router.push('/')}
+              style={{ marginLeft: 10 }}
+            >
+              <Home size={24} color={Colors.light.text} />
+            </TouchableOpacity>
+          ),
+        }} 
+      />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.contentContainer}>
           <Text style={styles.title}>Are you</Text>
