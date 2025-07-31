@@ -19,8 +19,7 @@ export default function BigBookScreen() {
   return (
     <>
       <Stack.Screen options={{ 
-        title: "Big Book", 
-        headerTitle: "Big Book",
+        title: "Big Book",
         headerRight: () => <HomeButton />
       }} />
       <ScreenContainer style={styles.container}>

@@ -5,7 +5,7 @@ import { Stack } from 'expo-router';
 
 export default function ReflectionScreen() {
   return (
-    <ScreenContainer>
+    <ScreenContainer noPadding>
       <Stack.Screen options={{ title: 'Daily Reflection' }} />
       <DailyReflection />
     </ScreenContainer>

@@ -195,7 +195,7 @@ export default function InsightsScreen() {
   const emotionalInsight = hasData ? makeEmotionalPatterns(counts) : '';
 
   return (
-    <ScreenContainer>
+    <ScreenContainer noPadding>
       <Stack.Screen options={{ title: 'Recovery Insights' }} />
       
       <View style={styles.container}>

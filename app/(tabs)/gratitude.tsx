@@ -342,7 +342,7 @@ export default function GratitudeListScreen() {
   );
 
   return (
-    <ScreenContainer>
+    <ScreenContainer noPadding>
       <Stack.Screen options={{ title: 'Daily Gratitude' }} />
       
       <KeyboardAvoidingView 
