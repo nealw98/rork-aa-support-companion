@@ -19,8 +19,8 @@ export default function TwelveAndTwelveScreen() {
   return (
     <>
       <Stack.Screen options={{ 
-        title: "Twelve & Twelve", 
-        headerTitle: "Twelve Steps and Twelve Traditions",
+        title: "Twelve and Twelve", 
+        headerTitle: "Twelve and Twelve",
         headerRight: () => <HomeButton />
       }} />
       <ScreenContainer style={styles.container}>

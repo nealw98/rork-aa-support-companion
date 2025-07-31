@@ -16,8 +16,8 @@ interface LiteratureOption {
 const literatureOptions: LiteratureOption[] = [
   {
     id: "bigbook",
-    title: "Big Book",
-    description: "The basic textbook of Alcoholics Anonymous",
+    title: "Alcoholics Anonymous",
+    description: "The basic textbook for the AA program.",
     route: "/(tabs)/bigbook"
   },
   {
