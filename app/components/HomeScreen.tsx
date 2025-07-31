@@ -99,11 +99,7 @@ const HomeScreen = () => {
           <Text style={styles.cardButton}>Go to Chat</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/insights')}>
-          <Text style={styles.cardTitle}>Insight Summary</Text>
-          <Text style={styles.cardDescription}>Spot-check your emotional and spiritual growth.</Text>
-          <Text style={styles.cardButton}>Go to Insights</Text>
-        </TouchableOpacity>
+
 
         <TouchableOpacity style={styles.card} onPress={() => router.push('/literature')}>
           <Text style={styles.cardTitle}>Literature</Text>

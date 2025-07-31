@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Modal,
   Alert,
   Platform,
   Share
@@ -32,7 +31,7 @@ const formatDateDisplay = (date: Date): string => {
 
 export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
-  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = eveningReviewStore;
+  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = eveningReviewStore;
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   
@@ -124,27 +123,7 @@ export default function EveningReview() {
     }
   ];
 
-  const [showAlert, setShowAlert] = useState(false);
 
-  const handleComplete = () => {
-    setShowAlert(true);
-  };
-
-  const handleConfirmSubmit = () => {
-    const answers = {
-      resentful: resentfulFlag === 'yes',
-      selfish: selfishFlag === 'yes',
-      fearful: fearfulFlag === 'yes',
-      apology: apologyFlag === 'yes',
-      kindness: kindnessFlag === 'yes',
-      spiritual: spiritualFlag === 'yes',
-      aaTalk: aaTalkFlag === 'yes',
-      prayerMeditation: prayerMeditationFlag === 'yes'
-    };
-    completeToday(answers);
-    setShowConfirmation(true);
-    setShowAlert(false);
-  };
 
   const handleStartNew = () => {
     setResentfulFlag('');
@@ -391,36 +370,7 @@ export default function EveningReview() {
         style={styles.gradient}
       />
       
-      {/* Confirmation Dialog */}
-      <Modal
-        visible={showAlert}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowAlert(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.alertContainer}>
-            <Text style={styles.alertTitle}>Complete Your Daily Inventory?</Text>
-            <Text style={styles.alertDescription}>
-              Your evening review will be saved and cannot be modified. Are you ready to complete today&apos;s inventory?
-            </Text>
-            <View style={styles.alertButtonsContainer}>
-              <TouchableOpacity 
-                style={styles.alertCancelButton} 
-                onPress={() => setShowAlert(false)}
-              >
-                <Text style={styles.alertCancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.alertConfirmButton} 
-                onPress={handleConfirmSubmit}
-              >
-                <Text style={styles.alertConfirmButtonText}>Save</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
@@ -501,16 +451,7 @@ export default function EveningReview() {
           </Text>
         </TouchableOpacity>
 
-        {/* Complete Button */}
-        <TouchableOpacity 
-          style={[styles.completeButton, !allAnswered && styles.completeButtonDisabled]} 
-          onPress={handleComplete}
-          disabled={!allAnswered}
-        >
-          <Text style={[styles.completeButtonText, !allAnswered && styles.completeButtonTextDisabled]}>
-            Complete
-          </Text>
-        </TouchableOpacity>
+
 
         {/* Privacy Notice */}
         <Text style={styles.privacyText}>
