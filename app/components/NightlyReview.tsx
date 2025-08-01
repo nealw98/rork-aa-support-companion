@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button } from 'react-native';
 import { Share } from 'react-native';
-import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
+// import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 
 export default function NightlyReview() {
   const [newEntry, setNewEntry] = useState('');
-  const { entries, addEntry, toggleEntry } = useEveningReviewStore();
+  const [entries, setEntries] = useState<any[]>([]);
 
   const handleAddEntry = () => {
     if (newEntry.trim()) {
-      addEntry(newEntry);
+      setEntries([...entries, { id: Date.now().toString(), text: newEntry, completed: false }]);
       setNewEntry('');
     }
+  };
+
+  const toggleEntry = (id: string) => {
+    setEntries(entries.map(entry => 
+      entry.id === id ? { ...entry, completed: !entry.completed } : entry
+    ));
   };
 
   const handleShare = async () => {
@@ -26,7 +32,7 @@ export default function NightlyReview() {
     }
   };
 
-  const renderItem = ({ item }: { item: EveningReviewEntry }) => (
+  const renderItem = ({ item }: { item: any }) => (
     <TouchableOpacity 
       style={[styles.entryItem, item.completed && styles.completedEntry]}
       onPress={() => toggleEntry(item.id)}
@@ -48,12 +54,9 @@ export default function NightlyReview() {
           multiline
         />
         <Button
-          mode="contained"
+          title="Add"
           onPress={handleAddEntry}
-          style={styles.addButton}
-        >
-          Add
-        </Button>
+        />
       </View>
 
       <FlatList
@@ -64,12 +67,9 @@ export default function NightlyReview() {
       />
 
       <Button
-        mode="contained"
+        title="Share Nightly Review"
         onPress={handleShare}
-        style={styles.completeButton}
-      >
-        Share Nightly Review
-      </Button>
+      />
     </View>
   );
 }
@@ -99,9 +99,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
   },
-  addButton: {
-    alignSelf: 'flex-end',
-  },
   entriesList: {
     flex: 1,
   },
@@ -122,8 +119,5 @@ const styles = StyleSheet.create({
   completedText: {
     textDecorationLine: 'line-through',
     color: '#888',
-  },
-  completeButton: {
-    marginTop: 16,
   },
 });
