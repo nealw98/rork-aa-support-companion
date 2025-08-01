@@ -6,35 +6,42 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Modal,
 } from 'react-native';
-import { router } from 'expo-router';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { Heart, Plus, Check } from 'lucide-react-native';
+import { Heart, Plus } from 'lucide-react-native';
 import { useGratitudeStore } from '@/hooks/use-gratitude-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 export default function GratitudeList() {
   const {
-    isCompletedToday,
     getTodaysItems,
-    completeToday,
-    uncompleteToday,
-    addItemsToToday
+    addItemsToToday,
+    resetIfNewDay
   } = useGratitudeStore();
 
   const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
-
-  const isCompleted = isCompletedToday();
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
+    const checkMidnightReset = () => {
+      const now = new Date();
+      if (now.getDate() !== currentDate.getDate()) {
+        resetIfNewDay();
+        setCurrentDate(now);
+        setGratitudeItems([]);
+      }
+    };
+
+    const interval = setInterval(checkMidnightReset, 60000); // Check every minute
     const todaysItems = getTodaysItems();
     setGratitudeItems(todaysItems);
-  }, [getTodaysItems]);
+
+    return () => clearInterval(interval);
+  }, [getTodaysItems, resetIfNewDay, currentDate]);
 
   const handleAddGratitude = () => {
     if (inputValue.trim()) {
@@ -45,70 +52,13 @@ export default function GratitudeList() {
     }
   };
 
-  const handleComplete = () => {
-    if (gratitudeItems.length === 0) {
-      return;
-    }
-    setShowAlert(true);
-  };
-
-  const handleConfirmSubmit = () => {
-    completeToday(gratitudeItems);
-    setShowAlert(false);
-    router.push('/insights');
-  };
-
-  const handleAddMore = () => {
-    uncompleteToday();
-    const todaysItems = getTodaysItems();
-    setGratitudeItems(todaysItems);
-  };
-
   const handleKeyPress = (e: any) => {
     if (e.nativeEvent.key === 'Enter') {
       handleAddGratitude();
     }
   };
 
-  if (isCompleted) {
-    return (
-      <ScreenContainer style={styles.container}>
-        <LinearGradient
-          colors={['#E0F7FF', '#FFFFFF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.gradient}
-        />
-        
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          <View style={styles.header}>
-            <Heart color={Colors.light.tint} size={32} />
-            <Text style={styles.title}>Gratitude Complete</Text>
-            <Text style={styles.description}>
-              Thank you for taking time to reflect on gratitude. These moments of appreciation strengthen your recovery.
-            </Text>
-          </View>
 
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Today&apos;s Gratitude</Text>
-            {gratitudeItems.map((item, index) => (
-              <View key={index} style={styles.gratitudeItemDisplay}>
-                <Text style={styles.gratitudeItemText}>• {item}</Text>
-              </View>
-            ))}
-          </View>
-
-          <TouchableOpacity style={styles.addMoreButton} onPress={handleAddMore}>
-            <Text style={styles.addMoreButtonText}>Add More Items</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.privacyText}>
-            Your gratitude list is stored locally on your device for privacy.
-          </Text>
-        </ScrollView>
-      </ScreenContainer>
-    );
-  }
 
   return (
     <ScreenContainer style={styles.container}>
@@ -119,40 +69,13 @@ export default function GratitudeList() {
         style={styles.gradient}
       />
       
-      <Modal
-        visible={showAlert}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowAlert(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.alertContainer}>
-            <Text style={styles.alertTitle}>Complete Today&apos;s Gratitude List?</Text>
-            <Text style={styles.alertDescription}>
-              Mark today&apos;s gratitude practice as complete and view your weekly insights and progress.
-            </Text>
-            <View style={styles.alertButtonsContainer}>
-              <TouchableOpacity 
-                style={styles.alertCancelButton} 
-                onPress={() => setShowAlert(false)}
-              >
-                <Text style={styles.alertCancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.alertConfirmButton} 
-                onPress={handleConfirmSubmit}
-              >
-                <Text style={styles.alertConfirmButtonText}>Save & Continue</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Heart color={Colors.light.tint} size={32} />
           <Text style={styles.title}>Gratitude List</Text>
+          <Text style={styles.dateText}>{formatDateDisplay(currentDate)}</Text>
         </View>
 
         <View style={styles.card}>
@@ -193,15 +116,7 @@ export default function GratitudeList() {
             </View>
           )}
 
-          {gratitudeItems.length > 0 && (
-            <TouchableOpacity 
-              style={styles.completeButton}
-              onPress={handleComplete}
-            >
-              <Check color="white" size={16} />
-              <Text style={styles.completeButtonText}>Complete</Text>
-            </TouchableOpacity>
-          )}
+
         </View>
 
         <Text style={styles.privacyText}>
@@ -213,71 +128,7 @@ export default function GratitudeList() {
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  alertContainer: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    width: '100%',
-    maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  alertTitle: {
-    fontSize: 20,
-    fontWeight: adjustFontWeight('700', true),
-    color: Colors.light.text,
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  alertDescription: {
-    fontSize: 16,
-    color: '#6c757d',
-    marginBottom: 20,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  alertButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  alertCancelButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: Colors.light.tint,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  alertCancelButtonText: {
-    color: Colors.light.tint,
-    fontSize: 16,
-    fontWeight: adjustFontWeight('500'),
-  },
-  alertConfirmButton: {
-    flex: 1,
-    backgroundColor: Colors.light.tint,
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  alertConfirmButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600'),
-  },
+
   container: {
     flex: 1,
   },
@@ -301,6 +152,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: adjustFontWeight('700', true),
     color: Colors.light.text,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  dateText: {
+    fontSize: 16,
+    color: Colors.light.tint,
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -430,41 +287,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     lineHeight: 20,
   },
-  completeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: Colors.light.tint,
-    paddingVertical: 14,
-    borderRadius: 25,
-    marginTop: 8,
-  },
-  addMoreButton: {
-    borderWidth: 1,
-    borderColor: Colors.light.tint,
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginHorizontal: 32,
-    marginBottom: 16,
-  },
-  addMoreButtonText: {
-    color: Colors.light.tint,
-    fontSize: 16,
-    fontWeight: adjustFontWeight('500'),
-  },
-  completeButtonDisabled: {
-    backgroundColor: '#6c757d',
-  },
-  completeButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600'),
-  },
-  completeButtonTextDisabled: {
-    color: 'rgba(255, 255, 255, 0.7)',
-  },
+
   outlineButton: {
     borderWidth: 1,
     borderColor: Colors.light.tint,

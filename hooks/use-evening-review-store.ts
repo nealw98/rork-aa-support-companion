@@ -230,6 +230,12 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     };
   };
 
+  const resetIfNewDay = () => {
+    // This function can be used to trigger a reset check
+    // The actual reset logic is handled in the component
+    loadEntries();
+  };
+
   return {
     getTodaysAnswers,
     isCompletedToday,
@@ -242,6 +248,7 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     uncompleteToday,
     getWeeklyStreak,
     saveEntry,
-    getTodayEntry
+    getTodayEntry,
+    resetIfNewDay
   };
 });
