@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
+    marginBottom: 5,
     width: '100%',
   },
   sobrietyCounterContainer: {
