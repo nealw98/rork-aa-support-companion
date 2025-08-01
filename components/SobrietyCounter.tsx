@@ -403,19 +403,21 @@ const SobrietyCounter = () => {
           <Text style={styles.sobrietyText}>
             You've been sober {daysSober} {daysSober === 1 ? 'day' : 'days'}.
           </Text>
-          <Text style={styles.sobrietyDateText}>
-            Since {new Date(sobrietyDate).toLocaleDateString('en-US', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
-            })}
-          </Text>
-          <TouchableOpacity 
-            style={styles.editButton}
-            onPress={handleEditDate}
-          >
-            <Text style={styles.editButtonText}>Edit</Text>
-          </TouchableOpacity>
+          <View style={styles.dateRow}>
+            <Text style={styles.sobrietyDateText}>
+              Since {new Date(sobrietyDate).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </Text>
+            <TouchableOpacity 
+              style={styles.editButton}
+              onPress={handleEditDate}
+            >
+              <Edit3 size={14} color={Colors.light.tint} />
+            </TouchableOpacity>
+          </View>
         </View>
         
         {/* Edit Date Modal for Android */}
@@ -649,17 +651,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 4,
   },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
   sobrietyDateText: {
     fontSize: 16,
     color: Colors.light.muted,
     textAlign: 'center',
-    marginBottom: 12,
   },
   editButton: {
-    backgroundColor: Colors.light.tint,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    padding: 4,
+    borderRadius: 4,
   },
   editButtonText: {
     color: 'white',
