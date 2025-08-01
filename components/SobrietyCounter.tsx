@@ -295,17 +295,18 @@ const SobrietyCounter = () => {
   if (shouldShowAddButton()) {
     return (
       <View style={styles.addDateContainer}>
-        <Calendar size={32} color={Colors.light.tint} style={styles.addDateIcon} />
-        <Text style={styles.addDateTitle}>Track Your Sobriety</Text>
-        <Text style={styles.addDateDescription}>
+        <View style={styles.addDateRow}>
+          <Text style={styles.addDateTitle}>Track your sobriety</Text>
+          <TouchableOpacity 
+            style={styles.addDateButton}
+            onPress={handleAddDate}
+          >
+            <Text style={styles.addDateButtonText}>Add Date</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.addDateTitle}>
           Add your sobriety date to see your progress
         </Text>
-        <TouchableOpacity 
-          style={styles.addDateButton}
-          onPress={handleAddDate}
-        >
-          <Text style={styles.addDateButtonText}>Add Sobriety Date</Text>
-        </TouchableOpacity>
         
         {/* Date picker modals for add date functionality */}
         {showDatePicker && Platform.OS === 'android' && (
@@ -710,43 +711,33 @@ const styles = StyleSheet.create({
   
   // Add Date Button styles
   addDateContainer: {
-    backgroundColor: 'rgba(74, 144, 226, 0.1)',
-    borderRadius: 16,
-    padding: 20,
     marginHorizontal: 16,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.2)',
     alignItems: 'center',
   },
-  addDateIcon: {
-    marginBottom: 12,
+  addDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 4,
   },
   addDateTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.light.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  addDateDescription: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.light.muted,
     textAlign: 'center',
-    marginBottom: 16,
-    lineHeight: 20,
   },
   addDateButton: {
-    backgroundColor: Colors.light.tint,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center',
+    backgroundColor: 'transparent',
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    borderRadius: 4,
   },
   addDateButtonText: {
-    color: 'white',
+    color: Colors.light.tint,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
+    textDecorationLine: 'underline',
   },
 });
 
