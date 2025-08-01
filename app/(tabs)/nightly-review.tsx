@@ -200,6 +200,7 @@ export default function NightlyReviewScreen() {
       });
     } catch (error) {
       console.error('Error sharing nightly review:', error);
+      alert('Unable to share. This feature may not be supported in this environment.');
     }
   };
 
