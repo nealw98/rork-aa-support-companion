@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useCallback } from "react";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { EveningReviewProvider } from "@/hooks/useEveningReviewStore";
+
 import { GratitudeProvider } from "@/hooks/useGratitudeStore";
 import { OnboardingProvider, useOnboarding } from "@/hooks/useOnboardingStore";
 import { adjustFontWeight } from "@/constants/fonts";
@@ -85,11 +85,9 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <OnboardingProvider>
         <GratitudeProvider>
-          <EveningReviewProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <RootLayoutNav />
-            </GestureHandlerRootView>
-          </EveningReviewProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <RootLayoutNav />
+          </GestureHandlerRootView>
         </GratitudeProvider>
       </OnboardingProvider>
     </QueryClientProvider>
