@@ -1,5 +1,5 @@
 import { Tabs, router } from "expo-router";
-import { Home, MessageCircle, Book, Heart, Smile } from "lucide-react-native";
+import { Home, MessageCircle, Book, Heart, Smile, Moon } from "lucide-react-native";
 import React from "react";
 import { Text, View, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import SunIcon from "@/components/SunIcon";
@@ -83,10 +83,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="nightly-review"
         options={{
-          href: null,
           title: "Review",
           headerTitle: "Nightly Review",
-          headerRight: () => <HomeButton />
+          headerRight: () => <HomeButton />,
+          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
       />
       <Tabs.Screen

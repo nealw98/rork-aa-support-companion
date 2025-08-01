@@ -2,309 +2,417 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
-  TextInput,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  Platform,
   Share
 } from 'react-native';
-import { Stack } from 'expo-router';
-import { CheckCircle, Circle, Moon, Share2 } from 'lucide-react-native';
+import * as Clipboard from 'expo-clipboard';
+import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { formatDateDisplay } from '@/utils/dateUtils';
+import { Share2 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
-import ScreenContainer from '@/components/ScreenContainer';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background
-  },
-  backgroundGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  header: {
-    padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.3)'
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: adjustFontWeight('700', true),
-    color: Colors.light.text
-  },
-  subtitle: {
-    fontSize: 16,
-    color: Colors.light.muted,
-    lineHeight: 22
-  },
-  content: {
-    flex: 1
-  },
-  questionContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    margin: 16,
-    marginBottom: 8,
-    borderRadius: 12,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)'
-  },
-  questionText: {
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text,
-    marginBottom: 16,
-    lineHeight: 22
-  },
-  optionsContainer: {
-    flexDirection: 'row',
-    gap: 16
-  },
-  optionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.light.divider
-  },
-  optionButtonSelected: {
-    backgroundColor: Colors.light.tint,
-    borderColor: Colors.light.tint
-  },
-  optionText: {
-    fontSize: 16,
-    color: Colors.light.text
-  },
-  optionTextSelected: {
-    color: 'white',
-    fontWeight: adjustFontWeight('600', true)
-  },
-  notesInput: {
-    borderWidth: 1,
-    borderColor: Colors.light.divider,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: Colors.light.text,
-    backgroundColor: Colors.light.background,
-    minHeight: 100,
-    textAlignVertical: 'top'
-  },
-  shareButton: {
-    backgroundColor: Colors.light.accent,
-    borderRadius: 12,
-    padding: 16,
-    margin: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8
-  },
-  shareButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600', true)
-  },
-  dateHeader: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    margin: 16,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)'
-  },
-  dateText: {
-    fontSize: 18,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text
-  }
-});
-
-const questions = [
-  { key: 'resentful', text: 'Was I resentful today?', placeholder: 'With whom?' },
-  { key: 'selfish', text: 'Was I selfish and self-centered today?', placeholder: 'In what way?' },
-  { key: 'fearful', text: 'Was I fearful or worrisome today?', placeholder: 'How so?' },
-  { key: 'apology', text: 'Do I owe anyone an apology?', placeholder: 'Whom have you harmed?' },
-  { key: 'kindness', text: 'Was I of service or kind to others today?', placeholder: 'What did you do?' },
-  { key: 'spiritual', text: 'Was I spiritually connected today?', placeholder: 'How so?' },
-  { key: 'aaTalk', text: 'Did I talk to someone in recovery today?' },
-  { key: 'prayerMeditation', text: 'Did I pray or meditate today?' }
-];
-
-export default function NightlyReviewScreen() {
-  // Form state
-  const [answers, setAnswers] = useState<Record<string, { flag: string; note: string }>>({
-    resentful: { flag: '', note: '' },
-    selfish: { flag: '', note: '' },
-    fearful: { flag: '', note: '' },
-    apology: { flag: '', note: '' },
-    kindness: { flag: '', note: '' },
-    spiritual: { flag: '', note: '' },
-    aaTalk: { flag: '', note: '' },
-    prayerMeditation: { flag: '', note: '' }
+const formatDateDisplay = (date: Date): string => {
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
+};
+
+export default function NightlyReview() {
+  // Form state - matching web app structure
+  const [resentfulFlag, setResentfulFlag] = useState('');
+  const [resentfulNote, setResentfulNote] = useState('');
+  const [selfishFlag, setSelfishFlag] = useState('');
+  const [selfishNote, setSelfishNote] = useState('');
+  const [fearfulFlag, setFearfulFlag] = useState('');
+  const [fearfulNote, setFearfulNote] = useState('');
+  const [apologyFlag, setApologyFlag] = useState('');
+  const [apologyName, setApologyName] = useState('');
+  const [kindnessFlag, setKindnessFlag] = useState('');
+  const [kindnessNote, setKindnessNote] = useState('');
+  const [spiritualFlag, setSpiritualFlag] = useState('');
+  const [spiritualNote, setSpiritualNote] = useState('');
+  const [aaTalkFlag, setAaTalkFlag] = useState('');
+  const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
   const today = new Date();
 
-  const setAnswerFlag = (key: string, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
-      [key]: { ...prev[key], flag: value }
-    }));
-  };
-
-  const setAnswerNote = (key: string, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
-      [key]: { ...prev[key], note: value }
-    }));
-  };
+  const questions = [
+    {
+      text: '1. Was I resentful today?',
+      flag: resentfulFlag,
+      setFlag: setResentfulFlag,
+      note: resentfulNote,
+      setNote: setResentfulNote,
+      placeholder: 'With whom?'
+    },
+    {
+      text: '2. Was I selfish and self-centered today?',
+      flag: selfishFlag,
+      setFlag: setSelfishFlag,
+      note: selfishNote,
+      setNote: setSelfishNote,
+      placeholder: 'In what way?'
+    },
+    {
+      text: '3. Was I fearful or worrisome today?',
+      flag: fearfulFlag,
+      setFlag: setFearfulFlag,
+      note: fearfulNote,
+      setNote: setFearfulNote,
+      placeholder: 'How so?'
+    },
+    {
+      text: '4. Do I owe anyone an apology?',
+      flag: apologyFlag,
+      setFlag: setApologyFlag,
+      note: apologyName,
+      setNote: setApologyName,
+      placeholder: 'Whom have you harmed?'
+    },
+    {
+      text: '5. Was I of service or kind to others today?',
+      flag: kindnessFlag,
+      setFlag: setKindnessFlag,
+      note: kindnessNote,
+      setNote: setKindnessNote,
+      placeholder: 'What did you do?'
+    },
+    {
+      text: '6. Was I spiritually connected today?',
+      flag: spiritualFlag,
+      setFlag: setSpiritualFlag,
+      note: spiritualNote,
+      setNote: setSpiritualNote,
+      placeholder: 'How so?'
+    },
+    {
+      text: '7. Did I talk to someone in recovery today?',
+      flag: aaTalkFlag,
+      setFlag: setAaTalkFlag,
+      note: '',
+      setNote: () => {},
+      placeholder: ''
+    },
+    {
+      text: '8. Did I pray or meditate today?',
+      flag: prayerMeditationFlag,
+      setFlag: setPrayerMeditationFlag,
+      note: '',
+      setNote: () => {},
+      placeholder: ''
+    }
+  ];
 
   const handleShare = async () => {
-    let shareText = `Hey, here's my Nightly Review for ${formatDateDisplay(today)}:\n\n`;
-    questions.forEach(question => {
-      const answer = answers[question.key];
-      shareText += `- ${question.text}\n`;
-      if (answer.flag) {
-        shareText += `  I said ${answer.flag.charAt(0).toUpperCase() + answer.flag.slice(1)}${answer.flag === 'yes' && answer.note ? `, and here's what I noted: ${answer.note}` : ''}\n`;
-      } else {
-        shareText += `  Haven't answered this one yet.\n`;
-      }
-      shareText += '\n';
+    console.log('Share button pressed');
+
+    const today = new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
 
+    // Create a summary of the review
+    const answeredQuestions = [];
+    
+    // Include all answered questions, regardless of yes/no
+    if (resentfulFlag) {
+      const answer = resentfulFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`1. Was I resentful today? ${answer}${resentfulFlag === 'yes' && resentfulNote ? ` - ${resentfulNote}` : ''}`);
+    }
+    if (selfishFlag) {
+      const answer = selfishFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`2. Was I selfish and self-centered today? ${answer}${selfishFlag === 'yes' && selfishNote ? ` - ${selfishNote}` : ''}`);
+    }
+    if (fearfulFlag) {
+      const answer = fearfulFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`3. Was I fearful or worrisome today? ${answer}${fearfulFlag === 'yes' && fearfulNote ? ` - ${fearfulNote}` : ''}`);
+    }
+    if (apologyFlag) {
+      const answer = apologyFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`4. Do I owe anyone an apology? ${answer}${apologyFlag === 'yes' && apologyName ? ` - ${apologyName}` : ''}`);
+    }
+    if (kindnessFlag) {
+      const answer = kindnessFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`5. Was I of service or kind to others today? ${answer}${kindnessFlag === 'yes' && kindnessNote ? ` - ${kindnessNote}` : ''}`);
+    }
+    if (spiritualFlag) {
+      const answer = spiritualFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`6. Was I spiritually connected today? ${answer}${spiritualFlag === 'yes' && spiritualNote ? ` - ${spiritualNote}` : ''}`);
+    }
+    if (aaTalkFlag) {
+      const answer = aaTalkFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`7. Did I talk to someone in recovery today? ${answer}`);
+    }
+    if (prayerMeditationFlag) {
+      const answer = prayerMeditationFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`8. Did I pray or meditate today? ${answer}`);
+    }
+
+    let shareMessage = `${today}\n\nEvening Review\n\n`;
+    
+    if (answeredQuestions.length > 0) {
+      shareMessage += answeredQuestions.join('\n\n') + '\n\n';
+    } else {
+      shareMessage += 'Starting my nightly review...\n\n';
+    }
+    
+    shareMessage += 'Working my program one day at a time.';
+
     try {
-      await Share.share({
-        message: shareText,
-        title: 'Nightly Review - ' + formatDateDisplay(today)
-      });
+      console.log('Attempting to share:', Platform.OS);
+      
+      if (Platform.OS === 'web') {
+        // For web, copy to clipboard since Share API doesn't work in iframes
+        await Clipboard.setStringAsync(shareMessage);
+        Alert.alert(
+          'Copied to Clipboard',
+          'Your nightly review has been copied to the clipboard. You can now paste it in any messaging app or text field.',
+          [{ text: 'OK' }]
+        );
+      } else {
+        // For mobile, use native Share API
+        const result = await Share.share({
+          message: shareMessage,
+          title: 'My Nightly Review'
+        });
+        console.log('Share result:', result);
+      }
     } catch (error) {
       console.error('Error sharing nightly review:', error);
-      alert('Unable to share. This feature may not be supported in this environment.');
+      
+      // Fallback to clipboard for any platform if sharing fails
+      try {
+        await Clipboard.setStringAsync(shareMessage);
+        Alert.alert(
+          'Copied to Clipboard',
+          'Sharing failed, but your nightly review has been copied to the clipboard.',
+          [{ text: 'OK' }]
+        );
+      } catch (clipboardError) {
+        console.error('Clipboard fallback failed:', clipboardError);
+        Alert.alert(
+          'Share Error',
+          'Unable to share your nightly review. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
     }
   };
 
-  const renderQuestion = (question: typeof questions[0], index: number) => {
-    const currentAnswer = answers[question.key];
-    
-    return (
-      <View key={question.key} style={styles.questionContainer}>
-        <Text style={styles.questionText}>
-          {index + 1}. {question.text}
-        </Text>
-        <View style={styles.optionsContainer}>
-          <TouchableOpacity
-            style={[
-              styles.optionButton,
-              currentAnswer.flag === 'yes' && styles.optionButtonSelected
-            ]}
-            onPress={() => setAnswerFlag(question.key, 'yes')}
-          >
-            {currentAnswer.flag === 'yes' ? (
-              <CheckCircle size={20} color="white" />
-            ) : (
-              <Circle size={20} color={Colors.light.text} />
-            )}
-            <Text style={[
-              styles.optionText,
-              currentAnswer.flag === 'yes' && styles.optionTextSelected
-            ]}>
-              Yes
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[
-              styles.optionButton,
-              currentAnswer.flag === 'no' && styles.optionButtonSelected
-            ]}
-            onPress={() => setAnswerFlag(question.key, 'no')}
-          >
-            {currentAnswer.flag === 'no' ? (
-              <CheckCircle size={20} color="white" />
-            ) : (
-              <Circle size={20} color={Colors.light.text} />
-            )}
-            <Text style={[
-              styles.optionText,
-              currentAnswer.flag === 'no' && styles.optionTextSelected
-            ]}>
-              No
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {currentAnswer.flag === 'yes' && question.placeholder && (
-          <TextInput
-            style={styles.notesInput}
-            placeholder={question.placeholder}
-            placeholderTextColor={Colors.light.muted}
-            multiline
-            textAlignVertical="top"
-            returnKeyType="done"
-            blurOnSubmit={true}
-            value={currentAnswer.note}
-            onChangeText={(text) => setAnswerNote(question.key, text)}
-          />
-        )}
-      </View>
-    );
-  };
-
   return (
-    <ScreenContainer noPadding>
-      <Stack.Screen options={{ title: 'Nightly Review' }} />
+    <ScreenContainer style={styles.container}>
+      <LinearGradient
+        colors={[Colors.light.chatBubbleUser, Colors.light.chatBubbleBot]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradient}
+      />
       
-      <View style={styles.container}>
-        <LinearGradient
-          colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
-          style={styles.backgroundGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          locations={[0, 1]}
-        />
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Header */}
         <View style={styles.header}>
-          <View style={styles.titleContainer}>
-            <Moon size={24} color={Colors.light.tint} />
-            <Text style={styles.title}>Nightly Review</Text>
-          </View>
-          <Text style={styles.subtitle}>
+          <Text style={styles.title}>Nightly Review</Text>
+          <Text style={styles.description}>
             Nightly inventory based on AA guidance
           </Text>
         </View>
 
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          <View style={styles.dateHeader}>
-            <Text style={styles.dateText}>{formatDateDisplay(today)}</Text>
-          </View>
+        {/* Questions */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{formatDateDisplay(today)}</Text>
           
-          {questions.map((question, index) => renderQuestion(question, index))}
-        </ScrollView>
+          <View style={styles.questionsContainer}>
+            {questions.map((question, index) => (
+              <View key={index} style={styles.questionContainer}>
+                <Text style={styles.questionText}>{question.text}</Text>
+                <View style={styles.answerButtons}>
+                  <TouchableOpacity
+                    style={[
+                      styles.answerButton,
+                      question.flag === 'yes' && styles.answerButtonSelected
+                    ]}
+                    onPress={() => question.setFlag('yes')}
+                  >
+                    <Text style={[
+                      styles.answerButtonText,
+                      question.flag === 'yes' && styles.answerButtonTextSelected
+                    ]}>Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.answerButton,
+                      question.flag === 'no' && styles.answerButtonSelected
+                    ]}
+                    onPress={() => question.setFlag('no')}
+                  >
+                    <Text style={[
+                      styles.answerButtonText,
+                      question.flag === 'no' && styles.answerButtonTextSelected
+                    ]}>No</Text>
+                  </TouchableOpacity>
+                </View>
+                
+                {question.flag === 'yes' && question.placeholder && (
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder={question.placeholder}
+                    value={question.note}
+                    onChangeText={question.setNote}
+                    multiline
+                    placeholderTextColor={Colors.light.muted}
+                  />
+                )}
+              </View>
+            ))}
+          </View>
+        </View>
 
+        {/* Share Button */}
         <TouchableOpacity 
           style={styles.shareButton} 
           onPress={handleShare}
         >
           <Share2 size={20} color="white" />
-          <Text style={styles.shareButtonText}>Share Nightly Review</Text>
+          <Text style={styles.shareButtonText}>
+            Share Nightly Review
+          </Text>
         </TouchableOpacity>
-      </View>
+
+        {/* Privacy Notice */}
+        <Text style={styles.privacyText}>
+          Your responses are saved only on your device. Nothing is uploaded or shared.
+        </Text>
+      </ScrollView>
     </ScreenContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+  },
+  header: {
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: adjustFontWeight('700', true),
+    color: Colors.light.text,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  card: {
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: adjustFontWeight('600', true),
+    color: Colors.light.tint,
+    marginLeft: 8,
+  },
+  questionsContainer: {
+    marginTop: 16,
+  },
+  questionContainer: {
+    marginBottom: 16,
+  },
+  questionText: {
+    fontSize: 14,
+    fontWeight: adjustFontWeight('500'),
+    color: Colors.light.text,
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  answerButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  answerButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    backgroundColor: 'transparent',
+  },
+  answerButtonSelected: {
+    backgroundColor: Colors.light.tint,
+  },
+  answerButtonText: {
+    fontSize: 14,
+    color: Colors.light.tint,
+    fontWeight: adjustFontWeight('500'),
+  },
+  answerButtonTextSelected: {
+    color: 'white',
+  },
+  textInput: {
+    marginTop: 8,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 14,
+    color: Colors.light.text,
+    minHeight: 40,
+    textAlignVertical: 'top',
+  },
+  shareButton: {
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginHorizontal: 32,
+    marginBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  shareButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600'),
+  },
+  privacyText: {
+    fontSize: 12,
+    color: Colors.light.muted,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+});
