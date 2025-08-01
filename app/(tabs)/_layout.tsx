@@ -72,15 +72,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="reflection"
-        options={{
-          title: "Reflection",
-          headerTitle: "Daily Reflection",
-          headerRight: () => <HomeButton />,
-          tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
-        }}
-      />
-      <Tabs.Screen
         name="gratitude"
         options={{
           title: "Gratitude",
@@ -98,7 +89,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
       />
-
       <Tabs.Screen
         name="chat"
         options={{
