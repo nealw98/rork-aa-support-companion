@@ -296,7 +296,7 @@ const SobrietyCounter = () => {
     return (
       <View style={styles.addDateContainer}>
         <View style={styles.addDateRow}>
-          <Text style={styles.addDateTitle}>Track your sobriety</Text>
+          <Text style={styles.addDateMainTitle}>Track your sobriety</Text>
           <TouchableOpacity 
             style={styles.addDateButton}
             onPress={handleAddDate}
@@ -304,8 +304,8 @@ const SobrietyCounter = () => {
             <Text style={styles.addDateButtonText}>Add Date</Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.addDateTitle}>
-          Add your sobriety date to see your progress
+        <Text style={styles.addDateSubtitle}>
+          See how many days you've been sober.
         </Text>
         
         {/* Date picker modals for add date functionality */}
@@ -722,7 +722,13 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 4,
   },
-  addDateTitle: {
+  addDateMainTitle: {
+    fontSize: 18,
+    color: Colors.light.text,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  addDateSubtitle: {
     fontSize: 16,
     color: Colors.light.muted,
     textAlign: 'center',
