@@ -23,13 +23,13 @@ const SobrietyCounter = () => {
     // Remove all non-numeric characters
     const numbers = text.replace(/\D/g, '');
     
-    // Format as YYYY-MM-DD
-    if (numbers.length <= 4) {
+    // Format as MM/DD/YYYY for better user experience
+    if (numbers.length <= 2) {
       return numbers;
-    } else if (numbers.length <= 6) {
-      return `${numbers.slice(0, 4)}-${numbers.slice(4)}`;
+    } else if (numbers.length <= 4) {
+      return `${numbers.slice(0, 2)}/${numbers.slice(2)}`;
     } else {
-      return `${numbers.slice(0, 4)}-${numbers.slice(4, 6)}-${numbers.slice(6, 8)}`;
+      return `${numbers.slice(0, 2)}/${numbers.slice(2, 4)}/${numbers.slice(4, 8)}`;
     }
   };
 
@@ -40,10 +40,19 @@ const SobrietyCounter = () => {
 
   const isValidDate = (dateString: string) => {
     if (Platform.OS === 'web' && webDateString) {
-      const regex = /^\d{4}-\d{2}-\d{2}$/;
+      const regex = /^\d{2}\/\d{2}\/\d{4}$/;
       if (!regex.test(webDateString)) return false;
-      const date = new Date(webDateString);
-      return date instanceof Date && !isNaN(date.getTime()) && date <= new Date();
+      
+      const [month, day, year] = webDateString.split('/').map(Number);
+      const date = new Date(year, month - 1, day);
+      
+      // Check if date is valid and not in the future
+      return date instanceof Date && 
+             !isNaN(date.getTime()) && 
+             date <= new Date() &&
+             date.getFullYear() === year &&
+             date.getMonth() === month - 1 &&
+             date.getDate() === day;
     }
     return true;
   };
@@ -58,10 +67,12 @@ const SobrietyCounter = () => {
     let dateString: string;
     if (Platform.OS === 'web') {
       if (!webDateString || !isValidDate(webDateString)) {
-        alert('Please enter a valid date in YYYY-MM-DD format');
+        alert('Please enter a valid date in MM/DD/YYYY format');
         return;
       }
-      dateString = webDateString;
+      // Convert MM/DD/YYYY to YYYY-MM-DD for storage
+      const [month, day, year] = webDateString.split('/').map(Number);
+      dateString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     } else {
       dateString = selectedDate.toISOString().split('T')[0];
     }
@@ -83,6 +94,16 @@ const SobrietyCounter = () => {
       }
     } else if (date) {
       setSelectedDate(date);
+    }
+  };
+
+  const handleAddDate = () => {
+    if (Platform.OS === 'android') {
+      // On Android, show date picker directly
+      setShowDatePicker(true);
+    } else {
+      // On iOS/Web, show the date selection modal
+      setShowDatePicker(true);
     }
   };
 
@@ -116,7 +137,7 @@ const SobrietyCounter = () => {
                 <View style={styles.modalButtons}>
                   <TouchableOpacity 
                     style={[styles.modalButton, styles.confirmButton]}
-                    onPress={() => setShowDatePicker(true)}
+                    onPress={handleAddDate}
                   >
                     <Text style={styles.confirmButtonText}>Add Date</Text>
                   </TouchableOpacity>
@@ -133,7 +154,17 @@ const SobrietyCounter = () => {
           </Modal>
         )}
         
-        {showDatePicker && (
+        {showDatePicker && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="default"
+            onChange={onDateChange}
+            maximumDate={new Date()}
+          />
+        )}
+        
+        {showDatePicker && Platform.OS !== 'android' && (
           <Modal
             visible={true}
             transparent={true}
@@ -153,42 +184,41 @@ const SobrietyCounter = () => {
                       ]}
                       value={webDateString}
                       onChangeText={handleWebDateChange}
-                      placeholder="YYYY-MM-DD"
+                      placeholder="MM/DD/YYYY"
                       placeholderTextColor={Colors.light.muted}
                       maxLength={10}
+                      keyboardType="numeric"
                     />
                     {!isValidDate(webDateString) && webDateString.length > 0 && (
-                      <Text style={styles.errorText}>Please enter a valid date</Text>
+                      <Text style={styles.errorText}>Please enter a valid date in MM/DD/YYYY format</Text>
                     )}
                   </View>
                 ) : (
                   <DateTimePicker
                     value={selectedDate}
                     mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    display="spinner"
                     onChange={onDateChange}
                     maximumDate={new Date()}
                     style={styles.datePicker}
                   />
                 )}
                 
-                {(Platform.OS === 'ios' || Platform.OS === 'web') && (
-                  <View style={styles.datePickerButtons}>
-                    <TouchableOpacity 
-                      style={[styles.datePickerButton, styles.cancelButton]}
-                      onPress={() => setShowDatePicker(false)}
-                    >
-                      <Text style={styles.cancelButtonText}>Cancel</Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                      style={[styles.datePickerButton, styles.confirmDateButton]}
-                      onPress={handleConfirmDate}
-                    >
-                      <Text style={styles.confirmDateButtonText}>Confirm</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+                <View style={styles.datePickerButtons}>
+                  <TouchableOpacity 
+                    style={[styles.datePickerButton, styles.cancelButton]}
+                    onPress={() => setShowDatePicker(false)}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    style={[styles.datePickerButton, styles.confirmDateButton]}
+                    onPress={handleConfirmDate}
+                  >
+                    <Text style={styles.confirmDateButtonText}>Confirm</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </Modal>
