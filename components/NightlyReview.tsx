@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,20 +6,20 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Share,
-  Platform,
+  Modal,
 } from 'react-native';
+import { router } from 'expo-router';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle, Calendar, Share2 } from 'lucide-react-native';
+import { CheckCircle, Calendar } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 import { formatDateDisplay } from '@/lib/dateUtils';
 
 export default function NightlyReview() {
-  const { getWeeklyProgress, getWeeklyStreak, saveEntry, resetIfNewDay } = useEveningReviewStore();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const { isCompletedToday, completeToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveEntry } = useEveningReviewStore();
+  const [showConfirmation, setShowConfirmation] = useState(false);
   
   // Form state - 8 separate questions like web version
   const [resentfulFlag, setResentfulFlag] = useState('');
@@ -37,36 +37,10 @@ export default function NightlyReview() {
   const [aaTalkFlag, setAaTalkFlag] = useState('');
   const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
+  const today = new Date();
+  const isCompleted = isCompletedToday();
   const weeklyProgress = getWeeklyProgress();
   const weeklyStreak = getWeeklyStreak();
-
-  useEffect(() => {
-    const checkMidnightReset = () => {
-      const now = new Date();
-      if (now.getDate() !== currentDate.getDate()) {
-        resetIfNewDay();
-        setCurrentDate(now);
-        // Reset all form fields
-        setResentfulFlag('');
-        setResentfulNote('');
-        setSelfishFlag('');
-        setSelfishNote('');
-        setFearfulFlag('');
-        setFearfulNote('');
-        setApologyFlag('');
-        setApologyName('');
-        setKindnessFlag('');
-        setKindnessNote('');
-        setSpiritualFlag('');
-        setSpiritualNote('');
-        setAaTalkFlag('');
-        setPrayerMeditationFlag('');
-      }
-    };
-
-    const interval = setInterval(checkMidnightReset, 60000); // Check every minute
-    return () => clearInterval(interval);
-  }, [currentDate, resetIfNewDay]);
 
   const questions = [
     {
@@ -135,54 +109,159 @@ export default function NightlyReview() {
     }
   ];
 
-  const handleShare = async () => {
-    const reviewData = {
-      date: formatDateDisplay(currentDate),
-      resentful: { flag: resentfulFlag, note: resentfulNote },
-      selfish: { flag: selfishFlag, note: selfishNote },
-      fearful: { flag: fearfulFlag, note: fearfulNote },
-      apology: { flag: apologyFlag, name: apologyName },
-      kindness: { flag: kindnessFlag, note: kindnessNote },
-      spiritual: { flag: spiritualFlag, note: spiritualNote },
-      aaTalk: aaTalkFlag,
-      prayerMeditation: prayerMeditationFlag
-    };
+  const [showAlert, setShowAlert] = useState(false);
 
-    const shareText = `Nightly Review - ${reviewData.date}\n\n` +
-      `1. Was I resentful today? ${reviewData.resentful.flag}${reviewData.resentful.note ? ` - ${reviewData.resentful.note}` : ''}\n` +
-      `2. Was I selfish and self-centered today? ${reviewData.selfish.flag}${reviewData.selfish.note ? ` - ${reviewData.selfish.note}` : ''}\n` +
-      `3. Was I fearful or worrisome today? ${reviewData.fearful.flag}${reviewData.fearful.note ? ` - ${reviewData.fearful.note}` : ''}\n` +
-      `4. Do I owe anyone an apology? ${reviewData.apology.flag}${reviewData.apology.name ? ` - ${reviewData.apology.name}` : ''}\n` +
-      `5. Was I of service or kind to others today? ${reviewData.kindness.flag}${reviewData.kindness.note ? ` - ${reviewData.kindness.note}` : ''}\n` +
-      `6. Was I spiritually connected today? ${reviewData.spiritual.flag}${reviewData.spiritual.note ? ` - ${reviewData.spiritual.note}` : ''}\n` +
-      `7. Did I talk to someone in recovery today? ${reviewData.aaTalk}\n` +
-      `8. Did I pray or meditate today? ${reviewData.prayerMeditation}`;
-
-    try {
-      if (Platform.OS === 'web') {
-        if (navigator.share) {
-          await navigator.share({
-            title: 'Nightly Review',
-            text: shareText,
-          });
-        } else {
-          await navigator.clipboard.writeText(shareText);
-          alert('Review copied to clipboard!');
-        }
-      } else {
-        await Share.share({
-          message: shareText,
-          title: 'Nightly Review'
-        });
-      }
-    } catch (error) {
-      console.error('Error sharing:', error);
-    }
+  const handleComplete = () => {
+    setShowAlert(true);
   };
 
+  const handleConfirmSubmit = () => {
+    const answers = {
+      resentful: resentfulFlag === 'yes',
+      selfish: selfishFlag === 'yes',
+      fearful: fearfulFlag === 'yes',
+      apology: apologyFlag === 'yes',
+      kindness: kindnessFlag === 'yes',
+      spiritual: spiritualFlag === 'yes',
+      aaTalk: aaTalkFlag === 'yes',
+      prayerMeditation: prayerMeditationFlag === 'yes',
+    };
+    
+    const entry = {
+      resentfulFlag: resentfulFlag === 'yes',
+      resentfulNote,
+      selfishFlag: selfishFlag === 'yes',
+      selfishNote,
+      fearfulFlag: fearfulFlag === 'yes',
+      fearfulNote,
+      apologyFlag: apologyFlag === 'yes',
+      apologyName,
+      kindnessFlag: kindnessFlag === 'yes',
+      kindnessNote,
+      spiritualFlag: spiritualFlag === 'yes',
+      spiritualNote,
+      aaTalkFlag: aaTalkFlag === 'yes',
+      prayerMeditationFlag: prayerMeditationFlag === 'yes'
+    };
+    
+    saveEntry(entry);
+    completeToday(answers);
+    setShowConfirmation(true);
+    setShowAlert(false);
+    
+    // Navigate to insights after completion
+    setTimeout(() => {
+      router.push('/insights');
+    }, 1500);
+  };
 
+  const handleStartNew = () => {
+    setResentfulFlag('');
+    setResentfulNote('');
+    setSelfishFlag('');
+    setSelfishNote('');
+    setFearfulFlag('');
+    setFearfulNote('');
+    setApologyFlag('');
+    setApologyName('');
+    setKindnessFlag('');
+    setKindnessNote('');
+    setSpiritualFlag('');
+    setSpiritualNote('');
+    setAaTalkFlag('');
+    setPrayerMeditationFlag('');
+    setShowConfirmation(false);
+  };
 
+  const handleUnsubmit = () => {
+    uncompleteToday();
+    handleStartNew();
+  };
 
+  if (showConfirmation || isCompleted) {
+    return (
+      <ScreenContainer style={styles.container}>
+        <LinearGradient
+          colors={[Colors.light.chatBubbleUser, Colors.light.chatBubbleBot]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.gradient}
+        />
+        
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Review Complete</Text>
+            <Text style={styles.subtitle}>{formatDateDisplay(today)}</Text>
+            <Text style={styles.description}>
+              Nightly reflection helps us stay connected to our recovery
+            </Text>
+          </View>
+
+          {/* Confirmation Message */}
+          <View style={styles.card}>
+            <Text style={styles.confirmationText}>
+              Thanks for checking in. You&apos;re doing the work — one day at a time.
+            </Text>
+          </View>
+
+          {/* Weekly Progress */}
+          <View style={styles.card}>
+            <View style={styles.cardHeader}>
+              <Calendar color={Colors.light.tint} size={20} />
+              <Text style={styles.cardTitle}>This Week&apos;s Progress</Text>
+            </View>
+            
+            <View style={styles.weeklyProgress}>
+              {weeklyProgress.map((day, index) => (
+                <View key={index} style={styles.dayContainer}>
+                  <Text style={styles.dayName}>{day.dayName}</Text>
+                  <View style={[
+                    styles.dayCircle,
+                    day.completed && !day.isFuture && styles.dayCircleCompleted,
+                    day.isToday && styles.dayCircleToday,
+                    day.isFuture && styles.dayCircleFuture
+                  ]}>
+                    {day.completed && !day.isFuture && (
+                      <CheckCircle color="white" size={16} />
+                    )}
+                  </View>
+                </View>
+              ))}
+            </View>
+            
+            <Text style={styles.streakText}>
+              {weeklyStreak} {weeklyStreak === 1 ? 'day' : 'days'} this week — keep it going!
+            </Text>
+          </View>
+
+          {/* Privacy Notice */}
+          <Text style={styles.privacyText}>
+            Your responses are saved only on your device. Nothing is uploaded or shared.
+          </Text>
+
+          {/* Link to Insights Page */}
+          <TouchableOpacity style={styles.card} onPress={() => router.push('/insights')}>
+            <Text style={styles.insightsTitle}>View Recovery Insights</Text>
+            <Text style={styles.insightsSubtitle}>
+              See patterns and progress from your nightly reviews and gratitude practice in the Insights tab.
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.buttonContainer}>
+            {!isCompleted && (
+              <TouchableOpacity style={styles.outlineButton} onPress={handleStartNew}>
+                <Text style={styles.outlineButtonText}>Start New Review</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity style={styles.unsubmitButton} onPress={handleUnsubmit}>
+              <Text style={styles.unsubmitButtonText}>Unsubmit</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </ScreenContainer>
+    );
+  }
 
   return (
     <ScreenContainer style={styles.container}>
@@ -193,13 +272,41 @@ export default function NightlyReview() {
         style={styles.gradient}
       />
       
-
+      {/* Confirmation Dialog */}
+      <Modal
+        visible={showAlert}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowAlert(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.alertContainer}>
+            <Text style={styles.alertTitle}>Complete Your Daily Inventory?</Text>
+            <Text style={styles.alertDescription}>
+              Your nightly review will be saved and cannot be modified. Are you ready to complete today&apos;s inventory?
+            </Text>
+            <View style={styles.alertButtonsContainer}>
+              <TouchableOpacity 
+                style={styles.alertCancelButton} 
+                onPress={() => setShowAlert(false)}
+              >
+                <Text style={styles.alertCancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.alertConfirmButton} 
+                onPress={handleConfirmSubmit}
+              >
+                <Text style={styles.alertConfirmButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Nightly Review</Text>
-          <Text style={styles.dateText}>{formatDateDisplay(currentDate)}</Text>
           <Text style={styles.description}>
             Nightly inventory based on AA&apos;s &apos;When We Retire at Night&apos; guidance
           </Text>
@@ -207,6 +314,7 @@ export default function NightlyReview() {
 
         {/* Questions */}
         <View style={styles.card}>
+          <Text style={styles.cardTitle}>{formatDateDisplay(today)}</Text>
           
           <View style={styles.questionsContainer}>
             {questions.map((question, index) => (
@@ -254,13 +362,19 @@ export default function NightlyReview() {
           </View>
         </View>
 
-        {/* Share Button */}
+        {/* Complete Button */}
         <TouchableOpacity 
-          style={styles.shareButton}
-          onPress={handleShare}
+          style={[
+            styles.completeButton,
+            (!resentfulFlag || !selfishFlag || !fearfulFlag || !apologyFlag || !kindnessFlag || !spiritualFlag || !aaTalkFlag || !prayerMeditationFlag) && styles.completeButtonDisabled
+          ]} 
+          onPress={handleComplete}
+          disabled={!resentfulFlag || !selfishFlag || !fearfulFlag || !apologyFlag || !kindnessFlag || !spiritualFlag || !aaTalkFlag || !prayerMeditationFlag}
         >
-          <Share2 color="white" size={16} />
-          <Text style={styles.shareButtonText}>Share Nightly Review</Text>
+          <Text style={[
+            styles.completeButtonText,
+            (!resentfulFlag || !selfishFlag || !fearfulFlag || !apologyFlag || !kindnessFlag || !spiritualFlag || !aaTalkFlag || !prayerMeditationFlag) && styles.completeButtonTextDisabled
+          ]}>Complete Nightly Review</Text>
         </TouchableOpacity>
 
         {/* Privacy Notice */}
@@ -273,7 +387,71 @@ export default function NightlyReview() {
 }
 
 const styles = StyleSheet.create({
-
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  alertContainer: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: adjustFontWeight('700', true),
+    color: Colors.light.text,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  alertDescription: {
+    fontSize: 16,
+    color: Colors.light.muted,
+    marginBottom: 20,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  alertButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  alertCancelButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  alertCancelButtonText: {
+    color: Colors.light.tint,
+    fontSize: 16,
+    fontWeight: adjustFontWeight('500'),
+  },
+  alertConfirmButton: {
+    flex: 1,
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  alertConfirmButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600'),
+  },
   container: {
     flex: 1,
   },
@@ -297,12 +475,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: adjustFontWeight('700', true),
     color: Colors.light.text,
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  dateText: {
-    fontSize: 16,
-    color: Colors.light.tint,
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -431,21 +603,25 @@ const styles = StyleSheet.create({
     minHeight: 40,
     textAlignVertical: 'top',
   },
-  shareButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
+  completeButton: {
     backgroundColor: Colors.light.tint,
     paddingVertical: 14,
     borderRadius: 25,
+    alignItems: 'center',
     marginHorizontal: 32,
     marginBottom: 16,
   },
-  shareButtonText: {
+  completeButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: adjustFontWeight('600'),
+  },
+  completeButtonDisabled: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.6,
+  },
+  completeButtonTextDisabled: {
+    color: 'rgba(255, 255, 255, 0.7)',
   },
   outlineButton: {
     borderWidth: 1,
