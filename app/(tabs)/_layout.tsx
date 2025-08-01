@@ -140,6 +140,15 @@ export default function TabLayout() {
           headerRight: () => <HomeButton />
         }}
       />
+      <Tabs.Screen
+        name="reflection"
+        options={{
+          href: null,
+          title: "Daily Reflection",
+          headerTitle: "Daily Reflection",
+          headerRight: () => <HomeButton />
+        }}
+      />
     </Tabs>
   );
 }
