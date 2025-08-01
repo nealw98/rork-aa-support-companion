@@ -84,7 +84,7 @@ export default function TabLayout() {
         name="nightly-review"
         options={{
           title: "Review",
-          headerTitle: "Evening Review",
+          headerTitle: "Nightly Review",
           headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
