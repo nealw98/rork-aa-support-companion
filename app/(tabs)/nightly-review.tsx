@@ -178,26 +178,19 @@ export default function NightlyReviewScreen() {
   };
 
   const handleShare = async () => {
-    let shareText = 'Nightly Review for ' + formatDateDisplay(today) + '
-
-';
+    let shareText = 'Nightly Review for ' + formatDateDisplay(today) + '\n\n';
     questions.forEach(question => {
       const answer = answers[question.key];
-      shareText += question.text + '
-';
+      shareText += question.text + '\n';
       if (answer.flag) {
-        shareText += 'Answer: ' + answer.flag.charAt(0).toUpperCase() + answer.flag.slice(1) + '
-';
+        shareText += 'Answer: ' + answer.flag.charAt(0).toUpperCase() + answer.flag.slice(1) + '\n';
         if (answer.flag === 'yes' && answer.note) {
-          shareText += 'Details: ' + answer.note + '
-';
+          shareText += 'Details: ' + answer.note + '\n';
         }
       } else {
-        shareText += 'Answer: Not answered
-';
+        shareText += 'Answer: Not answered\n';
       }
-      shareText += '
-';
+      shareText += '\n';
     });
 
     try {
