@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { ChevronDown, ChevronRight } from "lucide-react-native";
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 
 import Colors from "@/constants/colors";
 import { aaPrayers } from "@/constants/bigbook";
@@ -21,6 +21,20 @@ export default function PrayersScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const prayerRefs = useRef<{ [key: number]: View | null }>({});
   const prayerPositions = useRef<{ [key: number]: number }>({});
+
+  // Reset expanded prayer when screen comes into focus via tab navigation
+  useFocusEffect(
+    useCallback(() => {
+      // Only reset if there's no prayer parameter (i.e., coming from tab navigation)
+      if (!prayer) {
+        setExpandedPrayer(null);
+        // Scroll to top
+        setTimeout(() => {
+          scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+        }, 100);
+      }
+    }, [prayer])
+  );
 
   useEffect(() => {
     if (prayer) {
