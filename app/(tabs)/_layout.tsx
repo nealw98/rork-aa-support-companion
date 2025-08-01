@@ -81,10 +81,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="nightly-review"
+        name="evening-review"
         options={{
           title: "Review",
-          headerTitle: "Nightly Review",
+          headerTitle: "Evening Review",
           headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
@@ -141,6 +141,33 @@ export default function TabLayout() {
           href: null,
           title: "Daily Reflection",
           headerTitle: "Daily Reflection",
+          headerRight: () => <HomeButton />
+        }}
+      />
+      <Tabs.Screen
+        name="insights"
+        options={{
+          href: null,
+          title: "Insights",
+          headerTitle: "Insights",
+          headerRight: () => <HomeButton />
+        }}
+      />
+      <Tabs.Screen
+        name="inventory"
+        options={{
+          href: null,
+          title: "Inventory",
+          headerTitle: "Inventory",
+          headerRight: () => <HomeButton />
+        }}
+      />
+      <Tabs.Screen
+        name="nightly-review"
+        options={{
+          href: null,
+          title: "Nightly Review",
+          headerTitle: "Nightly Review",
           headerRight: () => <HomeButton />
         }}
       />
