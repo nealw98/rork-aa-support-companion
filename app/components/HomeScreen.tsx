@@ -155,12 +155,12 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     paddingTop: 40,
-    paddingBottom: 20,
+    paddingBottom: 10,
     paddingHorizontal: 16,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 30,
+    marginBottom: 15,
     width: '100%',
   },
   sobrietyCounterContainer: {
