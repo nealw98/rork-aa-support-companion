@@ -45,10 +45,11 @@ const HomeScreen = () => {
             This app helps you practice your dailies — the daily habits that maintain your sobriety. Doing these things consistently will support your continued sobriety and spiritual growth.
           </Text>
           
-          {/* Sobriety Counter */}
-          <View style={styles.sobrietyCounterContainer}>
-            <SobrietyCounter />
-          </View>
+        </View>
+
+        {/* Sobriety Counter - centered between subtitle and daily reflection */}
+        <View style={styles.sobrietyCounterContainer}>
+          <SobrietyCounter />
         </View>
 
         {/* Daily Reflection Button */}
@@ -163,7 +164,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sobrietyCounterContainer: {
-    marginTop: 20,
+    marginTop: 24,
+    marginBottom: 24,
     width: '100%',
     alignItems: 'center',
   },
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
   dailyReflectionButton: {
     backgroundColor: '#4A90E2',
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
     marginHorizontal: 16,
     marginBottom: 30,
     alignItems: 'center',
@@ -198,11 +200,10 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   reflectionButtonTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '600',
     color: 'white',
     textAlign: 'center',
-    marginBottom: 8,
   },
   reflectionButtonSubtitle: {
     fontSize: 16,
