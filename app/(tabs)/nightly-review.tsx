@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,27 +6,15 @@ import {
   TextInput,
   ScrollView,
   StyleSheet,
-  Alert
+  Share
 } from 'react-native';
-import { Stack, router } from 'expo-router';
-import { CheckCircle, Circle, Moon } from 'lucide-react-native';
+import { Stack } from 'expo-router';
+import { CheckCircle, Circle, Moon, Share2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
 import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 import ScreenContainer from '@/components/ScreenContainer';
-
-export interface DailyReviewAnswers {
-  resentful: boolean;
-  selfish: boolean;
-  fearful: boolean;
-  apology: boolean;
-  kindness: boolean;
-  spiritual: boolean;
-  aaTalk: boolean;
-  prayerMeditation: boolean;
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -61,29 +49,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.light.muted,
     lineHeight: 22
-  },
-  progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 12
-  },
-  progressText: {
-    fontSize: 14,
-    color: Colors.light.tint,
-    fontWeight: adjustFontWeight('600', true)
-  },
-  progressBar: {
-    flex: 1,
-    height: 4,
-    backgroundColor: Colors.light.divider,
-    borderRadius: 2,
-    marginLeft: 12
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: Colors.light.tint,
-    borderRadius: 2
   },
   content: {
     flex: 1
@@ -130,20 +95,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: adjustFontWeight('600', true)
   },
-  notesContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    margin: 16,
-    borderRadius: 12,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)'
-  },
-  notesTitle: {
-    fontSize: 16,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text,
-    marginBottom: 12
-  },
   notesInput: {
     borderWidth: 1,
     borderColor: Colors.light.divider,
@@ -155,7 +106,7 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: 'top'
   },
-  saveButton: {
+  shareButton: {
     backgroundColor: Colors.light.accent,
     borderRadius: 12,
     padding: 16,
@@ -165,43 +116,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8
   },
-  saveButtonDisabled: {
-    backgroundColor: Colors.light.muted,
-    opacity: 0.6
-  },
-  saveButtonText: {
+  shareButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: adjustFontWeight('600', true)
-  },
-  completionContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20
-  },
-  completionCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    borderRadius: 12,
-    padding: 24,
-    alignItems: 'center',
-    maxWidth: 400,
-    width: '100%',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)'
-  },
-  completionTitle: {
-    fontSize: 18,
-    fontWeight: adjustFontWeight('600', true),
-    color: Colors.light.text,
-    marginBottom: 12
-  },
-  completionText: {
-    fontSize: 16,
-    color: Colors.light.muted,
-    textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 22
   },
   dateHeader: {
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
@@ -216,140 +134,84 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: adjustFontWeight('600', true),
     color: Colors.light.text
-  },
-  progressSubtext: {
-    fontSize: 12,
-    color: Colors.light.muted,
-    marginTop: 4
   }
 });
 
 const questions = [
-  { key: 'resentful' as keyof DailyReviewAnswers, text: 'Was I resentful today?', placeholder: 'With whom?' },
-  { key: 'selfish' as keyof DailyReviewAnswers, text: 'Was I selfish and self-centered today?', placeholder: 'In what way?' },
-  { key: 'fearful' as keyof DailyReviewAnswers, text: 'Was I fearful or worrisome today?', placeholder: 'How so?' },
-  { key: 'apology' as keyof DailyReviewAnswers, text: 'Do I owe anyone an apology?', placeholder: 'Whom have you harmed?' },
-  { key: 'kindness' as keyof DailyReviewAnswers, text: 'Was I of service or kind to others today?', placeholder: 'What did you do?' },
-  { key: 'spiritual' as keyof DailyReviewAnswers, text: 'Was I spiritually connected today?', placeholder: 'How so?' },
-  { key: 'aaTalk' as keyof DailyReviewAnswers, text: 'Did I talk to someone in recovery today?' },
-  { key: 'prayerMeditation' as keyof DailyReviewAnswers, text: 'Did I pray or meditate today?' }
+  { key: 'resentful', text: 'Was I resentful today?', placeholder: 'With whom?' },
+  { key: 'selfish', text: 'Was I selfish and self-centered today?', placeholder: 'In what way?' },
+  { key: 'fearful', text: 'Was I fearful or worrisome today?', placeholder: 'How so?' },
+  { key: 'apology', text: 'Do I owe anyone an apology?', placeholder: 'Whom have you harmed?' },
+  { key: 'kindness', text: 'Was I of service or kind to others today?', placeholder: 'What did you do?' },
+  { key: 'spiritual', text: 'Was I spiritually connected today?', placeholder: 'How so?' },
+  { key: 'aaTalk', text: 'Did I talk to someone in recovery today?' },
+  { key: 'prayerMeditation', text: 'Did I pray or meditate today?' }
 ];
 
 export default function NightlyReviewScreen() {
-  const eveningReviewStore = useEveningReviewStore();
-  const { isCompletedToday, completeToday, getTodaysAnswers } = eveningReviewStore;
-  
   // Form state
-  const [resentfulFlag, setResentfulFlag] = useState('');
-  const [resentfulNote, setResentfulNote] = useState('');
-  const [selfishFlag, setSelfishFlag] = useState('');
-  const [selfishNote, setSelfishNote] = useState('');
-  const [fearfulFlag, setFearfulFlag] = useState('');
-  const [fearfulNote, setFearfulNote] = useState('');
-  const [apologyFlag, setApologyFlag] = useState('');
-  const [apologyName, setApologyName] = useState('');
-  const [kindnessFlag, setKindnessFlag] = useState('');
-  const [kindnessNote, setKindnessNote] = useState('');
-  const [spiritualFlag, setSpiritualFlag] = useState('');
-  const [spiritualNote, setSpiritualNote] = useState('');
-  const [aaTalkFlag, setAaTalkFlag] = useState('');
-  const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
-  
-  const [submitted, setSubmitted] = useState(false);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [answers, setAnswers] = useState<Record<string, { flag: string; note: string }>>({
+    resentful: { flag: '', note: '' },
+    selfish: { flag: '', note: '' },
+    fearful: { flag: '', note: '' },
+    apology: { flag: '', note: '' },
+    kindness: { flag: '', note: '' },
+    spiritual: { flag: '', note: '' },
+    aaTalk: { flag: '', note: '' },
+    prayerMeditation: { flag: '', note: '' }
+  });
 
   const today = new Date();
-  const isCompleted = isCompletedToday();
 
-  // Only load existing answers for display purposes (no editing allowed)
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
-
-  // Count answered questions
-  const getAnsweredCount = () => {
-    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, kindnessFlag, spiritualFlag, aaTalkFlag, prayerMeditationFlag];
-    return flags.filter(flag => flag !== '').length;
+  const setAnswerFlag = (key: string, value: string) => {
+    setAnswers(prev => ({
+      ...prev,
+      [key]: { ...prev[key], flag: value }
+    }));
   };
 
-  const answeredCount = getAnsweredCount();
-  const totalQuestions = 8;
-  const allAnswered = answeredCount === totalQuestions;
-
-  const handleConfirmedSubmit = () => {
-    const answers = {
-      resentful: resentfulFlag === 'yes',
-      selfish: selfishFlag === 'yes',
-      fearful: fearfulFlag === 'yes',
-      apology: apologyFlag === 'yes',
-      kindness: kindnessFlag === 'yes',
-      spiritual: spiritualFlag === 'yes',
-      aaTalk: aaTalkFlag === 'yes',
-      prayerMeditation: prayerMeditationFlag === 'yes',
-    };
-    completeToday(answers);
-    setSubmitted(true);
-    setShowConfirmDialog(false);
-    
-    // Add delay to ensure localStorage is updated before navigation
-    setTimeout(() => {
-      router.push('/(tabs)/insights');
-    }, 200);
+  const setAnswerNote = (key: string, value: string) => {
+    setAnswers(prev => ({
+      ...prev,
+      [key]: { ...prev[key], note: value }
+    }));
   };
 
-  const handleSave = () => {
-    if (!allAnswered) {
-      Alert.alert(
-        'Incomplete Review',
-        `Please answer all ${totalQuestions} questions to complete your nightly review.`,
-        [{ text: 'OK' }]
-      );
-      return;
-    }
-    
-    Alert.alert(
-      'Complete Nightly Review?',
-      'Your answers will be saved and you\'ll be taken to your insights page to see your progress.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Complete',
-          onPress: handleConfirmedSubmit
+  const handleShare = async () => {
+    let shareText = 'Nightly Review for ' + formatDateDisplay(today) + '
+
+';
+    questions.forEach(question => {
+      const answer = answers[question.key];
+      shareText += question.text + '
+';
+      if (answer.flag) {
+        shareText += 'Answer: ' + answer.flag.charAt(0).toUpperCase() + answer.flag.slice(1) + '
+';
+        if (answer.flag === 'yes' && answer.note) {
+          shareText += 'Details: ' + answer.note + '
+';
         }
-      ]
-    );
-  };
+      } else {
+        shareText += 'Answer: Not answered
+';
+      }
+      shareText += '
+';
+    });
 
-  const getAnswerState = (key: keyof DailyReviewAnswers) => {
-    switch (key) {
-      case 'resentful': return resentfulFlag;
-      case 'selfish': return selfishFlag;
-      case 'fearful': return fearfulFlag;
-      case 'apology': return apologyFlag;
-      case 'kindness': return kindnessFlag;
-      case 'spiritual': return spiritualFlag;
-      case 'aaTalk': return aaTalkFlag;
-      case 'prayerMeditation': return prayerMeditationFlag;
-      default: return '';
-    }
-  };
-
-  const setAnswerState = (key: keyof DailyReviewAnswers, value: string) => {
-    switch (key) {
-      case 'resentful': setResentfulFlag(value); break;
-      case 'selfish': setSelfishFlag(value); break;
-      case 'fearful': setFearfulFlag(value); break;
-      case 'apology': setApologyFlag(value); break;
-      case 'kindness': setKindnessFlag(value); break;
-      case 'spiritual': setSpiritualFlag(value); break;
-      case 'aaTalk': setAaTalkFlag(value); break;
-      case 'prayerMeditation': setPrayerMeditationFlag(value); break;
+    try {
+      await Share.share({
+        message: shareText,
+        title: 'Nightly Review - ' + formatDateDisplay(today)
+      });
+    } catch (error) {
+      console.error('Error sharing nightly review:', error);
     }
   };
 
   const renderQuestion = (question: typeof questions[0], index: number) => {
-    const currentAnswer = getAnswerState(question.key);
+    const currentAnswer = answers[question.key];
     
     return (
       <View key={question.key} style={styles.questionContainer}>
@@ -360,18 +222,18 @@ export default function NightlyReviewScreen() {
           <TouchableOpacity
             style={[
               styles.optionButton,
-              currentAnswer === 'yes' && styles.optionButtonSelected
+              currentAnswer.flag === 'yes' && styles.optionButtonSelected
             ]}
-            onPress={() => setAnswerState(question.key, 'yes')}
+            onPress={() => setAnswerFlag(question.key, 'yes')}
           >
-            {currentAnswer === 'yes' ? (
+            {currentAnswer.flag === 'yes' ? (
               <CheckCircle size={20} color="white" />
             ) : (
               <Circle size={20} color={Colors.light.text} />
             )}
             <Text style={[
               styles.optionText,
-              currentAnswer === 'yes' && styles.optionTextSelected
+              currentAnswer.flag === 'yes' && styles.optionTextSelected
             ]}>
               Yes
             </Text>
@@ -380,24 +242,24 @@ export default function NightlyReviewScreen() {
           <TouchableOpacity
             style={[
               styles.optionButton,
-              currentAnswer === 'no' && styles.optionButtonSelected
+              currentAnswer.flag === 'no' && styles.optionButtonSelected
             ]}
-            onPress={() => setAnswerState(question.key, 'no')}
+            onPress={() => setAnswerFlag(question.key, 'no')}
           >
-            {currentAnswer === 'no' ? (
+            {currentAnswer.flag === 'no' ? (
               <CheckCircle size={20} color="white" />
             ) : (
               <Circle size={20} color={Colors.light.text} />
             )}
             <Text style={[
               styles.optionText,
-              currentAnswer === 'no' && styles.optionTextSelected
+              currentAnswer.flag === 'no' && styles.optionTextSelected
             ]}>
               No
             </Text>
           </TouchableOpacity>
         </View>
-        {currentAnswer === 'yes' && question.placeholder && (
+        {currentAnswer.flag === 'yes' && question.placeholder && (
           <TextInput
             style={styles.notesInput}
             placeholder={question.placeholder}
@@ -406,79 +268,13 @@ export default function NightlyReviewScreen() {
             textAlignVertical="top"
             returnKeyType="done"
             blurOnSubmit={true}
-            onSubmitEditing={() => {
-              // Dismiss keyboard when done is pressed
-            }}
+            value={currentAnswer.note}
+            onChangeText={(text) => setAnswerNote(question.key, text)}
           />
         )}
       </View>
     );
   };
-
-  // Show loading state
-  if (isLoading) {
-    return (
-      <ScreenContainer noPadding>
-        <Stack.Screen options={{ title: 'Nightly Review' }} />
-        <View style={styles.container}>
-          <LinearGradient
-            colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
-            style={styles.backgroundGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            locations={[0, 1]}
-          />
-          <View style={styles.header}>
-            <View style={styles.titleContainer}>
-              <Moon size={24} color={Colors.light.tint} />
-              <Text style={styles.title}>Nightly Review</Text>
-            </View>
-            <Text style={styles.subtitle}>Loading...</Text>
-          </View>
-        </View>
-      </ScreenContainer>
-    );
-  }
-
-  // Show completion message if already submitted or completed today
-  if (submitted || isCompleted) {
-    return (
-      <ScreenContainer noPadding>
-        <Stack.Screen options={{ title: 'Nightly Review' }} />
-        <View style={styles.container}>
-          <LinearGradient
-            colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
-            style={styles.backgroundGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            locations={[0, 1]}
-          />
-          <View style={styles.header}>
-            <View style={styles.titleContainer}>
-              <Moon size={24} color={Colors.light.tint} />
-              <Text style={styles.title}>Nightly Review</Text>
-            </View>
-            <Text style={styles.subtitle}>Complete</Text>
-          </View>
-          
-          <View style={styles.completionContainer}>
-            <View style={styles.completionCard}>
-              <Text style={styles.completionTitle}>Review Complete</Text>
-              <Text style={styles.completionText}>
-                Your nightly review for {formatDateDisplay(today)} has been saved.
-              </Text>
-              <TouchableOpacity 
-                style={styles.saveButton} 
-                onPress={() => router.push('/(tabs)/insights')}
-              >
-                <Text style={styles.saveButtonText}>View Results</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </ScreenContainer>
-    );
-  }
 
   return (
     <ScreenContainer noPadding>
@@ -498,7 +294,7 @@ export default function NightlyReviewScreen() {
             <Text style={styles.title}>Nightly Review</Text>
           </View>
           <Text style={styles.subtitle}>
-            Nightly inventory based on AA's 'When We Retire at Night' guidance
+            Nightly inventory based on AA guidance
           </Text>
         </View>
 
@@ -511,16 +307,11 @@ export default function NightlyReviewScreen() {
         </ScrollView>
 
         <TouchableOpacity 
-          style={[
-            styles.saveButton,
-            !allAnswered && styles.saveButtonDisabled
-          ]} 
-          onPress={handleSave}
-          disabled={!allAnswered}
+          style={styles.shareButton} 
+          onPress={handleShare}
         >
-          <Text style={styles.saveButtonText}>
-            Complete — {answeredCount}/{totalQuestions}
-          </Text>
+          <Share2 size={20} color="white" />
+          <Text style={styles.shareButtonText}>Share Nightly Review</Text>
         </TouchableOpacity>
       </View>
     </ScreenContainer>
