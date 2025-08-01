@@ -8,7 +8,8 @@ import {
   TextInput,
   Alert,
   Platform,
-  Share
+  Share,
+  KeyboardAvoidingView
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import ScreenContainer from "@/components/ScreenContainer";
@@ -219,7 +220,16 @@ export default function NightlyReview() {
         style={styles.gradient}
       />
       
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      >
+        <ScrollView 
+          style={styles.content} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Nightly Review</Text>
@@ -271,6 +281,8 @@ export default function NightlyReview() {
                     onChangeText={question.setNote}
                     multiline
                     placeholderTextColor={Colors.light.muted}
+                    returnKeyType="done"
+                    blurOnSubmit={true}
                   />
                 )}
               </View>
@@ -293,13 +305,17 @@ export default function NightlyReview() {
         <Text style={styles.privacyText}>
           Your responses are saved only on your device. Nothing is uploaded or shared.
         </Text>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
     flex: 1,
   },
   gradient: {
