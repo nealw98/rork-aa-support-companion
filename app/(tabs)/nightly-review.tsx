@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -44,6 +44,7 @@ export default function NightlyReview() {
   const [aaTalkFlag, setAaTalkFlag] = useState('');
   const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
+  const scrollViewRef = useRef<ScrollView>(null);
   const today = new Date();
 
   const questions = [
@@ -223,12 +224,14 @@ export default function NightlyReview() {
       <KeyboardAvoidingView 
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
         <ScrollView 
+          ref={scrollViewRef}
           style={styles.content} 
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
         >
         {/* Header */}
         <View style={styles.header}>
@@ -274,16 +277,24 @@ export default function NightlyReview() {
                 </View>
                 
                 {question.flag === 'yes' && question.placeholder && (
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder={question.placeholder}
-                    value={question.note}
-                    onChangeText={question.setNote}
-                    multiline
-                    placeholderTextColor={Colors.light.muted}
-                    returnKeyType="done"
-                    blurOnSubmit={true}
-                  />
+                  <View>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder={question.placeholder}
+                      value={question.note}
+                      onChangeText={question.setNote}
+                      multiline
+                      placeholderTextColor={Colors.light.muted}
+                      returnKeyType="done"
+                      blurOnSubmit={true}
+                      onFocus={() => {
+                        // Scroll to make input visible above keyboard
+                        setTimeout(() => {
+                          scrollViewRef.current?.scrollToEnd({ animated: true });
+                        }, 100);
+                      }}
+                    />
+                  </View>
                 )}
               </View>
             ))}
@@ -430,5 +441,8 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     textAlign: 'center',
     marginBottom: 24,
+  },
+  scrollContent: {
+    paddingBottom: Platform.OS === 'ios' ? 150 : 100, // Extra padding at bottom for keyboard
   },
 });
