@@ -3,11 +3,13 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TextInput,
   ScrollView,
   StyleSheet,
+  Share
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { CheckCircle, Circle, Moon } from 'lucide-react-native';
+import { CheckCircle, Circle, Moon, Share2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
@@ -93,6 +95,32 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: adjustFontWeight('600', true)
   },
+  notesInput: {
+    borderWidth: 1,
+    borderColor: Colors.light.divider,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    color: Colors.light.text,
+    backgroundColor: Colors.light.background,
+    minHeight: 100,
+    textAlignVertical: 'top'
+  },
+  shareButton: {
+    backgroundColor: Colors.light.accent,
+    borderRadius: 12,
+    padding: 16,
+    margin: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8
+  },
+  shareButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true)
+  },
   dateHeader: {
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
     margin: 16,
@@ -106,56 +134,84 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: adjustFontWeight('600', true),
     color: Colors.light.text
-  },
-  completionMessage: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    margin: 16,
-    borderRadius: 12,
-    padding: 20,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)'
-  },
-  completionText: {
-    fontSize: 16,
-    color: Colors.light.tint,
-    fontWeight: adjustFontWeight('600', true),
-    textAlign: 'center'
   }
 });
 
 const questions = [
-  { key: 'resentful', text: 'Was I resentful today?' },
-  { key: 'selfish', text: 'Was I selfish and self-centered today?' },
-  { key: 'fearful', text: 'Was I fearful or worrisome today?' },
-  { key: 'apology', text: 'Do I owe anyone an apology?' },
-  { key: 'kindness', text: 'Was I of service or kind to others today?' },
-  { key: 'spiritual', text: 'Was I spiritually connected today?' },
+  { key: 'resentful', text: 'Was I resentful today?', placeholder: 'With whom?' },
+  { key: 'selfish', text: 'Was I selfish and self-centered today?', placeholder: 'In what way?' },
+  { key: 'fearful', text: 'Was I fearful or worrisome today?', placeholder: 'How so?' },
+  { key: 'apology', text: 'Do I owe anyone an apology?', placeholder: 'Whom have you harmed?' },
+  { key: 'kindness', text: 'Was I of service or kind to others today?', placeholder: 'What did you do?' },
+  { key: 'spiritual', text: 'Was I spiritually connected today?', placeholder: 'How so?' },
   { key: 'aaTalk', text: 'Did I talk to someone in recovery today?' },
   { key: 'prayerMeditation', text: 'Did I pray or meditate today?' }
 ];
 
 export default function NightlyReviewScreen() {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  // Form state
+  const [answers, setAnswers] = useState<Record<string, { flag: string; note: string }>>({
+    resentful: { flag: '', note: '' },
+    selfish: { flag: '', note: '' },
+    fearful: { flag: '', note: '' },
+    apology: { flag: '', note: '' },
+    kindness: { flag: '', note: '' },
+    spiritual: { flag: '', note: '' },
+    aaTalk: { flag: '', note: '' },
+    prayerMeditation: { flag: '', note: '' }
+  });
+
   const today = new Date();
 
-  const setAnswer = (key: string, value: string) => {
+  const setAnswerFlag = (key: string, value: string) => {
     setAnswers(prev => ({
       ...prev,
-      [key]: value
+      [key]: { ...prev[key], flag: value }
     }));
   };
 
-  const getAnsweredCount = () => {
-    return Object.keys(answers).filter(key => answers[key] !== '').length;
+  const setAnswerNote = (key: string, value: string) => {
+    setAnswers(prev => ({
+      ...prev,
+      [key]: { ...prev[key], note: value }
+    }));
   };
 
-  const answeredCount = getAnsweredCount();
-  const totalQuestions = questions.length;
-  const allAnswered = answeredCount === totalQuestions;
+  const handleShare = async () => {
+    let shareText = 'Nightly Review for ' + formatDateDisplay(today) + '
+
+';
+    questions.forEach(question => {
+      const answer = answers[question.key];
+      shareText += question.text + '
+';
+      if (answer.flag) {
+        shareText += 'Answer: ' + answer.flag.charAt(0).toUpperCase() + answer.flag.slice(1) + '
+';
+        if (answer.flag === 'yes' && answer.note) {
+          shareText += 'Details: ' + answer.note + '
+';
+        }
+      } else {
+        shareText += 'Answer: Not answered
+';
+      }
+      shareText += '
+';
+    });
+
+    try {
+      await Share.share({
+        message: shareText,
+        title: 'Nightly Review - ' + formatDateDisplay(today)
+      });
+    } catch (error) {
+      console.error('Error sharing nightly review:', error);
+    }
+  };
 
   const renderQuestion = (question: typeof questions[0], index: number) => {
-    const currentAnswer = answers[question.key] || '';
+    const currentAnswer = answers[question.key];
     
     return (
       <View key={question.key} style={styles.questionContainer}>
@@ -166,18 +222,18 @@ export default function NightlyReviewScreen() {
           <TouchableOpacity
             style={[
               styles.optionButton,
-              currentAnswer === 'yes' && styles.optionButtonSelected
+              currentAnswer.flag === 'yes' && styles.optionButtonSelected
             ]}
-            onPress={() => setAnswer(question.key, 'yes')}
+            onPress={() => setAnswerFlag(question.key, 'yes')}
           >
-            {currentAnswer === 'yes' ? (
+            {currentAnswer.flag === 'yes' ? (
               <CheckCircle size={20} color="white" />
             ) : (
               <Circle size={20} color={Colors.light.text} />
             )}
             <Text style={[
               styles.optionText,
-              currentAnswer === 'yes' && styles.optionTextSelected
+              currentAnswer.flag === 'yes' && styles.optionTextSelected
             ]}>
               Yes
             </Text>
@@ -186,23 +242,36 @@ export default function NightlyReviewScreen() {
           <TouchableOpacity
             style={[
               styles.optionButton,
-              currentAnswer === 'no' && styles.optionButtonSelected
+              currentAnswer.flag === 'no' && styles.optionButtonSelected
             ]}
-            onPress={() => setAnswer(question.key, 'no')}
+            onPress={() => setAnswerFlag(question.key, 'no')}
           >
-            {currentAnswer === 'no' ? (
+            {currentAnswer.flag === 'no' ? (
               <CheckCircle size={20} color="white" />
             ) : (
               <Circle size={20} color={Colors.light.text} />
             )}
             <Text style={[
               styles.optionText,
-              currentAnswer === 'no' && styles.optionTextSelected
+              currentAnswer.flag === 'no' && styles.optionTextSelected
             ]}>
               No
             </Text>
           </TouchableOpacity>
         </View>
+        {currentAnswer.flag === 'yes' && question.placeholder && (
+          <TextInput
+            style={styles.notesInput}
+            placeholder={question.placeholder}
+            placeholderTextColor={Colors.light.muted}
+            multiline
+            textAlignVertical="top"
+            returnKeyType="done"
+            blurOnSubmit={true}
+            value={currentAnswer.note}
+            onChangeText={(text) => setAnswerNote(question.key, text)}
+          />
+        )}
       </View>
     );
   };
@@ -225,7 +294,7 @@ export default function NightlyReviewScreen() {
             <Text style={styles.title}>Nightly Review</Text>
           </View>
           <Text style={styles.subtitle}>
-            Simple nightly reflection
+            Nightly inventory based on AA guidance
           </Text>
         </View>
 
@@ -235,15 +304,15 @@ export default function NightlyReviewScreen() {
           </View>
           
           {questions.map((question, index) => renderQuestion(question, index))}
-
-          {allAnswered && (
-            <View style={styles.completionMessage}>
-              <Text style={styles.completionText}>
-                ✓ All questions answered! Take a moment to reflect on your day.
-              </Text>
-            </View>
-          )}
         </ScrollView>
+
+        <TouchableOpacity 
+          style={styles.shareButton} 
+          onPress={handleShare}
+        >
+          <Share2 size={20} color="white" />
+          <Text style={styles.shareButtonText}>Share Nightly Review</Text>
+        </TouchableOpacity>
       </View>
     </ScreenContainer>
   );
