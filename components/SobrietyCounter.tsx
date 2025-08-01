@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar, X } from 'lucide-react-native';
 import { useSobriety } from '@/hooks/useSobrietyStore';
@@ -17,6 +17,36 @@ const SobrietyCounter = () => {
   
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [webDateString, setWebDateString] = useState<string>('');
+
+  const formatDateInput = (text: string) => {
+    // Remove all non-numeric characters
+    const numbers = text.replace(/\D/g, '');
+    
+    // Format as YYYY-MM-DD
+    if (numbers.length <= 4) {
+      return numbers;
+    } else if (numbers.length <= 6) {
+      return `${numbers.slice(0, 4)}-${numbers.slice(4)}`;
+    } else {
+      return `${numbers.slice(0, 4)}-${numbers.slice(4, 6)}-${numbers.slice(6, 8)}`;
+    }
+  };
+
+  const handleWebDateChange = (text: string) => {
+    const formatted = formatDateInput(text);
+    setWebDateString(formatted);
+  };
+
+  const isValidDate = (dateString: string) => {
+    if (Platform.OS === 'web' && webDateString) {
+      const regex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!regex.test(webDateString)) return false;
+      const date = new Date(webDateString);
+      return date instanceof Date && !isNaN(date.getTime()) && date <= new Date();
+    }
+    return true;
+  };
 
   if (isLoading) {
     return null;
@@ -25,7 +55,16 @@ const SobrietyCounter = () => {
   const daysSober = calculateDaysSober();
 
   const handleConfirmDate = () => {
-    const dateString = selectedDate.toISOString().split('T')[0];
+    let dateString: string;
+    if (Platform.OS === 'web') {
+      if (!webDateString || !isValidDate(webDateString)) {
+        alert('Please enter a valid date in YYYY-MM-DD format');
+        return;
+      }
+      dateString = webDateString;
+    } else {
+      dateString = selectedDate.toISOString().split('T')[0];
+    }
     setSobrietyDate(dateString);
     setShowDatePicker(false);
   };
@@ -105,16 +144,35 @@ const SobrietyCounter = () => {
               <View style={styles.datePickerContent}>
                 <Text style={styles.datePickerTitle}>Select Your Sobriety Date</Text>
                 
-                <DateTimePicker
-                  value={selectedDate}
-                  mode="date"
-                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                  onChange={onDateChange}
-                  maximumDate={new Date()}
-                  style={styles.datePicker}
-                />
+                {Platform.OS === 'web' ? (
+                  <View style={styles.webDateContainer}>
+                    <TextInput
+                      style={[
+                        styles.webDateInput,
+                        !isValidDate(webDateString) && webDateString.length > 0 && styles.webDateInputError
+                      ]}
+                      value={webDateString}
+                      onChangeText={handleWebDateChange}
+                      placeholder="YYYY-MM-DD"
+                      placeholderTextColor={Colors.light.muted}
+                      maxLength={10}
+                    />
+                    {!isValidDate(webDateString) && webDateString.length > 0 && (
+                      <Text style={styles.errorText}>Please enter a valid date</Text>
+                    )}
+                  </View>
+                ) : (
+                  <DateTimePicker
+                    value={selectedDate}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    onChange={onDateChange}
+                    maximumDate={new Date()}
+                    style={styles.datePicker}
+                  />
+                )}
                 
-                {Platform.OS === 'ios' && (
+                {(Platform.OS === 'ios' || Platform.OS === 'web') && (
                   <View style={styles.datePickerButtons}>
                     <TouchableOpacity 
                       style={[styles.datePickerButton, styles.cancelButton]}
@@ -332,6 +390,29 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     textAlign: 'center',
     fontStyle: 'italic',
+  },
+  webDateContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  webDateInput: {
+    width: '100%',
+    padding: 12,
+    borderWidth: 1,
+    borderColor: Colors.light.muted,
+    borderRadius: 8,
+    fontSize: 16,
+    color: Colors.light.text,
+    textAlign: 'center',
+  },
+  webDateInputError: {
+    borderColor: '#ff4444',
+  },
+  errorText: {
+    color: '#ff4444',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 4,
   },
 });
 
