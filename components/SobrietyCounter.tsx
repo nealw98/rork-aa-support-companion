@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform, TextInput, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Calendar, X } from 'lucide-react-native';
+import { Calendar, X, Edit3 } from 'lucide-react-native';
 import { useSobriety } from '@/hooks/useSobrietyStore';
 import Colors from '@/constants/colors';
 
@@ -18,6 +18,7 @@ const SobrietyCounter = () => {
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [webDateString, setWebDateString] = useState<string>('');
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const formatDateInput = (text: string) => {
     // Remove all non-numeric characters
@@ -113,6 +114,48 @@ const SobrietyCounter = () => {
       // On iOS/Web, show the date selection modal
       setShowDatePicker(true);
     }
+  };
+
+  const handleEditDate = () => {
+    // Reset the date picker state
+    if (sobrietyDate) {
+      const currentDate = new Date(sobrietyDate);
+      setSelectedDate(currentDate);
+      // Format current date for web input
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const day = currentDate.getDate().toString().padStart(2, '0');
+      const year = currentDate.getFullYear().toString();
+      setWebDateString(`${month}/${day}/${year}`);
+    }
+    
+    if (Platform.OS === 'android') {
+      setShowDatePicker(true);
+    } else {
+      setShowEditModal(true);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setShowEditModal(false);
+    setShowDatePicker(false);
+  };
+
+  const handleConfirmEditDate = () => {
+    let dateString: string;
+    if (Platform.OS === 'web') {
+      if (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) {
+        Alert.alert('Invalid Date', 'Please enter a valid date in MM/DD/YYYY format');
+        return;
+      }
+      // Convert MM/DD/YYYY to YYYY-MM-DD for storage
+      const [month, day, year] = webDateString.split('/').map(Number);
+      dateString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    } else {
+      dateString = selectedDate.toISOString().split('T')[0];
+    }
+    setSobrietyDate(dateString);
+    setShowEditModal(false);
+    setShowDatePicker(false);
   };
 
   // Show prompt modal for first-time users
@@ -250,24 +293,117 @@ const SobrietyCounter = () => {
   // Show sobriety counter if date is set
   if (sobrietyDate) {
     return (
-      <View style={styles.counterContainer}>
-        <View style={styles.counterContent}>
-          <Calendar size={32} color={Colors.light.tint} style={styles.counterIcon} />
-          <View style={styles.counterTextContainer}>
-            <Text style={styles.daysNumber}>{daysSober}</Text>
-            <Text style={styles.daysLabel}>
-              {daysSober === 1 ? 'Day Sober' : 'Days Sober'}
-            </Text>
+      <>
+        <View style={styles.counterContainer}>
+          <TouchableOpacity 
+            style={styles.editButton}
+            onPress={handleEditDate}
+          >
+            <Edit3 size={16} color={Colors.light.tint} />
+          </TouchableOpacity>
+          
+          <View style={styles.counterContent}>
+            <Calendar size={32} color={Colors.light.tint} style={styles.counterIcon} />
+            <View style={styles.counterTextContainer}>
+              <Text style={styles.daysNumber}>{daysSober}</Text>
+              <Text style={styles.daysLabel}>
+                {daysSober === 1 ? 'Day Sober' : 'Days Sober'}
+              </Text>
+            </View>
           </View>
+          <Text style={styles.sobrietyDateText}>
+            Since {new Date(sobrietyDate).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </Text>
         </View>
-        <Text style={styles.sobrietyDateText}>
-          Since {new Date(sobrietyDate).toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-          })}
-        </Text>
-      </View>
+        
+        {/* Edit Date Modal for Android */}
+        {showDatePicker && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="spinner"
+            onChange={onDateChange}
+            maximumDate={new Date()}
+          />
+        )}
+        
+        {/* Edit Date Modal for iOS/Web */}
+        {showEditModal && Platform.OS !== 'android' && (
+          <Modal
+            visible={true}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={handleCancelEdit}
+          >
+            <View style={styles.datePickerOverlay}>
+              <View style={styles.datePickerContent}>
+                <Text style={styles.datePickerTitle}>Edit Your Sobriety Date</Text>
+                
+                {Platform.OS === 'web' ? (
+                  <View style={styles.webDateContainer}>
+                    <TextInput
+                      style={[
+                        styles.webDateInput,
+                        !isValidDate(webDateString) && webDateString.length === 10 && styles.webDateInputError
+                      ]}
+                      value={webDateString}
+                      onChangeText={handleWebDateChange}
+                      placeholder="MM/DD/YYYY"
+                      placeholderTextColor={Colors.light.muted}
+                      maxLength={10}
+                      keyboardType="numeric"
+                      autoFocus={true}
+                    />
+                    {!isValidDate(webDateString) && webDateString.length === 10 && (
+                      <Text style={styles.errorText}>Please enter a valid date</Text>
+                    )}
+                    <Text style={styles.helpText}>Enter your sobriety start date</Text>
+                  </View>
+                ) : (
+                  <DateTimePicker
+                    value={selectedDate}
+                    mode="date"
+                    display="spinner"
+                    onChange={(event, date) => {
+                      if (date) setSelectedDate(date);
+                    }}
+                    maximumDate={new Date()}
+                    style={styles.datePicker}
+                  />
+                )}
+                
+                <View style={styles.datePickerButtons}>
+                  <TouchableOpacity 
+                    style={[styles.datePickerButton, styles.cancelButton]}
+                    onPress={handleCancelEdit}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    style={[
+                      styles.datePickerButton, 
+                      styles.confirmDateButton,
+                      Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) && styles.disabledButton
+                    ]}
+                    onPress={handleConfirmEditDate}
+                    disabled={Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString))}
+                  >
+                    <Text style={[
+                      styles.confirmDateButtonText,
+                      Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) && styles.disabledButtonText
+                    ]}>Save</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        )}
+      </>
     );
   }
 
@@ -411,6 +547,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: 'rgba(74, 144, 226, 0.2)',
+    position: 'relative',
+  },
+  editButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    zIndex: 1,
   },
   counterContent: {
     flexDirection: 'row',
