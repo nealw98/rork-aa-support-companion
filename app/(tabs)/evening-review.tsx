@@ -14,7 +14,7 @@ import * as Clipboard from 'expo-clipboard';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle, Calendar, Share2 } from 'lucide-react-native';
-import { useEveningReviewStore } from '@/hooks/useEveningReviewStore';
+import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
