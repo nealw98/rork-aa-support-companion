@@ -288,10 +288,18 @@ export default function NightlyReview() {
                       returnKeyType="done"
                       blurOnSubmit={true}
                       onFocus={() => {
-                        // Scroll to make input visible above keyboard
+                        // Scroll to position input above keyboard with moderate offset
                         setTimeout(() => {
-                          scrollViewRef.current?.scrollToEnd({ animated: true });
-                        }, 100);
+                          const questionIndex = index;
+                          const estimatedQuestionHeight = 120; // Approximate height per question
+                          const headerHeight = 120; // Approximate header height
+                          const scrollOffset = headerHeight + (questionIndex * estimatedQuestionHeight) - 100;
+                          
+                          scrollViewRef.current?.scrollTo({ 
+                            y: Math.max(0, scrollOffset), 
+                            animated: true 
+                          });
+                        }, 300);
                       }}
                     />
                   </View>
