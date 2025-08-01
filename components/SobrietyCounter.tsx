@@ -400,22 +400,9 @@ const SobrietyCounter = () => {
     return (
       <>
         <View style={styles.counterContainer}>
-          <TouchableOpacity 
-            style={styles.editButton}
-            onPress={handleEditDate}
-          >
-            <Edit3 size={16} color={Colors.light.tint} />
-          </TouchableOpacity>
-          
-          <View style={styles.counterContent}>
-            <Calendar size={32} color={Colors.light.tint} style={styles.counterIcon} />
-            <View style={styles.counterTextContainer}>
-              <Text style={styles.daysNumber}>{daysSober}</Text>
-              <Text style={styles.daysLabel}>
-                {daysSober === 1 ? 'Day Sober' : 'Days Sober'}
-              </Text>
-            </View>
-          </View>
+          <Text style={styles.sobrietyText}>
+            You've been sober {daysSober} {daysSober === 1 ? 'day' : 'days'}.
+          </Text>
           <Text style={styles.sobrietyDateText}>
             Since {new Date(sobrietyDate).toLocaleDateString('en-US', {
               month: 'long',
@@ -423,6 +410,12 @@ const SobrietyCounter = () => {
               year: 'numeric'
             })}
           </Text>
+          <TouchableOpacity 
+            style={styles.editButton}
+            onPress={handleEditDate}
+          >
+            <Text style={styles.editButtonText}>Edit</Text>
+          </TouchableOpacity>
         </View>
         
         {/* Edit Date Modal for Android */}
@@ -645,52 +638,33 @@ const styles = StyleSheet.create({
   
   // Counter display styles
   counterContainer: {
-    backgroundColor: 'rgba(74, 144, 226, 0.1)',
-    borderRadius: 16,
-    padding: 20,
     marginHorizontal: 16,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.2)',
-    position: 'relative',
-  },
-  editButton: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: 'rgba(74, 144, 226, 0.1)',
-    zIndex: 1,
-  },
-  counterContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  counterIcon: {
-    marginRight: 12,
-  },
-  counterTextContainer: {
     alignItems: 'center',
   },
-  daysNumber: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: Colors.light.tint,
-    lineHeight: 36,
-  },
-  daysLabel: {
-    fontSize: 16,
+  sobrietyText: {
+    fontSize: 18,
     color: Colors.light.text,
     fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 4,
   },
   sobrietyDateText: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.light.muted,
     textAlign: 'center',
-    fontStyle: 'italic',
+    marginBottom: 12,
+  },
+  editButton: {
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  editButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
   },
   webDateContainer: {
     width: '100%',
