@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform, TextInput, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar, X } from 'lucide-react-native';
 import { useSobriety } from '@/hooks/useSobrietyStore';
@@ -39,11 +39,14 @@ const SobrietyCounter = () => {
   };
 
   const isValidDate = (dateString: string) => {
-    if (Platform.OS === 'web' && webDateString) {
-      const regex = /^\d{2}\/\d{2}\/\d{4}$/;
-      if (!regex.test(webDateString)) return false;
+    if (Platform.OS === 'web' && dateString) {
+      // Allow partial dates while typing
+      if (dateString.length < 10) return true;
       
-      const [month, day, year] = webDateString.split('/').map(Number);
+      const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+      if (!regex.test(dateString)) return false;
+      
+      const [month, day, year] = dateString.split('/').map(Number);
       const date = new Date(year, month - 1, day);
       
       // Check if date is valid and not in the future
@@ -52,7 +55,9 @@ const SobrietyCounter = () => {
              date <= new Date() &&
              date.getFullYear() === year &&
              date.getMonth() === month - 1 &&
-             date.getDate() === day;
+             date.getDate() === day &&
+             month >= 1 && month <= 12 &&
+             day >= 1 && day <= 31;
     }
     return true;
   };
@@ -66,8 +71,8 @@ const SobrietyCounter = () => {
   const handleConfirmDate = () => {
     let dateString: string;
     if (Platform.OS === 'web') {
-      if (!webDateString || !isValidDate(webDateString)) {
-        alert('Please enter a valid date in MM/DD/YYYY format');
+      if (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) {
+        Alert.alert('Invalid Date', 'Please enter a valid date in MM/DD/YYYY format');
         return;
       }
       // Convert MM/DD/YYYY to YYYY-MM-DD for storage
@@ -89,8 +94,11 @@ const SobrietyCounter = () => {
     if (Platform.OS === 'android') {
       setShowDatePicker(false);
       if (event.type === 'set' && date) {
+        // Directly save the date on Android
         const dateString = date.toISOString().split('T')[0];
         setSobrietyDate(dateString);
+      } else if (event.type === 'dismissed') {
+        // User cancelled - do nothing, modal will close automatically
       }
     } else if (date) {
       setSelectedDate(date);
@@ -111,48 +119,46 @@ const SobrietyCounter = () => {
   if (shouldShowPrompt()) {
     return (
       <>
-        {!showDatePicker && (
-          <Modal
-            visible={true}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={handleNotNow}
-          >
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContent}>
+        <Modal
+          visible={!showDatePicker}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={handleNotNow}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={handleNotNow}
+              >
+                <X size={24} color={Colors.light.muted} />
+              </TouchableOpacity>
+              
+              <Calendar size={48} color={Colors.light.tint} style={styles.modalIcon} />
+              
+              <Text style={styles.modalTitle}>Track Your Sobriety</Text>
+              <Text style={styles.modalDescription}>
+                Would you like to add your sobriety date to track your progress?
+              </Text>
+              
+              <View style={styles.modalButtons}>
                 <TouchableOpacity 
-                  style={styles.closeButton}
-                  onPress={handleNotNow}
+                  style={[styles.modalButton, styles.confirmButton]}
+                  onPress={handleAddDate}
                 >
-                  <X size={24} color={Colors.light.muted} />
+                  <Text style={styles.confirmButtonText}>Add Date</Text>
                 </TouchableOpacity>
                 
-                <Calendar size={48} color={Colors.light.tint} style={styles.modalIcon} />
-                
-                <Text style={styles.modalTitle}>Track Your Sobriety</Text>
-                <Text style={styles.modalDescription}>
-                  Would you like to add your sobriety date to track your progress?
-                </Text>
-                
-                <View style={styles.modalButtons}>
-                  <TouchableOpacity 
-                    style={[styles.modalButton, styles.confirmButton]}
-                    onPress={handleAddDate}
-                  >
-                    <Text style={styles.confirmButtonText}>Add Date</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity 
-                    style={[styles.modalButton, styles.notNowButton]}
-                    onPress={handleNotNow}
-                  >
-                    <Text style={styles.notNowButtonText}>Not Now</Text>
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.notNowButton]}
+                  onPress={handleNotNow}
+                >
+                  <Text style={styles.notNowButtonText}>Not Now</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </Modal>
-        )}
+          </View>
+        </Modal>
         
         {showDatePicker && Platform.OS === 'android' && (
           <DateTimePicker
@@ -169,7 +175,9 @@ const SobrietyCounter = () => {
             visible={true}
             transparent={true}
             animationType="slide"
-            onRequestClose={() => setShowDatePicker(false)}
+            onRequestClose={() => {
+              setShowDatePicker(false);
+            }}
           >
             <View style={styles.datePickerOverlay}>
               <View style={styles.datePickerContent}>
@@ -180,7 +188,7 @@ const SobrietyCounter = () => {
                     <TextInput
                       style={[
                         styles.webDateInput,
-                        !isValidDate(webDateString) && webDateString.length > 0 && styles.webDateInputError
+                        !isValidDate(webDateString) && webDateString.length === 10 && styles.webDateInputError
                       ]}
                       value={webDateString}
                       onChangeText={handleWebDateChange}
@@ -188,10 +196,12 @@ const SobrietyCounter = () => {
                       placeholderTextColor={Colors.light.muted}
                       maxLength={10}
                       keyboardType="numeric"
+                      autoFocus={true}
                     />
-                    {!isValidDate(webDateString) && webDateString.length > 0 && (
-                      <Text style={styles.errorText}>Please enter a valid date in MM/DD/YYYY format</Text>
+                    {!isValidDate(webDateString) && webDateString.length === 10 && (
+                      <Text style={styles.errorText}>Please enter a valid date</Text>
                     )}
+                    <Text style={styles.helpText}>Enter your sobriety start date</Text>
                   </View>
                 ) : (
                   <DateTimePicker
@@ -207,16 +217,26 @@ const SobrietyCounter = () => {
                 <View style={styles.datePickerButtons}>
                   <TouchableOpacity 
                     style={[styles.datePickerButton, styles.cancelButton]}
-                    onPress={() => setShowDatePicker(false)}
+                    onPress={() => {
+                      setShowDatePicker(false);
+                    }}
                   >
                     <Text style={styles.cancelButtonText}>Cancel</Text>
                   </TouchableOpacity>
                   
                   <TouchableOpacity 
-                    style={[styles.datePickerButton, styles.confirmDateButton]}
+                    style={[
+                      styles.datePickerButton, 
+                      styles.confirmDateButton,
+                      Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) && styles.disabledButton
+                    ]}
                     onPress={handleConfirmDate}
+                    disabled={Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString))}
                   >
-                    <Text style={styles.confirmDateButtonText}>Confirm</Text>
+                    <Text style={[
+                      styles.confirmDateButtonText,
+                      Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) && styles.disabledButtonText
+                    ]}>Confirm</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -443,6 +463,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     marginTop: 4,
+  },
+  helpText: {
+    color: Colors.light.muted,
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  disabledButton: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.5,
+  },
+  disabledButtonText: {
+    color: 'rgba(255, 255, 255, 0.7)',
   },
 });
 
