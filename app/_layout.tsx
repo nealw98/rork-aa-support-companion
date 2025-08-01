@@ -9,6 +9,7 @@ import { GratitudeProvider } from "@/hooks/useGratitudeStore";
 import { OnboardingProvider, useOnboarding } from "@/hooks/useOnboardingStore";
 import { adjustFontWeight } from "@/constants/fonts";
 import WelcomeScreen from "@/components/WelcomeScreen";
+import CustomSplashScreen from "@/components/CustomSplashScreen";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -33,9 +34,8 @@ function RootLayoutNav() {
   }, [hideSplashScreen]);
 
   if (isLoading) {
-    console.log('Still loading, keeping splash screen visible');
-    // Return null to keep splash screen visible while loading
-    return null;
+    console.log('Still loading, showing custom splash screen');
+    return <CustomSplashScreen />;
   }
 
   if (!isOnboardingComplete) {
