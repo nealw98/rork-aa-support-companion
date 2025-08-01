@@ -116,12 +116,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
         }}
       />
-      <Tabs.Screen
-        name="evening-review"
-        options={{
-          href: null
-        }}
-      />
+
       <Tabs.Screen
         name="bigbook"
         options={{
