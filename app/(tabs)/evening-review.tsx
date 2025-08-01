@@ -31,10 +31,8 @@ const formatDateDisplay = (date: Date): string => {
 
 export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
-  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = eveningReviewStore;
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  
   // Form state - matching web app structure
   const [resentfulFlag, setResentfulFlag] = useState('');
   const [resentfulNote, setResentfulNote] = useState('');
@@ -51,6 +49,19 @@ export default function EveningReview() {
   const [aaTalkFlag, setAaTalkFlag] = useState('');
   const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
+  // Add safety check to prevent destructuring undefined
+  if (!eveningReviewStore) {
+    return (
+      <ScreenContainer style={styles.container}>
+        <View style={styles.content}>
+          <Text>Loading...</Text>
+        </View>
+      </ScreenContainer>
+    );
+  }
+  
+  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = eveningReviewStore;
+  
   const today = new Date();
   const isCompleted = isCompletedToday();
   const weeklyProgress = getWeeklyProgress();
