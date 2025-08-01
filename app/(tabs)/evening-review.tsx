@@ -150,15 +150,6 @@ export default function EveningReview() {
 
   const handleShare = async () => {
     console.log('Share button pressed');
-    
-    if (!allAnswered) {
-      Alert.alert(
-        'Share Nightly Review',
-        'Please complete all questions before sharing your review.',
-        [{ text: 'OK' }]
-      );
-      return;
-    }
 
     const today = new Date().toLocaleDateString('en-US', {
       weekday: 'long',
@@ -168,50 +159,51 @@ export default function EveningReview() {
     });
 
     // Create a summary of the review
-    const reviewSummary = [];
+    const answeredQuestions = [];
     
-    if (resentfulFlag === 'yes') {
-      reviewSummary.push(`• Experienced resentment${resentfulNote ? `: ${resentfulNote}` : ''}`);
+    // Include all answered questions, regardless of yes/no
+    if (resentfulFlag) {
+      const answer = resentfulFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`1. Was I resentful today? ${answer}${resentfulFlag === 'yes' && resentfulNote ? ` - ${resentfulNote}` : ''}`);
     }
-    if (selfishFlag === 'yes') {
-      reviewSummary.push(`• Was selfish or self-centered${selfishNote ? `: ${selfishNote}` : ''}`);
+    if (selfishFlag) {
+      const answer = selfishFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`2. Was I selfish and self-centered today? ${answer}${selfishFlag === 'yes' && selfishNote ? ` - ${selfishNote}` : ''}`);
     }
-    if (fearfulFlag === 'yes') {
-      reviewSummary.push(`• Felt fearful or worried${fearfulNote ? `: ${fearfulNote}` : ''}`);
+    if (fearfulFlag) {
+      const answer = fearfulFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`3. Was I fearful or worrisome today? ${answer}${fearfulFlag === 'yes' && fearfulNote ? ` - ${fearfulNote}` : ''}`);
     }
-    if (apologyFlag === 'yes') {
-      reviewSummary.push(`• Need to make amends${apologyName ? ` to ${apologyName}` : ''}`);
+    if (apologyFlag) {
+      const answer = apologyFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`4. Do I owe anyone an apology? ${answer}${apologyFlag === 'yes' && apologyName ? ` - ${apologyName}` : ''}`);
     }
-    if (kindnessFlag === 'yes') {
-      reviewSummary.push(`• Performed acts of service${kindnessNote ? `: ${kindnessNote}` : ''}`);
+    if (kindnessFlag) {
+      const answer = kindnessFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`5. Was I of service or kind to others today? ${answer}${kindnessFlag === 'yes' && kindnessNote ? ` - ${kindnessNote}` : ''}`);
     }
-    if (spiritualFlag === 'yes') {
-      reviewSummary.push(`• Felt spiritually connected${spiritualNote ? `: ${spiritualNote}` : ''}`);
+    if (spiritualFlag) {
+      const answer = spiritualFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`6. Was I spiritually connected today? ${answer}${spiritualFlag === 'yes' && spiritualNote ? ` - ${spiritualNote}` : ''}`);
     }
-    if (aaTalkFlag === 'yes') {
-      reviewSummary.push('• Talked to someone in recovery');
+    if (aaTalkFlag) {
+      const answer = aaTalkFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`7. Did I talk to someone in recovery today? ${answer}`);
     }
-    if (prayerMeditationFlag === 'yes') {
-      reviewSummary.push('• Prayed or meditated');
+    if (prayerMeditationFlag) {
+      const answer = prayerMeditationFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`8. Did I pray or meditate today? ${answer}`);
     }
 
-    const positiveActions = [];
-    if (kindnessFlag === 'yes') positiveActions.push('service');
-    if (spiritualFlag === 'yes') positiveActions.push('spiritual connection');
-    if (aaTalkFlag === 'yes') positiveActions.push('fellowship');
-    if (prayerMeditationFlag === 'yes') positiveActions.push('prayer/meditation');
-
-    let shareMessage = `${today}\n\nEvening Review Summary:\n`;
+    let shareMessage = `${today}\n\nEvening Review\n\n`;
     
-    if (reviewSummary.length > 0) {
-      shareMessage += reviewSummary.join('\n') + '\n\n';
+    if (answeredQuestions.length > 0) {
+      shareMessage += answeredQuestions.join('\n\n') + '\n\n';
+    } else {
+      shareMessage += 'Starting my nightly review...\n\n';
     }
     
-    if (positiveActions.length > 0) {
-      shareMessage += `Today I practiced: ${positiveActions.join(', ')}\n\n`;
-    }
-    
-    shareMessage += 'Continuing to work my program one day at a time.';
+    shareMessage += 'Working my program one day at a time.';
 
     try {
       console.log('Attempting to share:', Platform.OS);
@@ -261,8 +253,6 @@ export default function EveningReview() {
   };
 
   const answeredCount = getAnsweredCount();
-  const totalQuestions = 8;
-  const allAnswered = answeredCount === totalQuestions;
 
   // Show friendly message if no data found and not editing
   if (!isCompleted && answeredCount === 0) {
@@ -435,18 +425,11 @@ export default function EveningReview() {
 
         {/* Share Button */}
         <TouchableOpacity 
-          style={[
-            styles.shareButton,
-            !allAnswered && styles.shareButtonDisabled
-          ]} 
+          style={styles.shareButton} 
           onPress={handleShare}
-          disabled={!allAnswered}
         >
           <Share2 size={20} color="white" />
-          <Text style={[
-            styles.shareButtonText,
-            !allAnswered && styles.shareButtonTextDisabled
-          ]}>
+          <Text style={styles.shareButtonText}>
             Share Nightly Review
           </Text>
         </TouchableOpacity>
