@@ -9,6 +9,7 @@ const SobrietyCounter = () => {
   const { 
     sobrietyDate, 
     shouldShowPrompt, 
+    shouldShowAddButton,
     setSobrietyDate, 
     dismissPrompt, 
     calculateDaysSober,
@@ -287,6 +288,110 @@ const SobrietyCounter = () => {
           </Modal>
         )}
       </>
+    );
+  }
+
+  // Show "Add Date" button if user previously selected "Not Now"
+  if (shouldShowAddButton()) {
+    return (
+      <View style={styles.addDateContainer}>
+        <Calendar size={32} color={Colors.light.tint} style={styles.addDateIcon} />
+        <Text style={styles.addDateTitle}>Track Your Sobriety</Text>
+        <Text style={styles.addDateDescription}>
+          Add your sobriety date to see your progress
+        </Text>
+        <TouchableOpacity 
+          style={styles.addDateButton}
+          onPress={handleAddDate}
+        >
+          <Text style={styles.addDateButtonText}>Add Sobriety Date</Text>
+        </TouchableOpacity>
+        
+        {/* Date picker modals for add date functionality */}
+        {showDatePicker && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="spinner"
+            onChange={onDateChange}
+            maximumDate={new Date()}
+          />
+        )}
+        
+        {showDatePicker && Platform.OS !== 'android' && (
+          <Modal
+            visible={true}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => {
+              setShowDatePicker(false);
+            }}
+          >
+            <View style={styles.datePickerOverlay}>
+              <View style={styles.datePickerContent}>
+                <Text style={styles.datePickerTitle}>Select Your Sobriety Date</Text>
+                
+                {Platform.OS === 'web' ? (
+                  <View style={styles.webDateContainer}>
+                    <TextInput
+                      style={[
+                        styles.webDateInput,
+                        !isValidDate(webDateString) && webDateString.length === 10 && styles.webDateInputError
+                      ]}
+                      value={webDateString}
+                      onChangeText={handleWebDateChange}
+                      placeholder="MM/DD/YYYY"
+                      placeholderTextColor={Colors.light.muted}
+                      maxLength={10}
+                      keyboardType="numeric"
+                      autoFocus={true}
+                    />
+                    {!isValidDate(webDateString) && webDateString.length === 10 && (
+                      <Text style={styles.errorText}>Please enter a valid date</Text>
+                    )}
+                    <Text style={styles.helpText}>Enter your sobriety start date</Text>
+                  </View>
+                ) : (
+                  <DateTimePicker
+                    value={selectedDate}
+                    mode="date"
+                    display="spinner"
+                    onChange={onDateChange}
+                    maximumDate={new Date()}
+                    style={styles.datePicker}
+                  />
+                )}
+                
+                <View style={styles.datePickerButtons}>
+                  <TouchableOpacity 
+                    style={[styles.datePickerButton, styles.cancelButton]}
+                    onPress={() => {
+                      setShowDatePicker(false);
+                    }}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    style={[
+                      styles.datePickerButton, 
+                      styles.confirmDateButton,
+                      Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) && styles.disabledButton
+                    ]}
+                    onPress={handleConfirmDate}
+                    disabled={Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString))}
+                  >
+                    <Text style={[
+                      styles.confirmDateButtonText,
+                      Platform.OS === 'web' && (!webDateString || webDateString.length < 10 || !isValidDate(webDateString)) && styles.disabledButtonText
+                    ]}>Confirm</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        )}
+      </View>
     );
   }
 
@@ -622,6 +727,47 @@ const styles = StyleSheet.create({
   },
   disabledButtonText: {
     color: 'rgba(255, 255, 255, 0.7)',
+  },
+  
+  // Add Date Button styles
+  addDateContainer: {
+    backgroundColor: 'rgba(74, 144, 226, 0.1)',
+    borderRadius: 16,
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(74, 144, 226, 0.2)',
+    alignItems: 'center',
+  },
+  addDateIcon: {
+    marginBottom: 12,
+  },
+  addDateTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.light.text,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  addDateDescription: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  addDateButton: {
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  addDateButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

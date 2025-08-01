@@ -73,6 +73,15 @@ export const [SobrietyProvider, useSobriety] = createContextHook(() => {
     return !isLoading && !hasSeenPrompt && !sobrietyDate;
   };
 
+  const shouldShowAddButton = (): boolean => {
+    return !isLoading && hasSeenPrompt && !sobrietyDate;
+  };
+
+  const resetPrompt = () => {
+    setHasSeenPrompt(false);
+    saveData(sobrietyDate, false);
+  };
+
   return {
     sobrietyDate,
     hasSeenPrompt,
@@ -81,5 +90,7 @@ export const [SobrietyProvider, useSobriety] = createContextHook(() => {
     dismissPrompt,
     calculateDaysSober,
     shouldShowPrompt,
+    shouldShowAddButton,
+    resetPrompt,
   };
 });
