@@ -25,17 +25,16 @@ export default function PrayersScreen() {
   // Reset expanded prayer when screen comes into focus via tab navigation
   useFocusEffect(
     useCallback(() => {
-      // Only reset if there's no prayer parameter (i.e., coming from tab navigation)
-      if (!prayer) {
-        setExpandedPrayer(null);
-        // Scroll to top
-        setTimeout(() => {
-          scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-        }, 100);
-      }
-    }, [prayer])
+      // Always reset to collapsed state when focusing via tab navigation
+      setExpandedPrayer(null);
+      // Scroll to top
+      setTimeout(() => {
+        scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+      }, 100);
+    }, [])
   );
 
+  // Handle prayer parameter from navigation (e.g., from home screen)
   useEffect(() => {
     if (prayer) {
       const prayerParam = prayer.toString().toLowerCase();
@@ -46,11 +45,11 @@ export default function PrayersScreen() {
                (prayerParam === 'evening' && title.includes('evening'));
       });
       if (prayerIndex !== -1) {
-        setExpandedPrayer(prayerIndex);
-        // Scroll to the prayer after a short delay to ensure the component is rendered
+        // Use a longer timeout to ensure useFocusEffect has run first
         setTimeout(() => {
+          setExpandedPrayer(prayerIndex);
           scrollToPrayer(prayerIndex);
-        }, 100);
+        }, 200);
       }
     }
   }, [prayer]);
