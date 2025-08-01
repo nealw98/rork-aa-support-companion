@@ -164,7 +164,7 @@ const SobrietyCounter = () => {
           <DateTimePicker
             value={selectedDate}
             mode="date"
-            display="default"
+            display="spinner"
             onChange={onDateChange}
             maximumDate={new Date()}
           />
