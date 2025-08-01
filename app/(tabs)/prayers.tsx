@@ -21,18 +21,7 @@ export default function PrayersScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const prayerRefs = useRef<{ [key: number]: View | null }>({});
   const prayerPositions = useRef<{ [key: number]: number }>({});
-
-  // Reset expanded prayer when screen comes into focus via tab navigation
-  useFocusEffect(
-    useCallback(() => {
-      // Always reset to collapsed state when focusing via tab navigation
-      setExpandedPrayer(null);
-      // Scroll to top
-      setTimeout(() => {
-        scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-      }, 100);
-    }, [])
-  );
+  const hasNavigatedWithParam = useRef(false);
 
   // Handle prayer parameter from navigation (e.g., from home screen)
   useEffect(() => {
@@ -45,14 +34,29 @@ export default function PrayersScreen() {
                (prayerParam === 'evening' && title.includes('evening'));
       });
       if (prayerIndex !== -1) {
-        // Use a longer timeout to ensure useFocusEffect has run first
+        hasNavigatedWithParam.current = true;
+        setExpandedPrayer(prayerIndex);
         setTimeout(() => {
-          setExpandedPrayer(prayerIndex);
           scrollToPrayer(prayerIndex);
-        }, 200);
+        }, 100);
       }
     }
   }, [prayer]);
+
+  // Reset expanded prayer when screen comes into focus via tab navigation (but not when navigating with params)
+  useFocusEffect(
+    useCallback(() => {
+      // Only reset if we didn't navigate with a prayer parameter
+      if (!hasNavigatedWithParam.current) {
+        setExpandedPrayer(null);
+        setTimeout(() => {
+          scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+        }, 100);
+      }
+      // Reset the flag for next navigation
+      hasNavigatedWithParam.current = false;
+    }, [])
+  );
 
   const scrollToPrayer = (index: number) => {
     const position = prayerPositions.current[index];
