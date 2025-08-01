@@ -50,51 +50,56 @@ const SobrietyCounter = () => {
   // Show prompt modal for first-time users
   if (shouldShowPrompt()) {
     return (
-      <Modal
-        visible={true}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={handleNotNow}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity 
-              style={styles.closeButton}
-              onPress={handleNotNow}
-            >
-              <X size={24} color={Colors.light.muted} />
-            </TouchableOpacity>
-            
-            <Calendar size={48} color={Colors.light.tint} style={styles.modalIcon} />
-            
-            <Text style={styles.modalTitle}>Track Your Sobriety</Text>
-            <Text style={styles.modalDescription}>
-              Would you like to add your sobriety date to track your progress?
-            </Text>
-            
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.confirmButton]}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <Text style={styles.confirmButtonText}>Add Date</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.notNowButton]}
-                onPress={handleNotNow}
-              >
-                <Text style={styles.notNowButtonText}>Not Now</Text>
-              </TouchableOpacity>
+      <>
+        {!showDatePicker && (
+          <Modal
+            visible={true}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={handleNotNow}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <TouchableOpacity 
+                  style={styles.closeButton}
+                  onPress={handleNotNow}
+                >
+                  <X size={24} color={Colors.light.muted} />
+                </TouchableOpacity>
+                
+                <Calendar size={48} color={Colors.light.tint} style={styles.modalIcon} />
+                
+                <Text style={styles.modalTitle}>Track Your Sobriety</Text>
+                <Text style={styles.modalDescription}>
+                  Would you like to add your sobriety date to track your progress?
+                </Text>
+                
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity 
+                    style={[styles.modalButton, styles.confirmButton]}
+                    onPress={() => setShowDatePicker(true)}
+                  >
+                    <Text style={styles.confirmButtonText}>Add Date</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    style={[styles.modalButton, styles.notNowButton]}
+                    onPress={handleNotNow}
+                  >
+                    <Text style={styles.notNowButtonText}>Not Now</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
-        </View>
+          </Modal>
+        )}
         
         {showDatePicker && (
           <Modal
             visible={true}
             transparent={true}
             animationType="slide"
+            onRequestClose={() => setShowDatePicker(false)}
           >
             <View style={styles.datePickerOverlay}>
               <View style={styles.datePickerContent}>
@@ -130,7 +135,7 @@ const SobrietyCounter = () => {
             </View>
           </Modal>
         )}
-      </Modal>
+      </>
     );
   }
 
