@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { GratitudeProvider } from "@/hooks/useGratitudeStore";
 import { OnboardingProvider, useOnboarding } from "@/hooks/useOnboardingStore";
+import { SobrietyProvider } from "@/hooks/useSobrietyStore";
 import { adjustFontWeight } from "@/constants/fonts";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import CustomSplashScreen from "@/components/CustomSplashScreen";
@@ -85,9 +86,11 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <OnboardingProvider>
         <GratitudeProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <RootLayoutNav />
-          </GestureHandlerRootView>
+          <SobrietyProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <RootLayoutNav />
+            </GestureHandlerRootView>
+          </SobrietyProvider>
         </GratitudeProvider>
       </OnboardingProvider>
     </QueryClientProvider>

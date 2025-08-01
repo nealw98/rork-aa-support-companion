@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BookOpen } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import SunIcon from '@/components/SunIcon';
+import SobrietyCounter from '@/components/SobrietyCounter';
 import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
 import { getTodaysReflection } from '@/constants/reflections';
@@ -44,6 +45,9 @@ const HomeScreen = () => {
             This app helps you practice your dailies — the daily habits that maintain your sobriety. Doing these things consistently will support your continued sobriety and spiritual growth.
           </Text>
         </View>
+
+        {/* Sobriety Counter */}
+        <SobrietyCounter />
 
         {/* Daily Reflection Button */}
         <TouchableOpacity 
