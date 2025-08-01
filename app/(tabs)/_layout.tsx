@@ -144,18 +144,7 @@ export default function TabLayout() {
           headerRight: () => <HomeButton />
         }}
       />
-      <Tabs.Screen
-        name="insights-backup"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="nightly-review-backup"
-        options={{
-          href: null,
-        }}
-      />
+
     </Tabs>
   );
 }
