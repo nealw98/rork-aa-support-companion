@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   reflectionButtonTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: '600',
     color: 'white',
     textAlign: 'center',
