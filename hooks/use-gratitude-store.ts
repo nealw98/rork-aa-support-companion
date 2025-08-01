@@ -134,6 +134,12 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     }).length;
   };
 
+  const resetIfNewDay = () => {
+    // This function can be used to trigger a reset check
+    // The actual reset logic is handled in the component
+    loadEntries();
+  };
+
   return {
     entries,
     isLoading,
@@ -144,6 +150,7 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     completeToday,
     saveGratitudeList,
     uncompleteToday,
-    getCompletedDaysInLast30
+    getCompletedDaysInLast30,
+    resetIfNewDay
   };
 });
