@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BookOpen } from 'lucide-react-native';
+
 import { useRouter } from 'expo-router';
 import SunIcon from '@/components/SunIcon';
 import SobrietyCounter from '@/components/SobrietyCounter';
@@ -44,17 +44,18 @@ const HomeScreen = () => {
           <Text style={styles.heroSubtitle}>
             This app helps you practice your dailies — the daily habits that maintain your sobriety. Doing these things consistently will support your continued sobriety and spiritual growth.
           </Text>
+          
+          {/* Sobriety Counter */}
+          <View style={styles.sobrietyCounterContainer}>
+            <SobrietyCounter />
+          </View>
         </View>
-
-        {/* Sobriety Counter */}
-        <SobrietyCounter />
 
         {/* Daily Reflection Button */}
         <TouchableOpacity 
           style={styles.dailyReflectionButton}
           onPress={() => router.push('/reflection')}
         >
-          <BookOpen size={24} color="white" style={styles.reflectionIcon} />
           <Text style={styles.reflectionButtonTitle}>
             Daily Reflection{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
           </Text>
@@ -153,13 +154,18 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     paddingTop: 40,
-    paddingBottom: 30,
+    paddingBottom: 20,
     paddingHorizontal: 16,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 30,
     width: '100%',
+  },
+  sobrietyCounterContainer: {
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
   },
   heroTitle: {
     fontSize: 36,
@@ -181,7 +187,7 @@ const styles = StyleSheet.create({
   dailyReflectionButton: {
     backgroundColor: '#4A90E2',
     borderRadius: 16,
-    padding: 24,
+    padding: 20,
     marginHorizontal: 16,
     marginBottom: 30,
     alignItems: 'center',
@@ -190,9 +196,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
-  },
-  reflectionIcon: {
-    marginBottom: 8,
   },
   reflectionButtonTitle: {
     fontSize: 22,
