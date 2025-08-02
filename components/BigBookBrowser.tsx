@@ -21,7 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import Colors from "@/constants/colors";
 import { bigBookData } from "@/constants/bigbook";
-import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store";
+import { useBigBookStore } from "@/hooks/use-bigbook-store";
 import { BigBookCategory, BigBookSection } from "@/types/bigbook";
 import { adjustFontWeight } from "@/constants/fonts";
 import BookSelector from "@/components/BookSelector";
@@ -294,11 +294,7 @@ function BigBookBrowserContent() {
 }
 
 export default function BigBookBrowser() {
-  return (
-    <BigBookStoreProvider>
-      <BigBookBrowserContent />
-    </BigBookStoreProvider>
-  );
+  return <BigBookBrowserContent />;
 }
 
 const styles = StyleSheet.create({
