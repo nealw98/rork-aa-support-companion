@@ -251,14 +251,17 @@ const SobrietyCounter = () => {
                     <Text style={styles.helpText}>Enter your sobriety start date</Text>
                   </View>
                 ) : (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    display="spinner"
-                    onChange={onDateChange}
-                    maximumDate={new Date()}
-                    style={styles.datePicker}
-                  />
+                  <View style={styles.iosDatePickerContainer}>
+                    <DateTimePicker
+                      value={selectedDate}
+                      mode="date"
+                      display="compact"
+                      onChange={onDateChange}
+                      maximumDate={new Date()}
+                      style={styles.iosDatePicker}
+                      themeVariant="light"
+                    />
+                  </View>
                 )}
                 
                 <View style={styles.datePickerButtons}>
@@ -356,14 +359,17 @@ const SobrietyCounter = () => {
                     <Text style={styles.helpText}>Enter your sobriety start date</Text>
                   </View>
                 ) : (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    display="spinner"
-                    onChange={onDateChange}
-                    maximumDate={new Date()}
-                    style={styles.datePicker}
-                  />
+                  <View style={styles.iosDatePickerContainer}>
+                    <DateTimePicker
+                      value={selectedDate}
+                      mode="date"
+                      display="compact"
+                      onChange={onDateChange}
+                      maximumDate={new Date()}
+                      style={styles.iosDatePicker}
+                      themeVariant="light"
+                    />
+                  </View>
                 )}
                 
                 <View style={styles.datePickerButtons}>
@@ -468,16 +474,19 @@ const SobrietyCounter = () => {
                     <Text style={styles.helpText}>Enter your sobriety start date</Text>
                   </View>
                 ) : (
-                  <DateTimePicker
-                    value={selectedDate}
-                    mode="date"
-                    display="spinner"
-                    onChange={(event, date) => {
-                      if (date) setSelectedDate(date);
-                    }}
-                    maximumDate={new Date()}
-                    style={styles.datePicker}
-                  />
+                  <View style={styles.iosDatePickerContainer}>
+                    <DateTimePicker
+                      value={selectedDate}
+                      mode="date"
+                      display="compact"
+                      onChange={(event, date) => {
+                        if (date) setSelectedDate(date);
+                      }}
+                      maximumDate={new Date()}
+                      style={styles.iosDatePicker}
+                      themeVariant="light"
+                    />
+                  </View>
                 )}
                 
                 <View style={styles.datePickerButtons}>
@@ -610,6 +619,18 @@ const styles = StyleSheet.create({
   datePicker: {
     width: '100%',
     marginBottom: 20,
+  },
+  iosDatePickerContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
+  },
+  iosDatePicker: {
+    width: 280,
+    height: 120,
   },
   datePickerButtons: {
     flexDirection: 'row',
