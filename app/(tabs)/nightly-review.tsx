@@ -277,32 +277,30 @@ export default function NightlyReview() {
                 </View>
                 
                 {question.flag === 'yes' && question.placeholder && (
-                  <View>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder={question.placeholder}
-                      value={question.note}
-                      onChangeText={question.setNote}
-                      multiline
-                      placeholderTextColor={Colors.light.muted}
-                      returnKeyType="done"
-                      blurOnSubmit={true}
-                      onFocus={() => {
-                        // Scroll to position input above keyboard with moderate offset
-                        setTimeout(() => {
-                          const questionIndex = index;
-                          const estimatedQuestionHeight = 120; // Approximate height per question
-                          const headerHeight = 120; // Approximate header height
-                          const scrollOffset = headerHeight + (questionIndex * estimatedQuestionHeight) - 100;
-                          
-                          scrollViewRef.current?.scrollTo({ 
-                            y: Math.max(0, scrollOffset), 
-                            animated: true 
-                          });
-                        }, 300);
-                      }}
-                    />
-                  </View>
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder={question.placeholder}
+                    value={question.note}
+                    onChangeText={question.setNote}
+                    multiline
+                    placeholderTextColor={Colors.light.muted}
+                    returnKeyType="done"
+                    blurOnSubmit={true}
+                    onFocus={() => {
+                      // Scroll to position input above keyboard with moderate offset
+                      setTimeout(() => {
+                        const questionIndex = index;
+                        const estimatedQuestionHeight = 120; // Approximate height per question
+                        const headerHeight = 120; // Approximate header height
+                        const scrollOffset = headerHeight + (questionIndex * estimatedQuestionHeight) - 100;
+                        
+                        scrollViewRef.current?.scrollTo({ 
+                          y: Math.max(0, scrollOffset), 
+                          animated: true 
+                        });
+                      }, 300);
+                    }}
+                  />
                 )}
               </View>
             ))}
