@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import createContextHook from '@nkzw/create-context-hook';
 
 interface ReviewAnswers {
   resentful: boolean;
@@ -44,7 +43,41 @@ interface DetailedEveningEntry {
 
 const STORAGE_KEY = 'evening_review_entries';
 
-export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(() => {
+interface EveningReviewContextType {
+  getTodaysAnswers: () => ReviewAnswers | null;
+  isCompletedToday: () => boolean;
+  completeToday: (answers: ReviewAnswers) => void;
+  getWeeklyProgress: () => WeeklyProgressDay[];
+  getThirtyDayCounts: () => any;
+  getTodayProgress: () => { completed: boolean; yesCount: number };
+  entries: EveningReviewEntry[];
+  isLoading: boolean;
+  uncompleteToday: () => void;
+  getWeeklyStreak: () => number;
+  saveEntry: (detailedEntry: DetailedEveningEntry) => void;
+  getTodayEntry: () => EveningReviewEntry | null;
+}
+
+const EveningReviewContext = createContext<EveningReviewContextType | undefined>(undefined);
+
+export const EveningReviewProvider = ({ children }: { children: ReactNode }) => {
+  const value = useEveningReviewStoreLogic();
+  return (
+    <EveningReviewContext.Provider value={value}>
+      {children}
+    </EveningReviewContext.Provider>
+  );
+};
+
+export const useEveningReviewStore = () => {
+  const context = useContext(EveningReviewContext);
+  if (!context) {
+    throw new Error('useEveningReviewStore must be used within EveningReviewProvider');
+  }
+  return context;
+};
+
+const useEveningReviewStoreLogic = () => {
   const [entries, setEntries] = useState<EveningReviewEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -244,4 +277,4 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     saveEntry,
     getTodayEntry
   };
-});
+};

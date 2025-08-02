@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import createContextHook from '@nkzw/create-context-hook';
 
 export interface GratitudeEntry {
   date: string;
@@ -10,7 +9,39 @@ export interface GratitudeEntry {
 
 const STORAGE_KEY = 'gratitude_entries';
 
-export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
+interface GratitudeStoreContextType {
+  entries: GratitudeEntry[];
+  isLoading: boolean;
+  isCompletedToday: () => boolean;
+  getTodayEntry: () => GratitudeEntry | null;
+  getTodaysItems: () => string[];
+  addItemsToToday: (newItems: string[]) => void;
+  completeToday: (items: string[]) => void;
+  saveGratitudeList: (items: string[]) => void;
+  uncompleteToday: () => void;
+  getCompletedDaysInLast30: () => number;
+}
+
+const GratitudeStoreContext = createContext<GratitudeStoreContextType | undefined>(undefined);
+
+export const GratitudeProvider = ({ children }: { children: ReactNode }) => {
+  const value = useGratitudeStoreLogic();
+  return (
+    <GratitudeStoreContext.Provider value={value}>
+      {children}
+    </GratitudeStoreContext.Provider>
+  );
+};
+
+export const useGratitudeStore = () => {
+  const context = useContext(GratitudeStoreContext);
+  if (!context) {
+    throw new Error('useGratitudeStore must be used within GratitudeProvider');
+  }
+  return context;
+};
+
+const useGratitudeStoreLogic = () => {
   const [entries, setEntries] = useState<GratitudeEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -146,4 +177,4 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     uncompleteToday,
     getCompletedDaysInLast30
   };
-});
+};

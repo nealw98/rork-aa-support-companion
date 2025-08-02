@@ -1,5 +1,4 @@
-import createContextHook from "@nkzw/create-context-hook";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ChatMessage, SponsorType } from "@/types";
 import { detectCrisis, crisisResponses } from "@/constants/crisisTriggers";
@@ -266,7 +265,35 @@ function convertToAPIMessages(chatMessages: ChatMessage[], sponsorType: SponsorT
   return apiMessages;
 }
 
-export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
+interface ChatStoreContextType {
+  messages: ChatMessage[];
+  isLoading: boolean;
+  sendMessage: (text: string) => Promise<void>;
+  clearChat: () => Promise<void>;
+  sponsorType: SponsorType;
+  changeSponsor: (type: SponsorType) => void;
+}
+
+const ChatStoreContext = createContext<ChatStoreContextType | undefined>(undefined);
+
+export const ChatStoreProvider = ({ children }: { children: ReactNode }) => {
+  const value = useChatStoreLogic();
+  return (
+    <ChatStoreContext.Provider value={value}>
+      {children}
+    </ChatStoreContext.Provider>
+  );
+};
+
+export const useChatStore = () => {
+  const context = useContext(ChatStoreContext);
+  if (!context) {
+    throw new Error('useChatStore must be used within ChatStoreProvider');
+  }
+  return context;
+};
+
+const useChatStoreLogic = () => {
   const [sponsorType, setSponsorType] = useState<SponsorType>("salty");
   const [saltyMessages, setSaltyMessages] = useState<ChatMessage[]>([SALTY_SAM_INITIAL_MESSAGE]);
   const [supportiveMessages, setSupportiveMessages] = useState<ChatMessage[]>([STEADY_EDDIE_INITIAL_MESSAGE]);
@@ -584,4 +611,4 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
     sponsorType,
     changeSponsor,
   };
-});
+};
