@@ -1,35 +1,11 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import createContextHook from '@nkzw/create-context-hook';
 
 const ONBOARDING_KEY = 'sober_dailies_onboarding_complete';
 
-interface OnboardingContextType {
-  isOnboardingComplete: boolean;
-  isLoading: boolean;
-  completeOnboarding: () => Promise<void>;
-}
-
-const OnboardingContext = createContext<OnboardingContextType | undefined>(undefined);
-
-export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
-  const value = useOnboardingLogic();
-  return (
-    <OnboardingContext.Provider value={value}>
-      {children}
-    </OnboardingContext.Provider>
-  );
-};
-
-export const useOnboarding = () => {
-  const context = useContext(OnboardingContext);
-  if (!context) {
-    throw new Error('useOnboarding must be used within OnboardingProvider');
-  }
-  return context;
-};
-
-const useOnboardingLogic = () => {
+export const [OnboardingProvider, useOnboarding] = createContextHook(() => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -81,4 +57,4 @@ const useOnboardingLogic = () => {
     isLoading,
     completeOnboarding,
   };
-};
+});

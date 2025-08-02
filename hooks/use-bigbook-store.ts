@@ -1,37 +1,9 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from "react";
+import createContextHook from "@nkzw/create-context-hook";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BigBookmark } from "@/types/bigbook";
 
-interface BigBookStoreContextType {
-  bookmarks: BigBookmark[];
-  recentlyViewed: BigBookmark[];
-  addBookmark: (sectionId: string, title: string, url: string) => void;
-  removeBookmark: (sectionId: string) => void;
-  isBookmarked: (sectionId: string) => boolean;
-  addToRecent: (sectionId: string, title: string, url: string) => void;
-  clearRecent: () => Promise<void>;
-}
-
-const BigBookStoreContext = createContext<BigBookStoreContextType | undefined>(undefined);
-
-export const BigBookStoreProvider = ({ children }: { children: ReactNode }) => {
-  const value = useBigBookStoreLogic();
-  return (
-    <BigBookStoreContext.Provider value={value}>
-      {children}
-    </BigBookStoreContext.Provider>
-  );
-};
-
-export const useBigBookStore = () => {
-  const context = useContext(BigBookStoreContext);
-  if (!context) {
-    throw new Error('useBigBookStore must be used within BigBookStoreProvider');
-  }
-  return context;
-};
-
-const useBigBookStoreLogic = () => {
+export const [BigBookStoreProvider, useBigBookStore] = createContextHook(() => {
   const [bookmarks, setBookmarks] = useState<BigBookmark[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<BigBookmark[]>([]);
 
@@ -145,4 +117,4 @@ const useBigBookStoreLogic = () => {
     addToRecent,
     clearRecent,
   };
-};
+});

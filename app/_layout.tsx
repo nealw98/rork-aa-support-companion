@@ -9,8 +9,6 @@ import { GratitudeProvider } from "@/hooks/useGratitudeStore";
 import { OnboardingProvider, useOnboarding } from "@/hooks/useOnboardingStore";
 import { SobrietyProvider } from "@/hooks/useSobrietyStore";
 import { EveningReviewProvider } from "@/hooks/use-evening-review-store";
-import { ChatStoreProvider } from "@/hooks/use-chat-store";
-import { BigBookStoreProvider } from "@/hooks/use-bigbook-store";
 import { adjustFontWeight } from "@/constants/fonts";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import CustomSplashScreen from "@/components/CustomSplashScreen";
@@ -91,13 +89,9 @@ export default function RootLayout() {
         <GratitudeProvider>
           <SobrietyProvider>
             <EveningReviewProvider>
-              <ChatStoreProvider>
-                <BigBookStoreProvider>
-                  <GestureHandlerRootView style={{ flex: 1 }}>
-                    <RootLayoutNav />
-                  </GestureHandlerRootView>
-                </BigBookStoreProvider>
-              </ChatStoreProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <RootLayoutNav />
+              </GestureHandlerRootView>
             </EveningReviewProvider>
           </SobrietyProvider>
         </GratitudeProvider>
