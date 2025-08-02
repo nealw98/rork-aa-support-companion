@@ -85,8 +85,6 @@ const HomeScreen = () => {
           <Text style={styles.cardButton}>Go to Reflection</Text>
         </TouchableOpacity>
 
-        
-
         <TouchableOpacity style={styles.card} onPress={() => router.push('/gratitude')}>
           <Text style={styles.cardTitle}>Gratitude List</Text>
           <Text style={styles.cardDescription}>Start your day with gratitude and stay in the solution.</Text>
@@ -104,8 +102,6 @@ const HomeScreen = () => {
           <Text style={styles.cardDescription}>Talk with an AI sponsor voice when you need support.</Text>
           <Text style={styles.cardButton}>Go to Chat</Text>
         </TouchableOpacity>
-
-
 
         <TouchableOpacity style={styles.card} onPress={() => router.push('/literature')}>
           <Text style={styles.cardTitle}>Literature</Text>
