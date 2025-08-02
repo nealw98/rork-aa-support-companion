@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { ChevronDown, ChevronRight } from "lucide-react-native";
 import { LinearGradient } from 'expo-linear-gradient';
+import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 
 import Colors from "@/constants/colors";
 import { aaPrayers } from "@/constants/bigbook";
@@ -15,7 +16,51 @@ import { adjustFontWeight } from "@/constants/fonts";
 import ScreenContainer from "@/components/ScreenContainer";
 
 export default function PrayersScreen() {
+  const { prayer } = useLocalSearchParams();
   const [expandedPrayer, setExpandedPrayer] = useState<number | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const prayerRefs = useRef<{ [key: number]: View | null }>({});
+  const prayerPositions = useRef<{ [key: number]: number }>({});
+
+  // Reset expanded prayer when screen comes into focus via tab navigation
+  useFocusEffect(
+    useCallback(() => {
+      // Only reset if there's no prayer parameter (i.e., coming from tab navigation)
+      if (!prayer) {
+        setExpandedPrayer(null);
+        // Scroll to top
+        setTimeout(() => {
+          scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+        }, 100);
+      }
+    }, [prayer])
+  );
+
+  useEffect(() => {
+    if (prayer) {
+      const prayerParam = prayer.toString().toLowerCase();
+      const prayerIndex = aaPrayers.findIndex(p => {
+        const title = p.title.toLowerCase();
+        return title.includes(prayerParam) || 
+               (prayerParam === 'morning' && title.includes('morning')) ||
+               (prayerParam === 'evening' && title.includes('evening'));
+      });
+      if (prayerIndex !== -1) {
+        setExpandedPrayer(prayerIndex);
+        // Scroll to the prayer after a short delay to ensure the component is rendered
+        setTimeout(() => {
+          scrollToPrayer(prayerIndex);
+        }, 100);
+      }
+    }
+  }, [prayer]);
+
+  const scrollToPrayer = (index: number) => {
+    const position = prayerPositions.current[index];
+    if (position !== undefined && scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: Math.max(0, position - 20), animated: true });
+    }
+  };
 
   return (
     <ScreenContainer style={styles.container}>
@@ -27,14 +72,26 @@ export default function PrayersScreen() {
         locations={[0, 1]}
       />
       
-      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.contentContainer}>
+      <ScrollView 
+        ref={scrollViewRef}
+        style={styles.scrollContainer} 
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>AA Prayers</Text>
           <Text style={styles.subtitle}>Essential prayers for recovery and reflection</Text>
         </View>
         
         {aaPrayers.map((prayer, index) => (
-          <View key={index} style={styles.prayerCard}>
+          <View 
+            key={index} 
+            style={styles.prayerCard}
+            ref={(ref) => { prayerRefs.current[index] = ref; }}
+            onLayout={(event) => {
+              const { y } = event.nativeEvent.layout;
+              prayerPositions.current[index] = y;
+            }}
+          >
             <TouchableOpacity
               style={styles.prayerHeader}
               onPress={() => setExpandedPrayer(expandedPrayer === index ? null : index)}
@@ -51,18 +108,24 @@ export default function PrayersScreen() {
             
             {expandedPrayer === index && (
               <View style={styles.prayerContent}>
-                <Text style={styles.prayerText}>{prayer.content}</Text>
-                <Text style={styles.prayerSource}>— {prayer.source}</Text>
+                {prayer.title === "Morning Prayer" ? (
+                  <View>
+                    <Text style={[styles.prayerText, styles.italicText]}>As I begin this day, I ask the God of my understanding:</Text>
+                    <Text style={styles.prayerText}>{prayer.content.split('As I begin this day, I ask the God of my understanding:')[1]}</Text>
+                  </View>
+                ) : prayer.title === "Evening Prayer" ? (
+                  <View>
+                    <Text style={[styles.prayerText, styles.italicText, styles.eveningIntro]}>As this day closes:</Text>
+                    <Text style={styles.prayerText}>{prayer.content.split('As this day closes:')[1]}</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.prayerText}>{prayer.content}</Text>
+                )}
+                {prayer.source && <Text style={styles.prayerSource}>— {prayer.source}</Text>}
               </View>
             )}
           </View>
         ))}
-        
-        <View style={styles.copyrightContainer}>
-          <Text style={styles.copyrightText}>
-            Copyright © 1990 by Alcoholics Anonymous World Services, Inc. All rights reserved.
-          </Text>
-        </View>
       </ScrollView>
     </ScreenContainer>
   );
@@ -134,6 +197,12 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     lineHeight: 24,
     marginBottom: 16,
+  },
+  italicText: {
+    fontStyle: 'italic',
+  },
+  eveningIntro: {
+    marginBottom: 4,
   },
   prayerSource: {
     fontSize: 14,

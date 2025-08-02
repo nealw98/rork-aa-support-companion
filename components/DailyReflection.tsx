@@ -343,6 +343,41 @@ export default function DailyReflection() {
         </View>
         
         <View style={styles.card}>
+          {/* Navigation at top of card */}
+          <View style={styles.cardNavigationContainer}>
+            <TouchableOpacity 
+              onPress={() => navigateDate('prev')} 
+              style={styles.cardNavButton}
+              testID="prev-day-button"
+              activeOpacity={0.7}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <ChevronLeft size={18} color={Colors.light.tint} />
+              <Text style={styles.cardNavText}>Yesterday</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              onPress={openDatePicker}
+              style={styles.cardDateButton}
+              testID="calendar-button"
+              activeOpacity={0.7}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <Calendar size={16} color={Colors.light.tint} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              onPress={() => navigateDate('next')} 
+              style={styles.cardNavButton}
+              testID="next-day-button"
+              activeOpacity={0.7}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <Text style={styles.cardNavText}>Tomorrow</Text>
+              <ChevronRight size={18} color={Colors.light.tint} />
+            </TouchableOpacity>
+          </View>
+          
           <View style={styles.cardHeader}>
             <View style={styles.headerDecoration} />
           </View>
@@ -368,41 +403,7 @@ export default function DailyReflection() {
         </View>
       </ScrollView>
 
-      {/* Navigation moved to bottom */}
-      <View style={styles.bottomNavigationContainer}>
-        <View style={styles.navigationContent}>
-          <TouchableOpacity 
-            onPress={() => navigateDate('prev')} 
-            style={styles.navButton}
-            testID="prev-day-button"
-            activeOpacity={0.7}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
-            <ChevronLeft size={24} color={Colors.light.tint} />
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            onPress={openDatePicker}
-            style={styles.dateButton}
-            testID="calendar-button"
-            activeOpacity={0.7}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Calendar size={20} color={Colors.light.tint} />
-            <Text style={styles.dateButtonText}>Select Date</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            onPress={() => navigateDate('next')} 
-            style={styles.navButton}
-            testID="next-day-button"
-            activeOpacity={0.7}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
-            <ChevronRight size={24} color={Colors.light.tint} />
-          </TouchableOpacity>
-        </View>
-      </View>
+
 
       {/* Calendar Modal */}
       <Modal
@@ -461,7 +462,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
-    paddingBottom: 100, // Add space for bottom navigation
   },
   loadingContainer: {
     flex: 1,
@@ -490,8 +490,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.6)', // Changed from 0.4 to 0.6 (60% opacity)
     borderRadius: 16,
     padding: 24,
+    paddingTop: 8, // Reduced top padding for navigation
     // Shadow removed
     marginBottom: 16,
+  },
+  cardNavigationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  cardNavButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 4,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  cardNavText: {
+    fontSize: 12,
+    color: Colors.light.tint,
+    fontWeight: adjustFontWeight("500"),
+    marginHorizontal: 2,
+  },
+  cardDateButton: {
+    padding: 6,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   cardHeader: {
     alignItems: "center",
@@ -559,44 +585,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 16,
   },
-  bottomNavigationContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: Colors.light.background,
-    borderTopWidth: 1,
-    borderTopColor: Colors.light.divider,
-    // Shadow removed
-  },
-  navigationContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingTop: 0, // Reduced padding
-    paddingBottom: Platform.OS === 'ios' ? 10 : 0, // Reduced padding
-  },
-  navButton: {
-    padding: 6, // Reduced padding
-    borderRadius: 8,
-    backgroundColor: Colors.light.cardBackground,
-    // Shadow removed
-  },
-  dateButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 6, // Reduced padding
-    borderRadius: 8,
-    backgroundColor: Colors.light.cardBackground,
-    // Shadow removed
-  },
-  dateButtonText: {
-    marginLeft: 8,
-    fontSize: 14,
-    color: Colors.light.text,
-    fontWeight: adjustFontWeight("500"),
-  },
+
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

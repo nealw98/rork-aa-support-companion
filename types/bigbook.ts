@@ -13,6 +13,13 @@ export interface BigBookCategory {
   sections: BigBookSection[];
 }
 
+export interface TwelveAndTwelveCategory {
+  id: string;
+  title: string;
+  description: string;
+  sections: BigBookSection[];
+}
+
 export interface BigBookmark {
   sectionId: string;
   title: string;

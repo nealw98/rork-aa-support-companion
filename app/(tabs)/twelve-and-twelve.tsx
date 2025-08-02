@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native";
-import BigBookBrowser from "@/components/BigBookBrowser";
+import TwelveAndTwelveBrowser from "@/components/TwelveAndTwelveBrowser";
 import ScreenContainer from "@/components/ScreenContainer";
 
-export default function BigBookScreen() {
+export default function TwelveAndTwelveScreen() {
   return (
     <ScreenContainer style={styles.container} noPadding={true}>
-      <BigBookBrowser />
+      <TwelveAndTwelveBrowser />
     </ScreenContainer>
   );
 }

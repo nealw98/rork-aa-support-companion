@@ -20,9 +20,9 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Colors from "@/constants/colors";
-import { bigBookData } from "@/constants/bigbook";
+import { twelveAndTwelveData } from "@/constants/bigbook";
 import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store";
-import { BigBookCategory, BigBookSection } from "@/types/bigbook";
+import { TwelveAndTwelveCategory, BigBookSection } from "@/types/bigbook";
 import { adjustFontWeight } from "@/constants/fonts";
 import BookSelector from "@/components/BookSelector";
 
@@ -59,7 +59,6 @@ const SectionItem = ({ section, categoryId }: { section: BigBookSection; categor
       <TouchableOpacity style={styles.sectionContent} onPress={handlePress} testID={`section-${section.id}`}>
         <View style={styles.sectionInfo}>
           <Text style={styles.sectionTitle}>{section.title}</Text>
-          {section.pages && <Text style={styles.sectionPages}>Pages {section.pages}</Text>}
           {section.description && <Text style={styles.sectionDescription}>{section.description}</Text>}
         </View>
         <ExternalLink size={16} color={Colors.light.muted} />
@@ -76,8 +75,7 @@ const SectionItem = ({ section, categoryId }: { section: BigBookSection; categor
   );
 };
 
-const CategorySection = ({ category }: { category: BigBookCategory }) => {
-  // All sections start collapsed by default
+const CategorySection = ({ category }: { category: TwelveAndTwelveCategory }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
@@ -222,7 +220,7 @@ const RecentSection = () => {
   );
 };
 
-function BigBookBrowserContent() {
+function TwelveAndTwelveBrowserContent() {
   const [activeTab, setActiveTab] = useState<"browse" | "bookmarks" | "recent">("browse");
 
   return (
@@ -264,17 +262,16 @@ function BigBookBrowserContent() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {activeTab === "browse" && (
           <View>
-            <BookSelector activeBook="bigbook" />
+            <BookSelector activeBook="twelve" />
             <View style={styles.header}>
-              <Text style={styles.title}>Alcoholics Anonymous</Text>
-              <Text style={styles.subtitle}>The Big Book - Fourth Edition</Text>
+              <Text style={styles.title}>Twelve Steps and Twelve Traditions</Text>
+              <Text style={styles.subtitle}>A detailed exploration of the AA program</Text>
               <Text style={styles.description}>
-                Tap any section to open the official PDF.
+                Tap any section to open the official PDF from AA World Services.
               </Text>
             </View>
             
-            {/* Display all categories in the correct order */}
-            {bigBookData.map((category) => (
+            {twelveAndTwelveData.map((category) => (
               <CategorySection key={category.id} category={category} />
             ))}
             
@@ -293,10 +290,10 @@ function BigBookBrowserContent() {
   );
 }
 
-export default function BigBookBrowser() {
+export default function TwelveAndTwelveBrowser() {
   return (
     <BigBookStoreProvider>
-      <BigBookBrowserContent />
+      <TwelveAndTwelveBrowserContent />
     </BigBookStoreProvider>
   );
 }
@@ -368,7 +365,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: 16,
     overflow: "hidden",
-    // Shadow removed
     marginHorizontal: 16,
   },
   categoryHeader: {
@@ -418,11 +414,6 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 2,
   },
-  sectionPages: {
-    fontSize: 12,
-    color: Colors.light.muted,
-    marginBottom: 2,
-  },
   sectionDescription: {
     fontSize: 12,
     color: Colors.light.muted,
@@ -442,7 +433,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     marginBottom: 8,
-    // Shadow removed
   },
   bookmarkContent: {
     flex: 1,
@@ -484,7 +474,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 12,
     marginBottom: 8,
-    // Shadow removed
   },
   recentItemTitle: {
     fontSize: 16,

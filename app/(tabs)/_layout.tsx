@@ -1,7 +1,7 @@
-import { Tabs } from "expo-router";
-import { Home, MessageCircle, Book, Heart, Moon } from "lucide-react-native";
+import { Tabs, router } from "expo-router";
+import { Home, MessageCircle, Book, Heart, Smile, Moon } from "lucide-react-native";
 import React from "react";
-import { Text, View, StyleSheet, Platform } from "react-native";
+import { Text, View, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import SunIcon from "@/components/SunIcon";
 
 import Colors from "@/constants/colors";
@@ -11,19 +11,38 @@ const styles = StyleSheet.create({
   headerTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8
+    justifyContent: 'center',
+    gap: 8,
+    flex: 1,
+    maxWidth: '100%'
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: adjustFontWeight('600', true)
+    fontSize: 20,
+    fontWeight: adjustFontWeight('600', true),
+    flexShrink: 0,
+    textAlign: 'center'
   },
   screenContainer: {
     ...getScreenPadding()
   },
   tabIcon: {
     ...(Platform.OS === 'android' ? { marginTop: 2 } : {})
+  },
+  homeButton: {
+    padding: 8,
+    marginRight: 4
   }
 });
+
+const HomeButton = () => (
+  <TouchableOpacity 
+    style={styles.homeButton}
+    onPress={() => router.push('/')}
+    testID="home-button"
+  >
+    <Home color={Colors.light.tint} size={24} />
+  </TouchableOpacity>
+);
 
 export default function TabLayout() {
   return (
@@ -53,10 +72,29 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="gratitude"
+        options={{
+          title: "Gratitude",
+          headerTitle: "Daily Gratitude",
+          headerRight: () => <HomeButton />,
+          tabBarIcon: ({ color }) => <Smile color={color} size={22} style={styles.tabIcon} />,
+        }}
+      />
+      <Tabs.Screen
+        name="evening-review"
+        options={{
+          title: "Review",
+          headerTitle: "Evening Review",
+          headerRight: () => <HomeButton />,
+          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
+        }}
+      />
+      <Tabs.Screen
         name="chat"
         options={{
-          title: "Sober Chat",
-          headerTitle: "Sober Chat",
+          title: "AI Sponsor",
+          headerTitle: "AI Sponsor",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -65,24 +103,75 @@ export default function TabLayout() {
         options={{
           title: "Prayers",
           headerTitle: "AA Prayers",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Heart color={color} size={22} style={styles.tabIcon} />,
         }}
       />
       <Tabs.Screen
-        name="bigbook"
+        name="literature"
         options={{
-          title: "Big Book",
+          title: "Literature",
+          headerTitle: "AA Literature",
+          headerRight: () => <HomeButton />,
           tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
         }}
       />
+
       <Tabs.Screen
-        name="evening-review"
+        name="bigbook"
         options={{
-          title: "Review",
-          headerTitle: "Evening Review",
-          tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
+          href: null,
+          title: "Big Book",
+          headerTitle: "Big Book",
+          headerRight: () => <HomeButton />
         }}
       />
+      <Tabs.Screen
+        name="twelve-and-twelve"
+        options={{
+          href: null,
+          title: "Twelve and Twelve",
+          headerTitle: "Twelve and Twelve",
+          headerRight: () => <HomeButton />
+        }}
+      />
+      <Tabs.Screen
+        name="reflection"
+        options={{
+          href: null,
+          title: "Daily Reflection",
+          headerTitle: "Daily Reflection",
+          headerRight: () => <HomeButton />
+        }}
+      />
+      <Tabs.Screen
+        name="insights"
+        options={{
+          href: null,
+          title: "Insights",
+          headerTitle: "Insights",
+          headerRight: () => <HomeButton />
+        }}
+      />
+      <Tabs.Screen
+        name="inventory"
+        options={{
+          href: null,
+          title: "Inventory",
+          headerTitle: "Inventory",
+          headerRight: () => <HomeButton />
+        }}
+      />
+      <Tabs.Screen
+        name="nightly-review"
+        options={{
+          href: null,
+          title: "Nightly Review",
+          headerTitle: "Nightly Review",
+          headerRight: () => <HomeButton />
+        }}
+      />
+
     </Tabs>
   );
 }
