@@ -32,7 +32,7 @@ const formatDateDisplay = (date: Date): string => {
 export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  
+
   // Form state - matching web app structure
   const [resentfulFlag, setResentfulFlag] = useState('');
   const [resentfulNote, setResentfulNote] = useState('');
@@ -49,7 +49,7 @@ export default function EveningReview() {
   const [aaTalkFlag, setAaTalkFlag] = useState('');
   const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
-  // Early return if store is not available
+  // Add safety check to prevent destructuring undefined
   if (!eveningReviewStore) {
     return (
       <ScreenContainer style={styles.container}>
