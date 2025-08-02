@@ -115,7 +115,7 @@ export default function PrayersScreen() {
                   </View>
                 ) : prayer.title === "Evening Prayer" ? (
                   <View>
-                    <Text style={[styles.prayerText, styles.italicText]}>As this day closes:</Text>
+                    <Text style={[styles.prayerText, styles.italicText, styles.reducedMargin]}>As this day closes:</Text>
                     <Text style={styles.prayerText}>{prayer.content.split('As this day closes:')[1]}</Text>
                   </View>
                 ) : (
@@ -217,5 +217,8 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     textAlign: "center",
     lineHeight: 16,
+  },
+  reducedMargin: {
+    marginBottom: 4,
   },
 });
