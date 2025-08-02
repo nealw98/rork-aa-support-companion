@@ -9,7 +9,7 @@ import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { TrendingUp, Heart, Brain } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
-import { useGratitudeStore } from '@/hooks/use-gratitude-store';
+import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import { ThirtyDayCounts, hasEnoughData, makeSpiritualFitness, makeEmotionalPatterns, pickRecoveryQuote } from '@/lib/insightsLogic';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';

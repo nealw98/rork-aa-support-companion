@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Heart, Plus, Check } from 'lucide-react-native';
-import { useGratitudeStore } from '@/hooks/use-gratitude-store';
+import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
