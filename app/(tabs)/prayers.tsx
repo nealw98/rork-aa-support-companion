@@ -110,7 +110,7 @@ export default function PrayersScreen() {
               <View style={styles.prayerContent}>
                 {prayer.title === "Morning Prayer" ? (
                   <View>
-                    <Text style={[styles.prayerText, styles.italicText]}>As I begin this day, I ask the God of my understanding:</Text>
+                    <Text style={[styles.prayerText, styles.italicText, styles.reducedMargin]}>As I begin this day, I ask the God of my understanding:</Text>
                     <Text style={styles.prayerText}>
                       {(() => {
                         const splitContent = prayer.content.split("As I begin this day, I ask the God of my understanding:");
