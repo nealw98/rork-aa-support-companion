@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import ChatInterface from "@/components/ChatInterface";
-import { ChatStoreProvider } from "@/hooks/use-chat-store";
+
 import ScreenContainer from "@/components/ScreenContainer";
 import Colors from "@/constants/colors";
 
@@ -15,9 +15,7 @@ export default function ChatScreen() {
         end={{ x: 1, y: 1 }}
         locations={[0, 1]}
       />
-      <ChatStoreProvider>
-        <ChatInterface />
-      </ChatStoreProvider>
+      <ChatInterface />
     </ScreenContainer>
   );
 }
