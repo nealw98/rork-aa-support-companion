@@ -110,26 +110,16 @@ export default function PrayersScreen() {
               <View style={styles.prayerContent}>
                 {prayer.title === "Morning Prayer" ? (
                   <View>
-                    <Text style={[styles.prayerText, styles.italicText, styles.reducedMargin]}>As I begin this day, I ask the God of my understanding:</Text>
-                    <Text style={styles.prayerText}>
-                      {(() => {
-                        const splitContent = prayer.content.split("As I begin this day, I ask the God of my understanding:");
-                        return splitContent.length > 1 && splitContent[1] ? splitContent[1].trim() : prayer.content;
-                      })()}
-                    </Text>
+                    <Text style={[styles.prayerText, styles.italicText]}>As I begin this day, I ask the God of my understanding:</Text>
+                    <Text style={styles.prayerText}>{prayer.content.split('As I begin this day, I ask the God of my understanding:')[1]}</Text>
                   </View>
                 ) : prayer.title === "Evening Prayer" ? (
                   <View>
-                    <Text style={[styles.prayerText, styles.italicText, styles.reducedMargin]}>As this day closes:</Text>
-                    <Text style={styles.prayerText}>
-                      {(() => {
-                        const splitContent = prayer.content.split("As this day closes:");
-                        return splitContent.length > 1 && splitContent[1] ? splitContent[1].trim() : prayer.content;
-                      })()}
-                    </Text>
+                    <Text style={[styles.prayerText, styles.italicText]}>As this day closes:</Text>
+                    <Text style={styles.prayerText}>{prayer.content.split('As this day closes:')[1]}</Text>
                   </View>
                 ) : (
-                  <Text style={styles.prayerText}>{prayer.content || ""}</Text>
+                  <Text style={styles.prayerText}>{prayer.content}</Text>
                 )}
                 {prayer.source && <Text style={styles.prayerSource}>— {prayer.source}</Text>}
               </View>
@@ -227,8 +217,5 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     textAlign: "center",
     lineHeight: 16,
-  },
-  reducedMargin: {
-    marginBottom: 4,
   },
 });

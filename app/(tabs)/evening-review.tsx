@@ -350,6 +350,8 @@ export default function EveningReview() {
             Your responses are saved only on your device. Nothing is uploaded or shared.
           </Text>
 
+
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.outlineButton} onPress={handleUnsubmit}>
               <Text style={styles.outlineButtonText}>Edit Review</Text>
@@ -368,6 +370,8 @@ export default function EveningReview() {
         end={{ x: 1, y: 1 }}
         style={styles.gradient}
       />
+      
+
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
@@ -428,6 +432,8 @@ export default function EveningReview() {
           </View>
         </View>
 
+
+
         {/* Share Button */}
         <TouchableOpacity 
           style={styles.shareButton} 
@@ -438,6 +444,8 @@ export default function EveningReview() {
             Share Nightly Review
           </Text>
         </TouchableOpacity>
+
+
 
         {/* Privacy Notice */}
         <Text style={styles.privacyText}>
