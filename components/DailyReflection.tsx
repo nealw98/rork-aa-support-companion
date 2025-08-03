@@ -274,14 +274,17 @@ export default function DailyReflection() {
               new Date().getMonth() === item.date.getMonth() && 
               new Date().getFullYear() === item.date.getFullYear();
             
+            const isTodayAndSelected = isToday && isSelected;
+            
             return (
               <TouchableOpacity
                 key={index}
                 style={[
                   styles.dayButton,
                   !item.currentMonth && styles.otherMonthDay,
-                  isSelected && styles.selectedDay,
-                  isToday && styles.todayDay
+                  isSelected && !isToday && styles.selectedDay,
+                  isToday && !isSelected && styles.todayDay,
+                  isTodayAndSelected && styles.todaySelectedDay
                 ]}
                 onPress={() => selectCalendarDay(item.date)}
                 testID={`calendar-day-${item.day}`}
@@ -293,8 +296,9 @@ export default function DailyReflection() {
                   style={[
                     styles.dayText,
                     !item.currentMonth && styles.otherMonthDayText,
-                    isSelected && styles.selectedDayText,
-                    isToday && styles.todayText
+                    isSelected && !isToday && styles.selectedDayText,
+                    isToday && !isSelected && styles.todayText,
+                    isTodayAndSelected && styles.todaySelectedText
                   ]}
                 >
                   {item.day}
@@ -712,12 +716,22 @@ const styles = StyleSheet.create({
     fontWeight: adjustFontWeight('600'),
   },
   todayDay: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: Colors.light.tint,
     borderRadius: 20,
   },
   todayText: {
     color: Colors.light.tint,
+    fontWeight: adjustFontWeight('600'),
+  },
+  todaySelectedDay: {
+    backgroundColor: Colors.light.tint,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  todaySelectedText: {
+    color: 'white',
     fontWeight: adjustFontWeight('600'),
   },
   calendarFooter: {
