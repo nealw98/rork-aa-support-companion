@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal, Platform } from "react-native";
-import { BookmarkIcon, ChevronLeft, ChevronRight, Calendar } from "lucide-react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal, Platform, Share } from "react-native";
+import { BookmarkIcon, ChevronLeft, ChevronRight, Calendar, Share2 } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -150,6 +150,21 @@ export default function DailyReflection() {
       setIsFavorite(!isFavorite);
     } catch (error) {
       console.error("Error toggling favorite:", error);
+    }
+  };
+
+  const shareReflection = async () => {
+    if (!reflection) return;
+    
+    try {
+      const shareContent = `${reflection.title}\n\n"${reflection.quote}"\n${reflection.source}\n\n${reflection.reflection}\n\nMeditation:\n${reflection.thought}`;
+      
+      await Share.share({
+        message: shareContent,
+        title: reflection.title,
+      });
+    } catch (error) {
+      console.error('Error sharing reflection:', error);
     }
   };
 
@@ -331,15 +346,26 @@ export default function DailyReflection() {
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.contentContainer}>
         <View style={styles.dateContainer}>
           <Text style={styles.date}>{dateString}</Text>
-          <TouchableOpacity 
-            onPress={toggleFavorite} 
-            style={styles.favoriteButton} 
-            testID="favorite-button"
-            activeOpacity={0.7}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
-            <BookmarkIcon size={24} color={isFavorite ? Colors.light.accent : Colors.light.muted} fill={isFavorite ? Colors.light.accent : "transparent"} />
-          </TouchableOpacity>
+          <View style={styles.actionButtons}>
+            <TouchableOpacity 
+              onPress={shareReflection} 
+              style={styles.actionButton} 
+              testID="share-button"
+              activeOpacity={0.7}
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+            >
+              <Share2 size={22} color={Colors.light.muted} />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={toggleFavorite} 
+              style={styles.actionButton} 
+              testID="favorite-button"
+              activeOpacity={0.7}
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+            >
+              <BookmarkIcon size={24} color={isFavorite ? Colors.light.accent : Colors.light.muted} fill={isFavorite ? Colors.light.accent : "transparent"} />
+            </TouchableOpacity>
+          </View>
         </View>
         
         <View style={styles.card}>
@@ -483,7 +509,12 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     fontWeight: adjustFontWeight("500"),
   },
-  favoriteButton: {
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  actionButton: {
     padding: 8,
   },
   card: {
