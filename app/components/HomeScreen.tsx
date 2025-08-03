@@ -58,7 +58,7 @@ const HomeScreen = () => {
           onPress={() => router.push('/reflection')}
         >
           <Text style={styles.reflectionButtonTitle}>
-            Daily Reflection{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '').replace(/\.$/, '')}
+            Daily Reflection{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
           </Text>
         </TouchableOpacity>
 
