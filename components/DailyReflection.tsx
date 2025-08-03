@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal, Platform, Share } from "react-native";
-import { BookmarkIcon, ChevronLeft, ChevronRight, Calendar, Share2 } from "lucide-react-native";
+import { BookmarkIcon, ChevronLeft, ChevronRight, Calendar, Upload } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -354,7 +354,7 @@ export default function DailyReflection() {
               activeOpacity={0.7}
               hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
             >
-              <Share2 size={22} color={Colors.light.muted} />
+              <Upload size={22} color={Colors.light.muted} />
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={toggleFavorite} 
