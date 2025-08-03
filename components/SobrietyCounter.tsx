@@ -311,7 +311,7 @@ const SobrietyCounter = () => {
           </TouchableOpacity>
         </View>
         <Text style={styles.addDateSubtitle}>
-          See how many days you&apos;ve been sober.
+          See how many days you've been sober.
         </Text>
         
         {/* Date picker modals for add date functionality */}
