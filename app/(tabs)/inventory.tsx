@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
     marginBottom: 12,
     marginTop: -10,
-    width: '80%',
-    alignSelf: 'center',
+    width: '100%',
+    alignSelf: 'stretch',
   },
   itemText: {
     fontSize: 16,
