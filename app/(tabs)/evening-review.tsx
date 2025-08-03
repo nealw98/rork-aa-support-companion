@@ -13,7 +13,7 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle, Calendar, Share2 } from 'lucide-react-native';
+import { CheckCircle, Calendar, Share as ShareIcon } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -439,7 +439,7 @@ export default function EveningReview() {
           style={styles.shareButton} 
           onPress={handleShare}
         >
-          <Share2 size={20} color="white" />
+          <ShareIcon size={20} color="white" />
           <Text style={styles.shareButtonText}>
             Share Nightly Review
           </Text>

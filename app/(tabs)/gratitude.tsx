@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { Stack } from 'expo-router';
-import { Heart, Share2 } from 'lucide-react-native';
+import { Heart, Share as ShareIcon } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGratitudeStore } from '@/hooks/useGratitudeStore';
 import Colors from '@/constants/colors';
@@ -357,7 +357,7 @@ export default function GratitudeListScreen() {
           disabled={gratitudeItems.length === 0}
           activeOpacity={0.7}
         >
-          <Share2 size={20} color="white" />
+          <ShareIcon size={20} color="white" />
           <Text style={styles.shareButtonText}>Share Gratitude List</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
