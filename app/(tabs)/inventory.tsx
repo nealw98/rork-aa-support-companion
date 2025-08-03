@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: -10,
     width: '100%',
-    alignSelf: 'center',
+    alignSelf: 'stretch',
   },
   itemText: {
     fontSize: 16,
