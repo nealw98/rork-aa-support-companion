@@ -69,14 +69,6 @@ export const crisisTriggers = {
     "I'll hurt",
     "gonna kill",
     "gonna hurt"
-  ],
-
-  psychologicalCrisis: [
-    "I'm in crisis",
-    "The government implanted a chip in me",
-    "I know they're poisoning my food",
-    "They're in the walls and watching me",
-    "I have to protect myself from them before they get me"
   ]
 };
 
@@ -98,7 +90,7 @@ export function detectCrisis(text: string): {
   console.log('Normalized text for crisis detection:', normalizedText);
 
   // Check each category in order of severity
-  const categories: (keyof typeof crisisTriggers)[] = ['violence', 'selfHarm', 'psychologicalCrisis'];
+  const categories: (keyof typeof crisisTriggers)[] = ['violence', 'selfHarm'];
   
   for (const category of categories) {
     const triggers = crisisTriggers[category];
@@ -106,27 +98,43 @@ export function detectCrisis(text: string): {
     for (const trigger of triggers) {
       const normalizedTrigger = normalizeText(trigger);
       
-      // Check for exact phrase match
-      if (normalizedText.includes(normalizedTrigger)) {
-        console.log(`Crisis detected - Category: ${category}, Trigger: "${trigger}"`);
-        return { type: category, matchedTrigger: trigger };
-      }
-      
-      // Check for word-boundary matches to catch variations
-      const words = normalizedTrigger.split(' ');
-      if (words.length > 1) {
-        // For multi-word triggers, check if all key words are present
+      // For single word triggers, use word boundary matching to avoid false positives
+      if (normalizedTrigger.split(' ').length === 1) {
+        // Create word boundary regex to match whole words only
+        const wordBoundaryRegex = new RegExp(`\\b${normalizedTrigger.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+        if (wordBoundaryRegex.test(normalizedText)) {
+          console.log(`Crisis detected - Category: ${category}, Trigger: "${trigger}" (word boundary match)`);
+          return { type: category, matchedTrigger: trigger };
+        }
+      } else {
+        // For multi-word triggers, check for exact phrase match first
+        if (normalizedText.includes(normalizedTrigger)) {
+          console.log(`Crisis detected - Category: ${category}, Trigger: "${trigger}" (exact phrase match)`);
+          return { type: category, matchedTrigger: trigger };
+        }
+        
+        // Then check for word-boundary matches with proximity
+        const words = normalizedTrigger.split(' ');
         const keyWords = words.filter(word => word.length > 2); // Skip short words like "I", "my", etc.
-        if (keyWords.length > 0 && keyWords.every(word => normalizedText.includes(word))) {
-          // Additional check: ensure words appear in reasonable proximity
-          const firstWordIndex = normalizedText.indexOf(keyWords[0]);
-          const lastWordIndex = normalizedText.lastIndexOf(keyWords[keyWords.length - 1]);
-          const distance = lastWordIndex - firstWordIndex;
+        
+        if (keyWords.length > 1) {
+          // Check if all key words are present as whole words
+          const allKeyWordsPresent = keyWords.every(word => {
+            const wordRegex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+            return wordRegex.test(normalizedText);
+          });
           
-          // If words are within 20 characters of each other, consider it a match
-          if (distance < 20) {
-            console.log(`Crisis detected - Category: ${category}, Trigger: "${trigger}" (word proximity match)`);
-            return { type: category, matchedTrigger: trigger };
+          if (allKeyWordsPresent) {
+            // Additional check: ensure words appear in reasonable proximity
+            const firstWordIndex = normalizedText.search(new RegExp(`\\b${keyWords[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i'));
+            const lastWordIndex = normalizedText.search(new RegExp(`\\b${keyWords[keyWords.length - 1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i'));
+            const distance = Math.abs(lastWordIndex - firstWordIndex);
+            
+            // If words are within 30 characters of each other, consider it a match
+            if (distance < 30) {
+              console.log(`Crisis detected - Category: ${category}, Trigger: "${trigger}" (word proximity match)`);
+              return { type: category, matchedTrigger: trigger };
+            }
           }
         }
       }
@@ -144,11 +152,5 @@ export const crisisResponses = {
   },
   violence: {
     all: "This is serious. If you're in danger of hurting someone, call 911 or step away now. Please don't act on it—get help instead."
-  },
-  psychologicalCrisis: {
-    "Gentle Grace": "You're describing something that sounds like a mental health emergency. Please call 911 or go to the nearest emergency room. You deserve real-time support.",
-    "Steady Eddie": "This sounds urgent. Please call 911 or go to an emergency room. They can give you the help you need right now.",
-    "Salty Sam": "This is a real emergency. Call 911 or get to the ER. Don't mess around with this—get real help, now."
-  },
-
+  }
 };
