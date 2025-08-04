@@ -476,21 +476,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
             default:
               responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
           }
-        } else if (crisisType === 'psychologicalDistress') {
-          switch (currentSponsorType) {
-            case 'salty':
-              responseText = crisisResponses.psychologicalDistress['Salty Sam'];
-              break;
-            case 'supportive':
-              responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
-              break;
-            case 'grace':
-              responseText = crisisResponses.psychologicalDistress['Gentle Grace'];
-              break;
-            default:
-              responseText = crisisResponses.psychologicalDistress['Steady Eddie'];
-          }
-        }
+
         
         const crisisResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),

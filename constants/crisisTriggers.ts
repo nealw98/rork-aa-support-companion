@@ -70,30 +70,7 @@ export const crisisTriggers = {
     "gonna kill",
     "gonna hurt"
   ],
-  psychologicalDistress: [
-    "I'm having a breakdown",
-    "I can't handle this anymore",
-    "I'm losing my mind",
-    "I need help now",
-    "I'm freaking out",
-    "I'm having a panic attack",
-    "People are watching me",
-    "I think they're following me",
-    "I can't trust anyone",
-    "Everyone is against me",
-    "They're spying on me",
-    "Someone's out to get me",
-    "I know they're listening",
-    "The walls have ears",
-    "I can't tell who's real",
-    "I'm being watched",
-    "They're out to get me",
-    "Voices are telling me",
-    "I can't tell what's real",
-    "They're controlling my mind",
-    "Someone is trying to control my thoughts",
-    "They put something in my head"
-  ],
+
   psychologicalCrisis: [
     "I'm in crisis",
     "The government implanted a chip in me",
@@ -121,7 +98,7 @@ export function detectCrisis(text: string): {
   console.log('Normalized text for crisis detection:', normalizedText);
 
   // Check each category in order of severity
-  const categories: (keyof typeof crisisTriggers)[] = ['violence', 'selfHarm', 'psychologicalCrisis', 'psychologicalDistress'];
+  const categories: (keyof typeof crisisTriggers)[] = ['violence', 'selfHarm', 'psychologicalCrisis'];
   
   for (const category of categories) {
     const triggers = crisisTriggers[category];
@@ -173,9 +150,5 @@ export const crisisResponses = {
     "Steady Eddie": "This sounds urgent. Please call 911 or go to an emergency room. They can give you the help you need right now.",
     "Salty Sam": "This is a real emergency. Call 911 or get to the ER. Don't mess around with this—get real help, now."
   },
-  psychologicalDistress: {
-    "Gentle Grace": "It sounds like you're overwhelmed. Take a breath. You're not alone, and you don't have to hold this by yourself. You can call 988 or visit warmline.org to talk with someone right now.",
-    "Steady Eddie": "These moments can feel heavy, but they pass. You're not alone. Reach out to 988 or check out warmline.org for someone to talk to.",
-    "Salty Sam": "Sounds like your head's spinning. Don't sit in that alone. Call 988 or hit up warmline.org and talk to someone who gets it."
-  }
+
 };
