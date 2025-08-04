@@ -476,8 +476,7 @@ export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
             default:
               responseText = crisisResponses.psychologicalCrisis['Steady Eddie'];
           }
-
-        
+        }
         const crisisResponse: ChatMessage = {
           id: (Date.now() + 1).toString(),
           text: responseText,
