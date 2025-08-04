@@ -267,7 +267,7 @@ function convertToAPIMessages(chatMessages: ChatMessage[], sponsorType: SponsorT
 }
 
 export const [ChatStoreProvider, useChatStore] = createContextHook(() => {
-  const [sponsorType, setSponsorType] = useState<SponsorType>("salty");
+  const [sponsorType, setSponsorType] = useState<SponsorType>("supportive");
   const [saltyMessages, setSaltyMessages] = useState<ChatMessage[]>([SALTY_SAM_INITIAL_MESSAGE]);
   const [supportiveMessages, setSupportiveMessages] = useState<ChatMessage[]>([STEADY_EDDIE_INITIAL_MESSAGE]);
   const [graceMessages, setGraceMessages] = useState<ChatMessage[]>([GENTLE_GRACE_INITIAL_MESSAGE]);
