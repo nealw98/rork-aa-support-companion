@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -7,27 +7,16 @@ import SunIcon from '@/components/SunIcon';
 import SobrietyCounter from '@/components/SobrietyCounter';
 import { formatDateDisplay } from '@/utils/dateUtils';
 import Colors from '@/constants/colors';
-import { getTodaysReflection } from '@/constants/reflections';
-import { Reflection } from '@/types';
+
 
 const HomeScreen = () => {
   const router = useRouter();
-  const [todaysReflection, setTodaysReflection] = useState<Reflection | null>(null);
+
 
   const today = new Date();
   const formattedDate = formatDateDisplay(today);
 
-  useEffect(() => {
-    const loadTodaysReflection = async () => {
-      try {
-        const reflection = await getTodaysReflection();
-        setTodaysReflection(reflection);
-      } catch (error) {
-        console.error('Error loading today\'s reflection:', error);
-      }
-    };
-    loadTodaysReflection();
-  }, []);
+
 
   return (
     <LinearGradient
@@ -55,10 +44,10 @@ const HomeScreen = () => {
         {/* Daily Reflection Button */}
         <TouchableOpacity 
           style={styles.dailyReflectionButton}
-          onPress={() => router.push('/reflection')}
+          onPress={() => router.push('/(tabs)/gratitude')}
         >
           <Text style={styles.reflectionButtonTitle}>
-            Daily Reflection{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
+            Daily Gratitude{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
           </Text>
         </TouchableOpacity>
 
@@ -73,25 +62,21 @@ const HomeScreen = () => {
         <Text style={styles.sectionTitle}>Morning Routine</Text>
         <Text style={styles.sectionSubtitle}>Start your day with intention and spiritual focus.</Text>
         
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/prayers?prayer=morning')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/prayers?prayer=morning')}>
           <Text style={styles.cardTitle}>Morning Prayer</Text>
           <Text style={styles.cardDescription}>Invite your higher power to help you through the day.</Text>
           <Text style={styles.cardButton}>Go to Morning Prayer</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/reflection')}>
-          <Text style={styles.cardTitle}>Daily Reflection & Meditation</Text>
-          <Text style={styles.cardDescription}>Read the daily message and meditate on it.</Text>
-          <Text style={styles.cardButton}>Go to Reflection</Text>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/gratitude')}>
+          <Text style={styles.cardTitle}>Daily Gratitude</Text>
+          <Text style={styles.cardDescription}>Start your day with gratitude and stay in the solution.</Text>
+          <Text style={styles.cardButton}>Go to Gratitude</Text>
         </TouchableOpacity>
 
         
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/gratitude')}>
-          <Text style={styles.cardTitle}>Gratitude List</Text>
-          <Text style={styles.cardDescription}>Start your day with gratitude and stay in the solution.</Text>
-          <Text style={styles.cardButton}>Go to Gratitude List</Text>
-        </TouchableOpacity>
+
       </View>
 
         {/* Throughout the Day Section */}
@@ -99,7 +84,7 @@ const HomeScreen = () => {
         <Text style={styles.sectionTitle}>Throughout the Day</Text>
         <Text style={styles.sectionSubtitle}>Stay connected and mindful during your daily activities.</Text>
         
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/chat')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/chat')}>
           <Text style={styles.cardTitle}>AI Sponsor</Text>
           <Text style={styles.cardDescription}>Talk with an AI sponsor voice when you need support.</Text>
           <Text style={styles.cardButton}>Go to Chat</Text>
@@ -107,7 +92,7 @@ const HomeScreen = () => {
 
 
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/literature')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/literature')}>
           <Text style={styles.cardTitle}>Literature</Text>
           <Text style={styles.cardDescription}>Read something out of the literature every day.</Text>
           <Text style={styles.cardButton}>Go to Literature</Text>
@@ -125,13 +110,13 @@ const HomeScreen = () => {
         <Text style={styles.sectionTitle}>Evening Routine</Text>
         <Text style={styles.sectionSubtitle}>Reflect and close your day with peace.</Text>
         
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/nightly-review')}>
-          <Text style={styles.cardTitle}>Nightly Review</Text>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/evening-review')}>
+          <Text style={styles.cardTitle}>Evening Review</Text>
           <Text style={styles.cardDescription}>Reflect on your day and practice Step 10.</Text>
-          <Text style={styles.cardButton}>Go to Nightly Review</Text>
+          <Text style={styles.cardButton}>Go to Evening Review</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card} onPress={() => router.push('/prayers?prayer=evening')}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/(tabs)/prayers?prayer=evening')}>
           <Text style={styles.cardTitle}>Evening Prayer</Text>
           <Text style={styles.cardDescription}>End your day with gratitude and humility.</Text>
           <Text style={styles.cardButton}>Go to Evening Prayer</Text>
