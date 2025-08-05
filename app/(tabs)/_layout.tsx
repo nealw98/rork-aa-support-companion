@@ -117,60 +117,7 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="bigbook"
-        options={{
-          href: null,
-          title: "Big Book",
-          headerTitle: "Big Book",
-          headerLeft: () => <BackButton />
-        }}
-      />
-      <Tabs.Screen
-        name="twelve-and-twelve"
-        options={{
-          href: null,
-          title: "Twelve and Twelve",
-          headerTitle: "Twelve and Twelve",
-          headerLeft: () => <BackButton />
-        }}
-      />
-      <Tabs.Screen
-        name="reflection"
-        options={{
-          href: null,
-          title: "Daily Reflection",
-          headerTitle: "Daily Reflection",
-          headerLeft: () => <BackButton />
-        }}
-      />
-      <Tabs.Screen
-        name="insights"
-        options={{
-          href: null,
-          title: "Insights",
-          headerTitle: "Insights",
-          headerLeft: () => <BackButton />
-        }}
-      />
-      <Tabs.Screen
-        name="inventory"
-        options={{
-          href: null,
-          title: "Inventory",
-          headerTitle: "Inventory",
-          headerLeft: () => <BackButton />
-        }}
-      />
-      <Tabs.Screen
-        name="nightly-review"
-        options={{
-          href: null,
-          title: "Nightly Review",
-          headerTitle: "Nightly Review",
-          headerLeft: () => <BackButton />
-        }}
-      />
+
 
     </Tabs>
   );
