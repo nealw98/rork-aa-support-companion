@@ -1,5 +1,5 @@
 import { Tabs, router } from "expo-router";
-import { Home, MessageCircle, Book, Heart, Smile, Moon } from "lucide-react-native";
+import { Home, MessageCircle, Book, Heart, Smile, Moon, ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { Text, View, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import SunIcon from "@/components/SunIcon";
@@ -28,19 +28,19 @@ const styles = StyleSheet.create({
   tabIcon: {
     ...(Platform.OS === 'android' ? { marginTop: 2 } : {})
   },
-  homeButton: {
+  backButton: {
     padding: 8,
-    marginRight: 4
+    marginLeft: 4
   }
 });
 
-const HomeButton = () => (
+const BackButton = () => (
   <TouchableOpacity 
-    style={styles.homeButton}
+    style={styles.backButton}
     onPress={() => router.push('/')}
-    testID="home-button"
+    testID="back-button"
   >
-    <Home color={Colors.light.tint} size={24} />
+    <ArrowLeft color={Colors.light.tint} size={24} />
   </TouchableOpacity>
 );
 
@@ -76,7 +76,7 @@ export default function TabLayout() {
         options={{
           title: "Gratitude",
           headerTitle: "Daily Gratitude",
-          headerRight: () => <HomeButton />,
+          headerLeft: () => <BackButton />,
           tabBarIcon: ({ color }) => <Smile color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -85,7 +85,7 @@ export default function TabLayout() {
         options={{
           title: "Review",
           headerTitle: "Evening Review",
-          headerRight: () => <HomeButton />,
+          headerLeft: () => <BackButton />,
           tabBarIcon: ({ color }) => <Moon color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -94,7 +94,7 @@ export default function TabLayout() {
         options={{
           title: "AI Sponsor",
           headerTitle: "AI Sponsor",
-          headerRight: () => <HomeButton />,
+          headerLeft: () => <BackButton />,
           tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -103,7 +103,7 @@ export default function TabLayout() {
         options={{
           title: "Prayers",
           headerTitle: "AA Prayers",
-          headerRight: () => <HomeButton />,
+          headerLeft: () => <BackButton />,
           tabBarIcon: ({ color }) => <Heart color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -112,7 +112,7 @@ export default function TabLayout() {
         options={{
           title: "Literature",
           headerTitle: "AA Literature",
-          headerRight: () => <HomeButton />,
+          headerLeft: () => <BackButton />,
           tabBarIcon: ({ color }) => <Book color={color} size={22} style={styles.tabIcon} />,
         }}
       />
@@ -123,7 +123,7 @@ export default function TabLayout() {
           href: null,
           title: "Big Book",
           headerTitle: "Big Book",
-          headerRight: () => <HomeButton />
+          headerLeft: () => <BackButton />
         }}
       />
       <Tabs.Screen
@@ -132,7 +132,7 @@ export default function TabLayout() {
           href: null,
           title: "Twelve and Twelve",
           headerTitle: "Twelve and Twelve",
-          headerRight: () => <HomeButton />
+          headerLeft: () => <BackButton />
         }}
       />
       <Tabs.Screen
@@ -141,7 +141,7 @@ export default function TabLayout() {
           href: null,
           title: "Daily Reflection",
           headerTitle: "Daily Reflection",
-          headerRight: () => <HomeButton />
+          headerLeft: () => <BackButton />
         }}
       />
       <Tabs.Screen
@@ -150,7 +150,7 @@ export default function TabLayout() {
           href: null,
           title: "Insights",
           headerTitle: "Insights",
-          headerRight: () => <HomeButton />
+          headerLeft: () => <BackButton />
         }}
       />
       <Tabs.Screen
@@ -159,7 +159,7 @@ export default function TabLayout() {
           href: null,
           title: "Inventory",
           headerTitle: "Inventory",
-          headerRight: () => <HomeButton />
+          headerLeft: () => <BackButton />
         }}
       />
       <Tabs.Screen
@@ -168,7 +168,7 @@ export default function TabLayout() {
           href: null,
           title: "Nightly Review",
           headerTitle: "Nightly Review",
-          headerRight: () => <HomeButton />
+          headerLeft: () => <BackButton />
         }}
       />
 
