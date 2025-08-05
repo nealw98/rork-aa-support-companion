@@ -37,9 +37,28 @@ export function formatLocalDate(date: Date): string {
 // Calculate days between two dates in local timezone
 export function calculateDaysBetween(startDateString: string, endDate: Date = new Date()): number {
   const startDate = parseLocalDate(startDateString);
-  const endDateLocal = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-  const diffTime = endDateLocal.getTime() - startDate.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Ensure we're working with local dates at midnight to avoid timezone issues
+  const today = new Date();
+  const endDateLocal = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const startDateLocal = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  
+  // Calculate the difference in milliseconds
+  const diffTime = endDateLocal.getTime() - startDateLocal.getTime();
+  
+  // Convert to days and ensure we get a whole number
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  console.log('calculateDaysBetween debug:', {
+    startDateString,
+    startDate: startDate.toISOString(),
+    startDateLocal: startDateLocal.toISOString(),
+    endDateLocal: endDateLocal.toISOString(),
+    diffTime,
+    diffDays,
+    platform: require('react-native').Platform.OS
+  });
+  
   return Math.max(0, diffDays);
 }
 
