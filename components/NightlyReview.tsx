@@ -76,7 +76,7 @@ export default function NightlyReview() {
       placeholder: 'Whom have you harmed?'
     },
     {
-      text: '5. Was I of service or kind to others today?',
+      text: '5. Was I kind and loving toward all?',
       flag: kindnessFlag,
       setFlag: setKindnessFlag,
       note: kindnessNote,
@@ -84,7 +84,7 @@ export default function NightlyReview() {
       placeholder: 'What did you do?'
     },
     {
-      text: '6. Was I spiritually connected today?',
+      text: '6. How was I spiritually connected today?',
       flag: spiritualFlag,
       setFlag: setSpiritualFlag,
       note: spiritualNote,
