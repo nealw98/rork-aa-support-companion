@@ -1,10 +1,127 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform, TextInput, Alert } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform, TextInput, Alert, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar, X, Edit3 } from 'lucide-react-native';
 import { useSobriety } from '@/hooks/useSobrietyStore';
 import { formatStoredDateForDisplay, parseLocalDate, formatLocalDate } from '@/lib/dateUtils';
 import Colors from '@/constants/colors';
+
+// Custom iOS Date Picker Component
+const CustomIOSDatePicker = ({ 
+  selectedDate, 
+  onDateChange, 
+  maximumDate 
+}: { 
+  selectedDate: Date; 
+  onDateChange: (date: Date) => void; 
+  maximumDate: Date; 
+}) => {
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  const currentYear = maximumDate.getFullYear();
+  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+  
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+  
+  const selectedMonth = selectedDate.getMonth();
+  const selectedDay = selectedDate.getDate();
+  const selectedYear = selectedDate.getFullYear();
+  
+  const daysInSelectedMonth = getDaysInMonth(selectedMonth, selectedYear);
+  const days = Array.from({ length: daysInSelectedMonth }, (_, i) => i + 1);
+  
+  const handleDateComponentChange = (component: 'month' | 'day' | 'year', value: number) => {
+    let newMonth = selectedMonth;
+    let newDay = selectedDay;
+    let newYear = selectedYear;
+    
+    if (component === 'month') {
+      newMonth = value;
+    } else if (component === 'day') {
+      newDay = value;
+    } else if (component === 'year') {
+      newYear = value;
+    }
+    
+    // Adjust day if it's invalid for the new month/year
+    const maxDaysInNewMonth = getDaysInMonth(newMonth, newYear);
+    if (newDay > maxDaysInNewMonth) {
+      newDay = maxDaysInNewMonth;
+    }
+    
+    const newDate = new Date(newYear, newMonth, newDay);
+    onDateChange(newDate);
+  };
+  
+  const renderScrollableColumn = (
+    items: (string | number)[], 
+    selectedValue: string | number, 
+    onSelect: (value: any) => void,
+    keyPrefix: string
+  ) => {
+    return (
+      <View style={styles.dateColumn}>
+        <ScrollView 
+          style={styles.dateScrollView}
+          showsVerticalScrollIndicator={false}
+          snapToInterval={40}
+          decelerationRate="fast"
+        >
+          {items.map((item, index) => {
+            const isSelected = item === selectedValue;
+            return (
+              <TouchableOpacity
+                key={`${keyPrefix}-${index}`}
+                style={[
+                  styles.dateItem,
+                  isSelected && styles.selectedDateItem
+                ]}
+                onPress={() => onSelect(typeof item === 'string' ? index : item)}
+              >
+                <Text style={[
+                  styles.dateItemText,
+                  isSelected && styles.selectedDateItemText
+                ]}>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+    );
+  };
+  
+  return (
+    <View style={styles.customDatePicker}>
+      <View style={styles.datePickerColumns}>
+        {renderScrollableColumn(
+          months, 
+          months[selectedMonth], 
+          (monthIndex: number) => handleDateComponentChange('month', monthIndex),
+          'month'
+        )}
+        {renderScrollableColumn(
+          days, 
+          selectedDay, 
+          (day: number) => handleDateComponentChange('day', day),
+          'day'
+        )}
+        {renderScrollableColumn(
+          years, 
+          selectedYear, 
+          (year: number) => handleDateComponentChange('year', year),
+          'year'
+        )}
+      </View>
+    </View>
+  );
+};
 
 const SobrietyCounter = () => {
   const { 
@@ -253,14 +370,10 @@ const SobrietyCounter = () => {
                   </View>
                 ) : (
                   <View style={styles.iosDatePickerContainer}>
-                    <DateTimePicker
-                      value={selectedDate}
-                      mode="date"
-                      display="compact"
-                      onChange={onDateChange}
+                    <CustomIOSDatePicker
+                      selectedDate={selectedDate}
+                      onDateChange={setSelectedDate}
                       maximumDate={new Date()}
-                      style={styles.iosDatePicker}
-                      themeVariant="light"
                     />
                   </View>
                 )}
@@ -361,14 +474,10 @@ const SobrietyCounter = () => {
                   </View>
                 ) : (
                   <View style={styles.iosDatePickerContainer}>
-                    <DateTimePicker
-                      value={selectedDate}
-                      mode="date"
-                      display="compact"
-                      onChange={onDateChange}
+                    <CustomIOSDatePicker
+                      selectedDate={selectedDate}
+                      onDateChange={setSelectedDate}
                       maximumDate={new Date()}
-                      style={styles.iosDatePicker}
-                      themeVariant="light"
                     />
                   </View>
                 )}
@@ -472,16 +581,10 @@ const SobrietyCounter = () => {
                   </View>
                 ) : (
                   <View style={styles.iosDatePickerContainer}>
-                    <DateTimePicker
-                      value={selectedDate}
-                      mode="date"
-                      display="compact"
-                      onChange={(event, date) => {
-                        if (date) setSelectedDate(date);
-                      }}
+                    <CustomIOSDatePicker
+                      selectedDate={selectedDate}
+                      onDateChange={setSelectedDate}
                       maximumDate={new Date()}
-                      style={styles.iosDatePicker}
-                      themeVariant="light"
                     />
                   </View>
                 )}
@@ -765,6 +868,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     textDecorationLine: 'underline',
+  },
+  
+  // Custom date picker styles
+  customDatePicker: {
+    width: '100%',
+    height: 200,
+  },
+  datePickerColumns: {
+    flexDirection: 'row',
+    height: '100%',
+  },
+  dateColumn: {
+    flex: 1,
+    height: '100%',
+  },
+  dateScrollView: {
+    flex: 1,
+  },
+  dateItem: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  selectedDateItem: {
+    backgroundColor: Colors.light.tint,
+    borderRadius: 8,
+    marginHorizontal: 4,
+  },
+  dateItemText: {
+    fontSize: 16,
+    color: Colors.light.muted,
+    textAlign: 'center',
+  },
+  selectedDateItemText: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
 
