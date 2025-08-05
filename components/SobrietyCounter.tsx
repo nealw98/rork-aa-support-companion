@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Modal, Platform, TextInput, A
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar, X, Edit3 } from 'lucide-react-native';
 import { useSobriety } from '@/hooks/useSobrietyStore';
+import { formatStoredDateForDisplay, parseLocalDate, formatLocalDate } from '@/lib/dateUtils';
 import Colors from '@/constants/colors';
 
 const SobrietyCounter = () => {
@@ -84,7 +85,7 @@ const SobrietyCounter = () => {
       const [month, day, year] = webDateString.split('/').map(Number);
       dateString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     } else {
-      dateString = selectedDate.toISOString().split('T')[0];
+      dateString = formatLocalDate(selectedDate);
     }
     setSobrietyDate(dateString);
     setShowDatePicker(false);
@@ -100,7 +101,7 @@ const SobrietyCounter = () => {
       setShowDatePicker(false);
       if (event.type === 'set' && date) {
         // Directly save the date on Android
-        const dateString = date.toISOString().split('T')[0];
+        const dateString = formatLocalDate(date);
         setSobrietyDate(dateString);
       } else if (event.type === 'dismissed') {
         // User cancelled - do nothing, modal will close automatically
@@ -123,7 +124,7 @@ const SobrietyCounter = () => {
   const handleEditDate = () => {
     // Reset the date picker state
     if (sobrietyDate) {
-      const currentDate = new Date(sobrietyDate);
+      const currentDate = parseLocalDate(sobrietyDate);
       setSelectedDate(currentDate);
       // Format current date for web input
       const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
@@ -155,7 +156,7 @@ const SobrietyCounter = () => {
       const [month, day, year] = webDateString.split('/').map(Number);
       dateString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     } else {
-      dateString = selectedDate.toISOString().split('T')[0];
+      dateString = formatLocalDate(selectedDate);
     }
     setSobrietyDate(dateString);
     setShowEditModal(false);
@@ -415,11 +416,7 @@ const SobrietyCounter = () => {
           </Text>
           <View style={styles.dateRow}>
             <Text style={styles.sobrietyDateText}>
-              Since {new Date(sobrietyDate).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
+              Since {formatStoredDateForDisplay(sobrietyDate)}
             </Text>
             <TouchableOpacity 
               style={styles.editButton}

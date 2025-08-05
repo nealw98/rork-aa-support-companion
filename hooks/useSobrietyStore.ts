@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createContextHook from '@nkzw/create-context-hook';
+import { calculateDaysBetween } from '@/lib/dateUtils';
 
 interface SobrietyData {
   sobrietyDate: string | null;
@@ -60,13 +61,7 @@ export const [SobrietyProvider, useSobriety] = createContextHook(() => {
 
   const calculateDaysSober = (): number => {
     if (!sobrietyDate) return 0;
-    
-    const today = new Date();
-    const soberDate = new Date(sobrietyDate);
-    const diffTime = today.getTime() - soberDate.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    return Math.max(0, diffDays);
+    return calculateDaysBetween(sobrietyDate);
   };
 
   const shouldShowPrompt = (): boolean => {

@@ -18,3 +18,37 @@ export function formatDateDisplay(date: Date): string {
   };
   return date.toLocaleDateString(undefined, options);
 }
+
+// Parse a YYYY-MM-DD date string as local time (not UTC)
+export function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  // Create date in local timezone (month is 0-indexed)
+  return new Date(year, month - 1, day);
+}
+
+// Format a date as YYYY-MM-DD in local timezone
+export function formatLocalDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Calculate days between two dates in local timezone
+export function calculateDaysBetween(startDateString: string, endDate: Date = new Date()): number {
+  const startDate = parseLocalDate(startDateString);
+  const endDateLocal = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+  const diffTime = endDateLocal.getTime() - startDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+}
+
+// Format a YYYY-MM-DD date string for display in local timezone
+export function formatStoredDateForDisplay(dateString: string): string {
+  const date = parseLocalDate(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
