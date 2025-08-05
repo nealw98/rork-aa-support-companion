@@ -76,7 +76,7 @@ export default function NightlyReview() {
       placeholder: 'Whom have you harmed?'
     },
     {
-      text: '5. Was I of service or kind to others today?',
+      text: '5. Was I kind and loving toward all?',
       flag: kindnessFlag,
       setFlag: setKindnessFlag,
       note: kindnessNote,
