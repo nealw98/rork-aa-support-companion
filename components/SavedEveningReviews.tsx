@@ -45,6 +45,27 @@ export default function SavedEveningReviews({ visible, onClose, onEditReview }: 
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
   const [showEntryModal, setShowEntryModal] = useState(false);
 
+  // Debug logging
+  console.log('SavedEveningReviews - Total saved entries:', savedEntries.length);
+  console.log('SavedEveningReviews - Entries:', savedEntries.map(e => ({ date: e.date, timestamp: e.timestamp })));
+  
+  // Check for today's entry specifically
+  const getTodayDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
+  const todayString = getTodayDateString();
+  const todayEntry = savedEntries.find(entry => entry.date === todayString);
+  console.log('SavedEveningReviews - Today\'s date string:', todayString);
+  console.log('SavedEveningReviews - Today\'s entry exists:', !!todayEntry);
+  if (todayEntry) {
+    console.log('SavedEveningReviews - Today\'s entry:', { date: todayEntry.date, timestamp: todayEntry.timestamp });
+  }
+
   const handleEntryPress = (entry: any) => {
     setSelectedEntry(entry);
     setShowEntryModal(true);
@@ -244,6 +265,14 @@ export default function SavedEveningReviews({ visible, onClose, onEditReview }: 
       </Modal>
     );
   };
+
+  // Log when modal becomes visible
+  React.useEffect(() => {
+    if (visible) {
+      console.log('SavedEveningReviews modal opened - Current entries:', savedEntries.length);
+      console.log('SavedEveningReviews modal opened - Entry dates:', savedEntries.map(e => e.date));
+    }
+  }, [visible, savedEntries]);
 
   return (
     <>

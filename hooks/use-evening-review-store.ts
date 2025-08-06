@@ -196,6 +196,9 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
   const saveDetailedEntry = (detailedEntry: DetailedEveningEntry, dateString?: string) => {
     const targetDate = dateString || getTodayDateString();
     
+    console.log('saveDetailedEntry - Saving entry for date:', targetDate);
+    console.log('saveDetailedEntry - Current saved entries count:', savedEntries.length);
+    
     // Remove existing entry for this date if it exists
     const filteredEntries = savedEntries.filter(entry => entry.date !== targetDate);
     
@@ -206,10 +209,15 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
       data: detailedEntry
     };
     
+    console.log('saveDetailedEntry - New entry:', { date: newEntry.date, timestamp: newEntry.timestamp });
+    
     // Keep only the most recent MAX_SAVED_ENTRIES entries
     const updatedEntries = [newEntry, ...filteredEntries]
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, MAX_SAVED_ENTRIES);
+    
+    console.log('saveDetailedEntry - Updated entries count:', updatedEntries.length);
+    console.log('saveDetailedEntry - Updated entries dates:', updatedEntries.map(e => e.date));
     
     saveSavedEntries(updatedEntries);
     
