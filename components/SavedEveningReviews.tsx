@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
   Modal,
   Alert,
   Platform,
@@ -66,6 +67,8 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
   }
 
   const handleEntryPress = (entry: any) => {
+    console.log('handleEntryPress called for entry:', entry.date);
+    console.log('Platform:', Platform.OS);
     setSelectedEntry(entry);
     setShowEntryModal(true);
   };
@@ -207,7 +210,7 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
       <Modal
         visible={showEntryModal}
         animationType="slide"
-        presentationStyle="pageSheet"
+        presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
@@ -295,7 +298,7 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
       <Modal
         visible={visible}
         animationType="slide"
-        presentationStyle="pageSheet"
+        presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
       >
         <View style={styles.container}>
           <View style={styles.header}>
@@ -318,10 +321,16 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
             ) : (
               <View style={styles.entriesList}>
                 {savedEntries.map((entry) => (
-                  <TouchableOpacity
+                  <Pressable
                     key={entry.date}
-                    style={styles.entryCard}
-                    onPress={() => handleEntryPress(entry)}
+                    style={({ pressed }) => [
+                      styles.entryCard,
+                      pressed && styles.entryCardPressed
+                    ]}
+                    onPress={() => {
+                      console.log('Pressable onPress triggered for:', entry.date);
+                      handleEntryPress(entry);
+                    }}
                   >
                     <View style={styles.entryHeader}>
                       <View>
@@ -350,7 +359,7 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
                         Tap to view full review
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </Pressable>
                 ))}
               </View>
             )}
@@ -425,6 +434,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+  },
+  entryCardPressed: {
+    backgroundColor: '#f8f9fa',
+    transform: [{ scale: 0.98 }],
   },
   entryHeader: {
     flexDirection: 'row',
