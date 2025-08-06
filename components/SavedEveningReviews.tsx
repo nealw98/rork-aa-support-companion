@@ -69,11 +69,16 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
   const handleEntryPress = (entry: any) => {
     console.log('handleEntryPress called for entry:', entry.date);
     console.log('Platform:', Platform.OS);
+    console.log('Touch event registered successfully');
     setSelectedEntry(entry);
     setShowEntryModal(true);
   };
 
-  const handleDeleteEntry = (dateString: string) => {
+  const handleDeleteEntry = (dateString: string, event?: any) => {
+    console.log('handleDeleteEntry called for:', dateString);
+    if (event) {
+      event.stopPropagation();
+    }
     Alert.alert(
       'Delete Entry',
       'Are you sure you want to delete this evening review entry?',
@@ -82,7 +87,10 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => deleteSavedEntry(dateString)
+          onPress: () => {
+            console.log('Deleting entry:', dateString);
+            deleteSavedEntry(dateString);
+          }
         }
       ]
     );
@@ -321,45 +329,51 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
             ) : (
               <View style={styles.entriesList}>
                 {savedEntries.map((entry) => (
-                  <Pressable
-                    key={entry.date}
-                    style={({ pressed }) => [
-                      styles.entryCard,
-                      pressed && styles.entryCardPressed
-                    ]}
-                    onPress={() => {
-                      console.log('Pressable onPress triggered for:', entry.date);
-                      handleEntryPress(entry);
-                    }}
-                  >
-                    <View style={styles.entryHeader}>
-                      <View>
-                        <Text style={styles.entryDateText}>
-                          {formatDateShort(entry.date)}
-                        </Text>
-                        <Text style={styles.entryFullDate}>
-                          {formatDateDisplay(entry.date)}
+                  <View key={entry.date} style={styles.entryCard}>
+                    <Pressable
+                      style={({ pressed }) => [
+                        styles.entryPressable,
+                        pressed && styles.entryCardPressed
+                      ]}
+                      onPress={() => {
+                        console.log('Pressable onPress triggered for:', entry.date);
+                        console.log('iOS touch event firing');
+                        handleEntryPress(entry);
+                      }}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      android_ripple={{ color: '#f0f0f0' }}
+                    >
+                      <View style={styles.entryHeader}>
+                        <View style={styles.entryDateContainer}>
+                          <Text style={styles.entryDateText}>
+                            {formatDateShort(entry.date)}
+                          </Text>
+                          <Text style={styles.entryFullDate}>
+                            {formatDateDisplay(entry.date)}
+                          </Text>
+                        </View>
+                      </View>
+                      
+                      <View style={styles.entryPreview}>
+                        <Text style={styles.previewText}>
+                          Tap to view full review
                         </Text>
                       </View>
-                      <View style={styles.entryActions}>
-                        <TouchableOpacity
-                          style={styles.actionButton}
-                          onPress={(e) => {
-                            e.stopPropagation();
-                            handleDeleteEntry(entry.date);
-                          }}
-                        >
-                          <Trash2 color={Colors.light.muted} size={18} />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
+                    </Pressable>
                     
-                    <View style={styles.entryPreview}>
-                      <Text style={styles.previewText}>
-                        Tap to view full review
-                      </Text>
-                    </View>
-                  </Pressable>
+                    {/* Delete button positioned absolutely to avoid touch conflicts */}
+                    <Pressable
+                      style={styles.deleteButtonContainer}
+                      onPress={(e) => {
+                        console.log('Delete button pressed for:', entry.date);
+                        handleDeleteEntry(entry.date, e);
+                      }}
+                      hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                      android_ripple={{ color: '#f0f0f0', radius: 20 }}
+                    >
+                      <Trash2 color={Colors.light.muted} size={18} />
+                    </Pressable>
+                  </View>
                 ))}
               </View>
             )}
@@ -425,7 +439,6 @@ const styles = StyleSheet.create({
   entryCard: {
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 16,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: Colors.light.border,
@@ -434,16 +447,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+    position: 'relative',
+  },
+  entryPressable: {
+    padding: 16,
+    paddingRight: 50, // Make room for delete button
+    borderRadius: 12,
   },
   entryCardPressed: {
     backgroundColor: '#f8f9fa',
     transform: [{ scale: 0.98 }],
   },
   entryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
     marginBottom: 8,
+  },
+  entryDateContainer: {
+    flex: 1,
   },
   entryDateText: {
     fontSize: 18,
@@ -455,12 +474,14 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     marginTop: 2,
   },
-  entryActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    padding: 4,
+  deleteButtonContainer: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    zIndex: 10,
   },
   entryPreview: {
     marginTop: 8,
