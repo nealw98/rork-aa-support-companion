@@ -226,22 +226,35 @@ const styles = StyleSheet.create({
 });
 
 export default function GratitudeListScreen() {
-  const gratitudeStore = useGratitudeStore();
-  const {
-    getTodaysItems,
-    addItemsToToday,
-    saveGratitudeEntry
-  } = gratitudeStore;
-  
   const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [showSavedLists, setShowSavedLists] = useState(false);
   const inputRef = useRef<TextInput>(null);
   
+  const gratitudeStore = useGratitudeStore();
+  console.log('GratitudeListScreen - store:', gratitudeStore);
+  
   useEffect(() => {
-    const todaysItems = getTodaysItems();
-    setGratitudeItems(todaysItems);
-  }, [getTodaysItems]);
+    if (gratitudeStore?.getTodaysItems) {
+      const todaysItems = gratitudeStore.getTodaysItems();
+      setGratitudeItems(todaysItems);
+    }
+  }, [gratitudeStore]);
+  
+  if (!gratitudeStore) {
+    console.error('GratitudeStore is undefined!');
+    return (
+      <ScreenContainer>
+        <Text>Loading...</Text>
+      </ScreenContainer>
+    );
+  }
+  
+  const {
+    getTodaysItems,
+    addItemsToToday,
+    saveGratitudeEntry
+  } = gratitudeStore;
 
   const handleAddGratitude = () => {
     if (inputValue.trim()) {
@@ -254,6 +267,8 @@ export default function GratitudeListScreen() {
   };
 
   const handleSaveEntry = () => {
+    console.log('Save button pressed, items:', gratitudeItems.length);
+    
     if (gratitudeItems.length === 0) {
       Alert.alert(
         'Save Gratitude List',
@@ -269,7 +284,14 @@ export default function GratitudeListScreen() {
       'List Saved',
       'Your gratitude list has been saved successfully.',
       [
-        { text: 'OK', onPress: () => setShowSavedLists(true) }
+        { 
+          text: 'View Saved Lists', 
+          onPress: () => {
+            console.log('Opening saved lists');
+            setShowSavedLists(true);
+          }
+        },
+        { text: 'OK' }
       ]
     );
   };

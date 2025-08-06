@@ -21,6 +21,8 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
   const [entries, setEntries] = useState<GratitudeEntry[]>([]);
   const [savedEntries, setSavedEntries] = useState<SavedGratitudeEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  console.log('GratitudeStore initialized');
 
   useEffect(() => {
     loadEntries();
