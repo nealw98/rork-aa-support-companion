@@ -44,10 +44,10 @@ const HomeScreen = () => {
         {/* Daily Reflection Button */}
         <TouchableOpacity 
           style={styles.dailyReflectionButton}
-          onPress={() => router.push('/(tabs)/gratitude')}
+          onPress={() => router.push('/(tabs)/daily-reflections')}
         >
           <Text style={styles.reflectionButtonTitle}>
-            Daily Gratitude{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
+            Daily Reflection{"\n"}for {formattedDate.replace(/^\w+, /, '').replace(/, \d{4}$/, '')}
           </Text>
         </TouchableOpacity>
 
