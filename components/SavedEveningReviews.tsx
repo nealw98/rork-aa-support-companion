@@ -329,51 +329,36 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
             ) : (
               <View style={styles.entriesList}>
                 {savedEntries.map((entry) => (
-                  <View key={entry.date} style={styles.entryCard}>
-                    <Pressable
-                      style={({ pressed }) => [
-                        styles.entryPressable,
-                        pressed && styles.entryCardPressed
-                      ]}
-                      onPress={() => {
-                        console.log('Pressable onPress triggered for:', entry.date);
-                        console.log('iOS touch event firing');
-                        handleEntryPress(entry);
-                      }}
-                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                      android_ripple={{ color: '#f0f0f0' }}
-                    >
-                      <View style={styles.entryHeader}>
-                        <View style={styles.entryDateContainer}>
-                          <Text style={styles.entryDateText}>
-                            {formatDateShort(entry.date)}
-                          </Text>
-                          <Text style={styles.entryFullDate}>
-                            {formatDateDisplay(entry.date)}
-                          </Text>
-                        </View>
-                      </View>
-                      
-                      <View style={styles.entryPreview}>
-                        <Text style={styles.previewText}>
-                          Tap to view full review
+                  <Pressable
+                    key={entry.date}
+                    style={({ pressed }) => [
+                      styles.entryCard,
+                      pressed && styles.entryCardPressed
+                    ]}
+                    onPress={() => {
+                      console.log('Entry pressed:', entry.date);
+                      console.log('Platform:', Platform.OS);
+                      handleEntryPress(entry);
+                    }}
+                    android_ripple={{ color: '#f0f0f0' }}
+                  >
+                    <View style={styles.entryHeader}>
+                      <View style={styles.entryDateContainer}>
+                        <Text style={styles.entryDateText}>
+                          {formatDateShort(entry.date)}
+                        </Text>
+                        <Text style={styles.entryFullDate}>
+                          {formatDateDisplay(entry.date)}
                         </Text>
                       </View>
-                    </Pressable>
+                    </View>
                     
-                    {/* Delete button positioned absolutely to avoid touch conflicts */}
-                    <Pressable
-                      style={styles.deleteButtonContainer}
-                      onPress={(e) => {
-                        console.log('Delete button pressed for:', entry.date);
-                        handleDeleteEntry(entry.date, e);
-                      }}
-                      hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-                      android_ripple={{ color: '#f0f0f0', radius: 20 }}
-                    >
-                      <Trash2 color={Colors.light.muted} size={18} />
-                    </Pressable>
-                  </View>
+                    <View style={styles.entryPreview}>
+                      <Text style={styles.previewText}>
+                        Tap to view full review
+                      </Text>
+                    </View>
+                  </Pressable>
                 ))}
               </View>
             )}
@@ -447,12 +432,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
-    position: 'relative',
-  },
-  entryPressable: {
     padding: 16,
-    paddingRight: 50, // Make room for delete button
-    borderRadius: 12,
   },
   entryCardPressed: {
     backgroundColor: '#f8f9fa',
@@ -474,15 +454,7 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     marginTop: 2,
   },
-  deleteButtonContainer: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    zIndex: 10,
-  },
+
   entryPreview: {
     marginTop: 8,
   },
