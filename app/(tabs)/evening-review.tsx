@@ -860,15 +860,16 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
   },
   shareButton: {
+    flex: 1,
     backgroundColor: Colors.light.tint,
-    paddingVertical: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 25,
     alignItems: 'center',
-    marginHorizontal: 32,
-    marginBottom: 16,
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 8,
+    minHeight: 48,
   },
   shareButtonDisabled: {
     backgroundColor: Colors.light.muted,
@@ -891,12 +892,14 @@ const styles = StyleSheet.create({
   saveButton: {
     flex: 1,
     backgroundColor: '#28a745',
-    paddingVertical: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 25,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 8,
+    minHeight: 48,
   },
   saveButtonDisabled: {
     backgroundColor: Colors.light.muted,
@@ -920,6 +923,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 32,
     marginBottom: 16,
     gap: 8,
+    minHeight: 48,
   },
   secondaryButtonText: {
     color: Colors.light.tint,
