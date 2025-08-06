@@ -70,7 +70,7 @@ export default function EveningReview() {
     );
   }
   
-  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveDetailedEntry } = eveningReviewStore;
+  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveDetailedEntry, getSavedEntry } = eveningReviewStore;
   
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -177,15 +177,21 @@ export default function EveningReview() {
   };
 
   const handleEditReview = () => {
+    console.log('Edit Review button pressed');
     // Try to load today's saved entry for editing
     const todayString = getTodayDateString();
     const savedEntry = eveningReviewStore.getSavedEntry(todayString);
     
+    console.log('Today string:', todayString);
+    console.log('Saved entry found:', savedEntry);
+    
     if (savedEntry) {
       // Load the saved data into the form
+      console.log('Loading saved entry data into form');
       handleEditEntry(savedEntry);
     } else {
       // No saved entry, start fresh
+      console.log('No saved entry found, starting fresh');
       handleStartNew();
     }
     
@@ -421,7 +427,10 @@ export default function EveningReview() {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.secondaryButton} 
-              onPress={() => setShowSavedReviews(true)}
+              onPress={() => {
+                console.log('View Saved Reviews button pressed');
+                setShowSavedReviews(true);
+              }}
             >
               <Archive size={20} color={Colors.light.tint} />
               <Text style={styles.secondaryButtonText}>View Saved Reviews</Text>
@@ -553,7 +562,10 @@ export default function EveningReview() {
         {/* View Saved Reviews Button */}
         <TouchableOpacity 
           style={styles.secondaryButton} 
-          onPress={() => setShowSavedReviews(true)}
+          onPress={() => {
+            console.log('View Saved Reviews button pressed (form view)');
+            setShowSavedReviews(true);
+          }}
         >
           <Archive size={20} color={Colors.light.tint} />
           <Text style={styles.secondaryButtonText}>View Saved Reviews</Text>
