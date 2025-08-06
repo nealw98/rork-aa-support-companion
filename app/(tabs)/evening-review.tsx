@@ -108,21 +108,21 @@ export default function EveningReview() {
       placeholder: 'What did you do?'
     },
     {
-      text: '6. How was my spiritual condition today?',
+      text: '6. Did I pray or meditate today?',
+      flag: prayerMeditationFlag,
+      setFlag: setPrayerMeditationFlag,
+      note: '',
+      setNote: () => {},
+      placeholder: ''
+    },
+    {
+      text: '7. How was my spiritual condition today?',
       flag: spiritualFlag,
       setFlag: setSpiritualFlag,
       note: spiritualNote,
       setNote: setSpiritualNote,
       placeholder: 'Were you on or off the beam?',
       inputOnly: true
-    },
-    {
-      text: '7. Did I pray or meditate today?',
-      flag: prayerMeditationFlag,
-      setFlag: setPrayerMeditationFlag,
-      note: '',
-      setNote: () => {},
-      placeholder: ''
     }
   ];
 
@@ -184,12 +184,12 @@ export default function EveningReview() {
       const answer = kindnessFlag === 'yes' ? 'Yes' : 'No';
       answeredQuestions.push(`5. Was I of service or kind to others today? ${answer}${kindnessFlag === 'yes' && kindnessNote ? ` - ${kindnessNote}` : ''}`);
     }
-    if (spiritualNote) {
-      answeredQuestions.push(`6. How was my spiritual condition today? ${spiritualNote}`);
-    }
     if (prayerMeditationFlag) {
       const answer = prayerMeditationFlag === 'yes' ? 'Yes' : 'No';
-      answeredQuestions.push(`7. Did I pray or meditate today? ${answer}`);
+      answeredQuestions.push(`6. Did I pray or meditate today? ${answer}`);
+    }
+    if (spiritualNote) {
+      answeredQuestions.push(`7. How was my spiritual condition today? ${spiritualNote}`);
     }
 
     let shareMessage = `${today}\n\nEvening Review\n\n`;
