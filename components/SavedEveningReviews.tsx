@@ -11,7 +11,7 @@ import {
   Share
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { Calendar, Share as ShareIcon, Trash2, X } from 'lucide-react-native';
+import { Calendar, Share as ShareIcon, Trash2, X, Edit3 } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -19,6 +19,7 @@ import { adjustFontWeight } from '@/constants/fonts';
 interface SavedEveningReviewsProps {
   visible: boolean;
   onClose: () => void;
+  onEditReview?: (entry: any) => void;
 }
 
 const formatDateDisplay = (dateString: string): string => {
@@ -39,7 +40,7 @@ const formatDateShort = (dateString: string): string => {
   });
 };
 
-export default function SavedEveningReviews({ visible, onClose }: SavedEveningReviewsProps) {
+export default function SavedEveningReviews({ visible, onClose, onEditReview }: SavedEveningReviewsProps) {
   const { savedEntries, deleteSavedEntry } = useEveningReviewStore();
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
   const [showEntryModal, setShowEntryModal] = useState(false);
@@ -286,12 +287,25 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
                           {formatDateDisplay(entry.date)}
                         </Text>
                       </View>
-                      <TouchableOpacity
-                        style={styles.deleteButton}
-                        onPress={() => handleDeleteEntry(entry.date)}
-                      >
-                        <Trash2 color={Colors.light.muted} size={20} />
-                      </TouchableOpacity>
+                      <View style={styles.entryActions}>
+                        {onEditReview && (
+                          <TouchableOpacity
+                            style={styles.actionButton}
+                            onPress={() => {
+                              onEditReview(entry);
+                              onClose();
+                            }}
+                          >
+                            <Edit3 color={Colors.light.tint} size={18} />
+                          </TouchableOpacity>
+                        )}
+                        <TouchableOpacity
+                          style={styles.actionButton}
+                          onPress={() => handleDeleteEntry(entry.date)}
+                        >
+                          <Trash2 color={Colors.light.muted} size={18} />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                     
                     <View style={styles.entryPreview}>
@@ -391,7 +405,11 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     marginTop: 2,
   },
-  deleteButton: {
+  entryActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionButton: {
     padding: 4,
   },
   entryPreview: {

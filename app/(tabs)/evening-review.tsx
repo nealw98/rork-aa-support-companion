@@ -61,7 +61,15 @@ export default function EveningReview() {
     );
   }
   
-  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveDetailedEntry } = eveningReviewStore;
+  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveDetailedEntry, getSavedEntry } = eveningReviewStore;
+  
+  const getTodayDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
   
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -147,9 +155,59 @@ export default function EveningReview() {
     setShowConfirmation(false);
   };
 
-  const handleUnsubmit = () => {
+  const handleEditReview = () => {
+    // Load saved data back into form if it exists
+    const todayString = getTodayDateString();
+    const savedEntry = eveningReviewStore.getSavedEntry(todayString);
+    
+    if (savedEntry) {
+      const data = savedEntry.data;
+      setResentfulFlag(data.resentfulFlag);
+      setResentfulNote(data.resentfulNote);
+      setSelfishFlag(data.selfishFlag);
+      setSelfishNote(data.selfishNote);
+      setFearfulFlag(data.fearfulFlag);
+      setFearfulNote(data.fearfulNote);
+      setApologyFlag(data.apologyFlag);
+      setApologyName(data.apologyName);
+      setKindnessFlag(data.kindnessFlag);
+      setKindnessNote(data.kindnessNote);
+      setSpiritualFlag(data.spiritualFlag);
+      setSpiritualNote(data.spiritualNote);
+      setPrayerMeditationFlag(data.prayerMeditationFlag);
+    }
+    
+    // Uncomplete today to show the form
     uncompleteToday();
-    handleStartNew();
+    setShowConfirmation(false);
+  };
+  
+  const handleEditSavedReview = (entry: any) => {
+    // Load the selected entry data into the form
+    const data = entry.data;
+    setResentfulFlag(data.resentfulFlag);
+    setResentfulNote(data.resentfulNote);
+    setSelfishFlag(data.selfishFlag);
+    setSelfishNote(data.selfishNote);
+    setFearfulFlag(data.fearfulFlag);
+    setFearfulNote(data.fearfulNote);
+    setApologyFlag(data.apologyFlag);
+    setApologyName(data.apologyName);
+    setKindnessFlag(data.kindnessFlag);
+    setKindnessNote(data.kindnessNote);
+    setSpiritualFlag(data.spiritualFlag);
+    setSpiritualNote(data.spiritualNote);
+    setPrayerMeditationFlag(data.prayerMeditationFlag);
+    
+    // If editing today's entry, uncomplete it to show the form
+    const todayString = getTodayDateString();
+    if (entry.date === todayString) {
+      uncompleteToday();
+      setShowConfirmation(false);
+    }
+    
+    // Close the saved reviews modal
+    setShowSavedReviews(false);
   };
 
   const handleShare = async () => {
@@ -270,6 +328,7 @@ export default function EveningReview() {
       prayerMeditationFlag
     };
 
+    // Save for today's date
     saveDetailedEntry(detailedEntry);
     
     Alert.alert(
@@ -371,7 +430,7 @@ export default function EveningReview() {
 
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.outlineButton} onPress={handleUnsubmit}>
+            <TouchableOpacity style={styles.outlineButton} onPress={handleEditReview}>
               <Text style={styles.outlineButtonText}>Edit Review</Text>
             </TouchableOpacity>
             <TouchableOpacity 
@@ -515,6 +574,7 @@ export default function EveningReview() {
       <SavedEveningReviews 
         visible={showSavedReviews}
         onClose={() => setShowSavedReviews(false)}
+        onEditReview={handleEditSavedReview}
       />
     </ScreenContainer>
   );
