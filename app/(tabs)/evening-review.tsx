@@ -109,12 +109,13 @@ export default function EveningReview() {
       placeholder: 'What did you do?'
     },
     {
-      text: '6. How was my spiritual connection today?',
+      text: '6. How was my spiritual condition today?',
       flag: spiritualFlag,
       setFlag: setSpiritualFlag,
       note: spiritualNote,
       setNote: setSpiritualNote,
-      placeholder: 'How so?'
+      placeholder: 'Were you on or off the beam?',
+      inputOnly: true
     },
     {
       text: '7. Did I talk to someone in recovery today?',
@@ -193,9 +194,8 @@ export default function EveningReview() {
       const answer = kindnessFlag === 'yes' ? 'Yes' : 'No';
       answeredQuestions.push(`5. Was I of service or kind to others today? ${answer}${kindnessFlag === 'yes' && kindnessNote ? ` - ${kindnessNote}` : ''}`);
     }
-    if (spiritualFlag) {
-      const answer = spiritualFlag === 'yes' ? 'Yes' : 'No';
-      answeredQuestions.push(`6. Was I spiritually connected today? ${answer}${spiritualFlag === 'yes' && spiritualNote ? ` - ${spiritualNote}` : ''}`);
+    if (spiritualNote) {
+      answeredQuestions.push(`6. How was my spiritual condition today? ${spiritualNote}`);
     }
     if (aaTalkFlag) {
       const answer = aaTalkFlag === 'yes' ? 'Yes' : 'No';
@@ -259,7 +259,7 @@ export default function EveningReview() {
 
   // Check if all questions are answered
   const getAnsweredCount = () => {
-    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, kindnessFlag, spiritualFlag, aaTalkFlag, prayerMeditationFlag];
+    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, kindnessFlag, spiritualNote, aaTalkFlag, prayerMeditationFlag];
     return flags.filter(flag => flag !== '').length;
   };
 
@@ -390,34 +390,7 @@ export default function EveningReview() {
             {questions.map((question, index) => (
               <View key={index} style={styles.questionContainer}>
                 <Text style={styles.questionText}>{question.text}</Text>
-                <View style={styles.answerButtons}>
-                  <TouchableOpacity
-                    style={[
-                      styles.answerButton,
-                      question.flag === 'yes' && styles.answerButtonSelected
-                    ]}
-                    onPress={() => question.setFlag('yes')}
-                  >
-                    <Text style={[
-                      styles.answerButtonText,
-                      question.flag === 'yes' && styles.answerButtonTextSelected
-                    ]}>Yes</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.answerButton,
-                      question.flag === 'no' && styles.answerButtonSelected
-                    ]}
-                    onPress={() => question.setFlag('no')}
-                  >
-                    <Text style={[
-                      styles.answerButtonText,
-                      question.flag === 'no' && styles.answerButtonTextSelected
-                    ]}>No</Text>
-                  </TouchableOpacity>
-                </View>
-                
-                {question.flag === 'yes' && question.placeholder && (
+                {question.inputOnly ? (
                   <TextInput
                     style={styles.textInput}
                     placeholder={question.placeholder}
@@ -426,6 +399,46 @@ export default function EveningReview() {
                     multiline
                     placeholderTextColor={Colors.light.muted}
                   />
+                ) : (
+                  <>
+                    <View style={styles.answerButtons}>
+                      <TouchableOpacity
+                        style={[
+                          styles.answerButton,
+                          question.flag === 'yes' && styles.answerButtonSelected
+                        ]}
+                        onPress={() => question.setFlag('yes')}
+                      >
+                        <Text style={[
+                          styles.answerButtonText,
+                          question.flag === 'yes' && styles.answerButtonTextSelected
+                        ]}>Yes</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.answerButton,
+                          question.flag === 'no' && styles.answerButtonSelected
+                        ]}
+                        onPress={() => question.setFlag('no')}
+                      >
+                        <Text style={[
+                          styles.answerButtonText,
+                          question.flag === 'no' && styles.answerButtonTextSelected
+                        ]}>No</Text>
+                      </TouchableOpacity>
+                    </View>
+                    
+                    {question.flag === 'yes' && question.placeholder && (
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder={question.placeholder}
+                        value={question.note}
+                        onChangeText={question.setNote}
+                        multiline
+                        placeholderTextColor={Colors.light.muted}
+                      />
+                    )}
+                  </>
                 )}
               </View>
             ))}
