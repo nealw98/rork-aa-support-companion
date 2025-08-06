@@ -188,14 +188,28 @@ export default function EveningReview() {
     if (savedEntry) {
       // Load the saved data into the form
       console.log('Loading saved entry data into form');
-      handleEditEntry(savedEntry);
+      const { data } = savedEntry;
+      setResentfulFlag(data.resentfulFlag || '');
+      setResentfulNote(data.resentfulNote || '');
+      setSelfishFlag(data.selfishFlag || '');
+      setSelfishNote(data.selfishNote || '');
+      setFearfulFlag(data.fearfulFlag || '');
+      setFearfulNote(data.fearfulNote || '');
+      setApologyFlag(data.apologyFlag || '');
+      setApologyName(data.apologyName || '');
+      setKindnessFlag(data.kindnessFlag || '');
+      setKindnessNote(data.kindnessNote || '');
+      setSpiritualFlag(data.spiritualFlag || '');
+      setSpiritualNote(data.spiritualNote || '');
+      setPrayerMeditationFlag(data.prayerMeditationFlag || '');
+      setEditingEntry(savedEntry);
     } else {
       // No saved entry, start fresh
       console.log('No saved entry found, starting fresh');
       handleStartNew();
     }
     
-    // Don't affect completion status - just go back to form
+    // Return to form view
     setShowConfirmation(false);
   };
 
