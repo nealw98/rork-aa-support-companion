@@ -433,13 +433,6 @@ export default function EveningReview() {
             <TouchableOpacity style={styles.outlineButton} onPress={handleEditReview}>
               <Text style={styles.outlineButtonText}>Edit Review</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.secondaryButton} 
-              onPress={() => setShowSavedReviews(true)}
-            >
-              <Archive size={20} color={Colors.light.tint} />
-              <Text style={styles.secondaryButtonText}>View Saved Reviews</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </ScreenContainer>
