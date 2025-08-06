@@ -121,7 +121,7 @@ export default function EveningReview() {
       setFlag: setSpiritualFlag,
       note: spiritualNote,
       setNote: setSpiritualNote,
-      placeholder: 'Were you on or off the beam?',
+      placeholder: 'Were you on the beam?',
       inputOnly: true
     }
   ];
