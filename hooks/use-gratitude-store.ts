@@ -8,25 +8,14 @@ export interface GratitudeEntry {
   completed: boolean;
 }
 
-export interface SavedGratitudeEntry {
-  date: string;
-  items: string[];
-  timestamp: number;
-}
-
 const STORAGE_KEY = 'gratitude_entries';
-const SAVED_ENTRIES_KEY = 'saved_gratitude_entries';
 
 export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
   const [entries, setEntries] = useState<GratitudeEntry[]>([]);
-  const [savedEntries, setSavedEntries] = useState<SavedGratitudeEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
-  console.log('GratitudeStore initialized');
 
   useEffect(() => {
     loadEntries();
-    loadSavedEntries();
   }, []);
 
   const loadEntries = async () => {
@@ -39,17 +28,6 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
       console.error('Error loading gratitude entries:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const loadSavedEntries = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(SAVED_ENTRIES_KEY);
-      if (stored) {
-        setSavedEntries(JSON.parse(stored));
-      }
-    } catch (error) {
-      console.error('Error loading saved gratitude entries:', error);
     }
   };
 
@@ -159,43 +137,8 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     }).length;
   };
 
-  const saveGratitudeEntry = (items: string[]) => {
-    const todayString = getTodayDateString();
-    const newSavedEntry: SavedGratitudeEntry = {
-      date: todayString,
-      items: items.filter(item => item.trim() !== ''),
-      timestamp: Date.now()
-    };
-
-    // Remove existing entry for the same date if it exists
-    const filteredEntries = savedEntries.filter(entry => entry.date !== todayString);
-    
-    // Add new entry and sort by date (newest first)
-    const updatedEntries = [newSavedEntry, ...filteredEntries]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 200); // Keep max 200 entries (FIFO)
-
-    setSavedEntries(updatedEntries);
-    saveSavedEntries(updatedEntries);
-  };
-
-  const saveSavedEntries = async (entries: SavedGratitudeEntry[]) => {
-    try {
-      await AsyncStorage.setItem(SAVED_ENTRIES_KEY, JSON.stringify(entries));
-    } catch (error) {
-      console.error('Error saving gratitude entries:', error);
-    }
-  };
-
-  const deleteSavedEntry = (dateString: string) => {
-    const updatedEntries = savedEntries.filter(entry => entry.date !== dateString);
-    setSavedEntries(updatedEntries);
-    saveSavedEntries(updatedEntries);
-  };
-
   return {
     entries,
-    savedEntries,
     isLoading,
     isCompletedToday,
     getTodayEntry,
@@ -203,8 +146,6 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
     addItemsToToday,
     completeToday,
     saveGratitudeList,
-    saveGratitudeEntry,
-    deleteSavedEntry,
     uncompleteToday,
     getCompletedDaysInLast30
   };

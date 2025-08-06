@@ -5,7 +5,7 @@ import React, { useEffect, useCallback } from "react";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { GratitudeProvider } from "@/hooks/use-gratitude-store";
+import { GratitudeProvider } from "@/hooks/useGratitudeStore";
 import { OnboardingProvider, useOnboarding } from "@/hooks/useOnboardingStore";
 import { SobrietyProvider } from "@/hooks/useSobrietyStore";
 import { EveningReviewProvider } from "@/hooks/use-evening-review-store";

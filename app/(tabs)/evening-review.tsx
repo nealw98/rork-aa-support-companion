@@ -30,19 +30,10 @@ const formatDateDisplay = (date: Date): string => {
   });
 };
 
-const getTodayDateString = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const day = today.getDate().toString().padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
 export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showSavedReviews, setShowSavedReviews] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<any>(null);
 
   // Form state - matching web app structure
   const [resentfulFlag, setResentfulFlag] = useState('');
@@ -70,7 +61,7 @@ export default function EveningReview() {
     );
   }
   
-  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveDetailedEntry, getSavedEntry } = eveningReviewStore;
+  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveDetailedEntry } = eveningReviewStore;
   
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -154,63 +145,11 @@ export default function EveningReview() {
     setSpiritualNote('');
     setPrayerMeditationFlag('');
     setShowConfirmation(false);
-    setEditingEntry(null);
   };
 
-  const handleEditEntry = (entry: any) => {
-    const { data } = entry;
-    setResentfulFlag(data.resentfulFlag || '');
-    setResentfulNote(data.resentfulNote || '');
-    setSelfishFlag(data.selfishFlag || '');
-    setSelfishNote(data.selfishNote || '');
-    setFearfulFlag(data.fearfulFlag || '');
-    setFearfulNote(data.fearfulNote || '');
-    setApologyFlag(data.apologyFlag || '');
-    setApologyName(data.apologyName || '');
-    setKindnessFlag(data.kindnessFlag || '');
-    setKindnessNote(data.kindnessNote || '');
-    setSpiritualFlag(data.spiritualFlag || '');
-    setSpiritualNote(data.spiritualNote || '');
-    setPrayerMeditationFlag(data.prayerMeditationFlag || '');
-    setEditingEntry(entry);
-    setShowSavedReviews(false);
-  };
-
-  const handleEditReview = () => {
-    console.log('Edit Review button pressed');
-    // Try to load today's saved entry for editing
-    const todayString = getTodayDateString();
-    const savedEntry = eveningReviewStore.getSavedEntry(todayString);
-    
-    console.log('Today string:', todayString);
-    console.log('Saved entry found:', savedEntry);
-    
-    if (savedEntry) {
-      // Load the saved data into the form
-      console.log('Loading saved entry data into form');
-      const { data } = savedEntry;
-      setResentfulFlag(data.resentfulFlag || '');
-      setResentfulNote(data.resentfulNote || '');
-      setSelfishFlag(data.selfishFlag || '');
-      setSelfishNote(data.selfishNote || '');
-      setFearfulFlag(data.fearfulFlag || '');
-      setFearfulNote(data.fearfulNote || '');
-      setApologyFlag(data.apologyFlag || '');
-      setApologyName(data.apologyName || '');
-      setKindnessFlag(data.kindnessFlag || '');
-      setKindnessNote(data.kindnessNote || '');
-      setSpiritualFlag(data.spiritualFlag || '');
-      setSpiritualNote(data.spiritualNote || '');
-      setPrayerMeditationFlag(data.prayerMeditationFlag || '');
-      setEditingEntry(savedEntry);
-    } else {
-      // No saved entry, start fresh
-      console.log('No saved entry found, starting fresh');
-      handleStartNew();
-    }
-    
-    // Return to form view
-    setShowConfirmation(false);
+  const handleUnsubmit = () => {
+    uncompleteToday();
+    handleStartNew();
   };
 
   const handleShare = async () => {
@@ -331,17 +270,13 @@ export default function EveningReview() {
       prayerMeditationFlag
     };
 
-    // If editing an existing entry, save with the original date
-    const dateToSave = editingEntry ? editingEntry.date : undefined;
-    saveDetailedEntry(detailedEntry, dateToSave);
+    saveDetailedEntry(detailedEntry);
     
-    // Clear editing state after save
-    if (editingEntry) {
-      setEditingEntry(null);
-    }
-    
-    // Navigate to completion screen
-    setShowConfirmation(true);
+    Alert.alert(
+      'Review Saved',
+      'Your evening review has been saved successfully.',
+      [{ text: 'OK' }]
+    );
   };
 
   const canSave = () => {
@@ -436,15 +371,12 @@ export default function EveningReview() {
 
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.outlineButton} onPress={handleEditReview}>
+            <TouchableOpacity style={styles.outlineButton} onPress={handleUnsubmit}>
               <Text style={styles.outlineButtonText}>Edit Review</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.secondaryButton} 
-              onPress={() => {
-                console.log('View Saved Reviews button pressed');
-                setShowSavedReviews(true);
-              }}
+              onPress={() => setShowSavedReviews(true)}
             >
               <Archive size={20} color={Colors.light.tint} />
               <Text style={styles.secondaryButtonText}>View Saved Reviews</Text>
@@ -469,25 +401,15 @@ export default function EveningReview() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>
-            {editingEntry ? 'Edit Evening Review' : 'Evening Review'}
-          </Text>
+          <Text style={styles.title}>Evening Review</Text>
           <Text style={styles.description}>
-            {editingEntry 
-              ? `Editing review from ${formatDateDisplay(new Date(editingEntry.date + 'T00:00:00'))}`
-              : "Nightly inventory based on AA's 'When We Retire at Night' guidance"
-            }
+            Nightly inventory based on AA&apos;s &apos;When We Retire at Night&apos; guidance
           </Text>
         </View>
 
         {/* Questions */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>
-            {editingEntry 
-              ? formatDateDisplay(new Date(editingEntry.date + 'T00:00:00'))
-              : formatDateDisplay(today)
-            }
-          </Text>
+          <Text style={styles.cardTitle}>{formatDateDisplay(today)}</Text>
           
           <View style={styles.questionsContainer}>
             {questions.map((question, index) => (
@@ -576,10 +498,7 @@ export default function EveningReview() {
         {/* View Saved Reviews Button */}
         <TouchableOpacity 
           style={styles.secondaryButton} 
-          onPress={() => {
-            console.log('View Saved Reviews button pressed (form view)');
-            setShowSavedReviews(true);
-          }}
+          onPress={() => setShowSavedReviews(true)}
         >
           <Archive size={20} color={Colors.light.tint} />
           <Text style={styles.secondaryButtonText}>View Saved Reviews</Text>
@@ -596,7 +515,6 @@ export default function EveningReview() {
       <SavedEveningReviews 
         visible={showSavedReviews}
         onClose={() => setShowSavedReviews(false)}
-        onEditEntry={handleEditEntry}
       />
     </ScreenContainer>
   );
