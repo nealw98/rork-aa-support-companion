@@ -74,11 +74,14 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
     console.log('Current selectedEntry:', selectedEntry?.date || 'none');
     console.log('Current showEntryModal:', showEntryModal);
     
-    setSelectedEntry(entry);
-    setShowEntryModal(true);
+    // Use setTimeout to ensure state updates properly on iOS
+    setTimeout(() => {
+      setSelectedEntry(entry);
+      setShowEntryModal(true);
+      console.log('After setState - selectedEntry should be:', entry.date);
+      console.log('After setState - showEntryModal should be: true');
+    }, 0);
     
-    console.log('After setState - selectedEntry should be:', entry.date);
-    console.log('After setState - showEntryModal should be: true');
     console.log('=== END ENTRY PRESS DEBUG ===');
   };
 
@@ -227,12 +230,18 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
         visible={showEntryModal}
         animationType="slide"
         presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
+        onRequestClose={() => setShowEntryModal(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <TouchableOpacity
               style={styles.closeButton}
-              onPress={() => setShowEntryModal(false)}
+              onPress={() => {
+                console.log('Closing entry modal');
+                setShowEntryModal(false);
+                setSelectedEntry(null);
+              }}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <X color={Colors.light.text} size={24} />
             </TouchableOpacity>
@@ -338,6 +347,8 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
             style={styles.content}
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ flexGrow: 1 }}
+            scrollEnabled={true}
+            showsVerticalScrollIndicator={false}
           >
             {savedEntries.length === 0 ? (
               <View style={styles.emptyState}>
@@ -364,9 +375,11 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
                         console.log('Entry object:', JSON.stringify(entry, null, 2));
                         handleEntryPress(entry);
                       }}
-                      activeOpacity={0.7}
-                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      activeOpacity={0.6}
+                      hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
                       testID={`saved-entry-${entry.date}`}
+                      delayPressIn={0}
+                      delayPressOut={0}
                     >
                     <View style={styles.entryHeader}>
                       <View style={styles.entryDateContainer}>
@@ -460,6 +473,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
     padding: 16,
+    minHeight: 80,
   },
 
   entryHeader: {

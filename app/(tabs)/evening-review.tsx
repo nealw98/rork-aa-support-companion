@@ -424,7 +424,11 @@ export default function EveningReview() {
       
 
       
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Evening Review</Text>
