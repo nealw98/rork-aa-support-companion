@@ -335,7 +335,10 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
                       <View style={styles.entryActions}>
                         <TouchableOpacity
                           style={styles.actionButton}
-                          onPress={() => handleDeleteEntry(entry.date)}
+                          onPress={(e) => {
+                            e.stopPropagation();
+                            handleDeleteEntry(entry.date);
+                          }}
                         >
                           <Trash2 color={Colors.light.muted} size={18} />
                         </TouchableOpacity>
