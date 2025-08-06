@@ -101,13 +101,12 @@ export default function EveningReview() {
       placeholder: 'Whom have you harmed?'
     },
     {
-      text: '5. How was my spiritual condition today?',
+      text: '5. Was I loving and kind to others today?',
       flag: kindnessFlag,
       setFlag: setKindnessFlag,
       note: kindnessNote,
       setNote: setKindnessNote,
-      placeholder: 'Were you on or off the beam?',
-      isTextOnly: true
+      placeholder: 'What did you do?'
     },
     {
       text: '6. How was my spiritual connection today?',
@@ -190,8 +189,9 @@ export default function EveningReview() {
       const answer = apologyFlag === 'yes' ? 'Yes' : 'No';
       answeredQuestions.push(`4. Do I owe anyone an apology? ${answer}${apologyFlag === 'yes' && apologyName ? ` - ${apologyName}` : ''}`);
     }
-    if (kindnessNote.trim()) {
-      answeredQuestions.push(`5. How was my spiritual condition today? ${kindnessNote}`);
+    if (kindnessFlag) {
+      const answer = kindnessFlag === 'yes' ? 'Yes' : 'No';
+      answeredQuestions.push(`5. Was I of service or kind to others today? ${answer}${kindnessFlag === 'yes' && kindnessNote ? ` - ${kindnessNote}` : ''}`);
     }
     if (spiritualFlag) {
       const answer = spiritualFlag === 'yes' ? 'Yes' : 'No';
@@ -259,11 +259,8 @@ export default function EveningReview() {
 
   // Check if all questions are answered
   const getAnsweredCount = () => {
-    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, spiritualFlag, aaTalkFlag, prayerMeditationFlag];
-    const textOnlyAnswers = [kindnessNote]; // Question 5 is text-only now
-    const flagCount = flags.filter(flag => flag !== '').length;
-    const textOnlyCount = textOnlyAnswers.filter(answer => answer.trim() !== '').length;
-    return flagCount + textOnlyCount;
+    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, kindnessFlag, spiritualFlag, aaTalkFlag, prayerMeditationFlag];
+    return flags.filter(flag => flag !== '').length;
   };
 
   const answeredCount = getAnsweredCount();
@@ -393,8 +390,34 @@ export default function EveningReview() {
             {questions.map((question, index) => (
               <View key={index} style={styles.questionContainer}>
                 <Text style={styles.questionText}>{question.text}</Text>
+                <View style={styles.answerButtons}>
+                  <TouchableOpacity
+                    style={[
+                      styles.answerButton,
+                      question.flag === 'yes' && styles.answerButtonSelected
+                    ]}
+                    onPress={() => question.setFlag('yes')}
+                  >
+                    <Text style={[
+                      styles.answerButtonText,
+                      question.flag === 'yes' && styles.answerButtonTextSelected
+                    ]}>Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.answerButton,
+                      question.flag === 'no' && styles.answerButtonSelected
+                    ]}
+                    onPress={() => question.setFlag('no')}
+                  >
+                    <Text style={[
+                      styles.answerButtonText,
+                      question.flag === 'no' && styles.answerButtonTextSelected
+                    ]}>No</Text>
+                  </TouchableOpacity>
+                </View>
                 
-                {question.isTextOnly ? (
+                {question.flag === 'yes' && question.placeholder && (
                   <TextInput
                     style={styles.textInput}
                     placeholder={question.placeholder}
@@ -403,46 +426,6 @@ export default function EveningReview() {
                     multiline
                     placeholderTextColor={Colors.light.muted}
                   />
-                ) : (
-                  <>
-                    <View style={styles.answerButtons}>
-                      <TouchableOpacity
-                        style={[
-                          styles.answerButton,
-                          question.flag === 'yes' && styles.answerButtonSelected
-                        ]}
-                        onPress={() => question.setFlag('yes')}
-                      >
-                        <Text style={[
-                          styles.answerButtonText,
-                          question.flag === 'yes' && styles.answerButtonTextSelected
-                        ]}>Yes</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          styles.answerButton,
-                          question.flag === 'no' && styles.answerButtonSelected
-                        ]}
-                        onPress={() => question.setFlag('no')}
-                      >
-                        <Text style={[
-                          styles.answerButtonText,
-                          question.flag === 'no' && styles.answerButtonTextSelected
-                        ]}>No</Text>
-                      </TouchableOpacity>
-                    </View>
-                    
-                    {question.flag === 'yes' && question.placeholder && (
-                      <TextInput
-                        style={styles.textInput}
-                        placeholder={question.placeholder}
-                        value={question.note}
-                        onChangeText={question.setNote}
-                        multiline
-                        placeholderTextColor={Colors.light.muted}
-                      />
-                    )}
-                  </>
                 )}
               </View>
             ))}
