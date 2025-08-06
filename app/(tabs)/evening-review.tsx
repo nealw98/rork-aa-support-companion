@@ -483,9 +483,7 @@ export default function EveningReview() {
             disabled={!canSave()}
           >
             <Save size={20} color="white" />
-            <Text style={styles.saveButtonText}>
-              Save Review
-            </Text>
+            <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
@@ -493,9 +491,7 @@ export default function EveningReview() {
             onPress={handleShare}
           >
             <ShareIcon size={20} color="white" />
-            <Text style={styles.shareButtonText}>
-              Share Review
-            </Text>
+            <Text style={styles.shareButtonText}>Share</Text>
           </TouchableOpacity>
         </View>
         
