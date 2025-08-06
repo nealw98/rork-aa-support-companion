@@ -54,7 +54,7 @@ interface SavedEveningEntry {
 const STORAGE_KEY = 'evening_review_entries';
 
 const SAVED_ENTRIES_KEY = 'saved_evening_review_entries';
-const MAX_SAVED_ENTRIES = 30;
+const MAX_SAVED_ENTRIES = 200;
 
 export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(() => {
   const [entries, setEntries] = useState<EveningReviewEntry[]>([]);
