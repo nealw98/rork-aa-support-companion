@@ -42,7 +42,10 @@ export const [GratitudeProvider, useGratitudeStore] = createContextHook(() => {
 
   const getTodayDateString = () => {
     const today = new Date();
-    return today.toISOString().split('T')[0];
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const isCompletedToday = () => {

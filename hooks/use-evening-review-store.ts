@@ -76,7 +76,10 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
 
   const getTodayDateString = () => {
     const today = new Date();
-    return today.toISOString().split('T')[0]; // YYYY-MM-DD format
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const isCompletedToday = () => {
@@ -114,7 +117,10 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     return Array.from({ length: 7 }, (_, index) => {
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + index);
-      const dateString = date.toISOString().split('T')[0];
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
       const todayString = getTodayDateString();
       
       const entry = entries.find(entry => entry.date === dateString);
