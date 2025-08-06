@@ -46,7 +46,6 @@ export default function EveningReview() {
   const [kindnessNote, setKindnessNote] = useState('');
   const [spiritualFlag, setSpiritualFlag] = useState('');
   const [spiritualNote, setSpiritualNote] = useState('');
-  const [aaTalkFlag, setAaTalkFlag] = useState('');
   const [prayerMeditationFlag, setPrayerMeditationFlag] = useState('');
 
   // Add safety check to prevent destructuring undefined
@@ -118,15 +117,7 @@ export default function EveningReview() {
       inputOnly: true
     },
     {
-      text: '7. Did I talk to someone in recovery today?',
-      flag: aaTalkFlag,
-      setFlag: setAaTalkFlag,
-      note: '',
-      setNote: () => {},
-      placeholder: ''
-    },
-    {
-      text: '8. Did I pray or meditate today?',
+      text: '7. Did I pray or meditate today?',
       flag: prayerMeditationFlag,
       setFlag: setPrayerMeditationFlag,
       note: '',
@@ -150,7 +141,6 @@ export default function EveningReview() {
     setKindnessNote('');
     setSpiritualFlag('');
     setSpiritualNote('');
-    setAaTalkFlag('');
     setPrayerMeditationFlag('');
     setShowConfirmation(false);
   };
@@ -197,13 +187,9 @@ export default function EveningReview() {
     if (spiritualNote) {
       answeredQuestions.push(`6. How was my spiritual condition today? ${spiritualNote}`);
     }
-    if (aaTalkFlag) {
-      const answer = aaTalkFlag === 'yes' ? 'Yes' : 'No';
-      answeredQuestions.push(`7. Did I talk to someone in recovery today? ${answer}`);
-    }
     if (prayerMeditationFlag) {
       const answer = prayerMeditationFlag === 'yes' ? 'Yes' : 'No';
-      answeredQuestions.push(`8. Did I pray or meditate today? ${answer}`);
+      answeredQuestions.push(`7. Did I pray or meditate today? ${answer}`);
     }
 
     let shareMessage = `${today}\n\nEvening Review\n\n`;
@@ -259,7 +245,7 @@ export default function EveningReview() {
 
   // Check if all questions are answered
   const getAnsweredCount = () => {
-    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, kindnessFlag, spiritualNote, aaTalkFlag, prayerMeditationFlag];
+    const flags = [resentfulFlag, selfishFlag, fearfulFlag, apologyFlag, kindnessFlag, spiritualNote, prayerMeditationFlag];
     return flags.filter(flag => flag !== '').length;
   };
 
