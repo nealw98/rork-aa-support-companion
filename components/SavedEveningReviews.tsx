@@ -66,11 +66,20 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
   }
 
   const handleEntryPress = (entry: any) => {
+    console.log('=== ENTRY PRESS DEBUG ===');
     console.log('handleEntryPress called for entry:', entry.date);
     console.log('Platform:', Platform.OS);
     console.log('Touch event registered successfully');
+    console.log('Entry data:', JSON.stringify(entry, null, 2));
+    console.log('Current selectedEntry:', selectedEntry?.date || 'none');
+    console.log('Current showEntryModal:', showEntryModal);
+    
     setSelectedEntry(entry);
     setShowEntryModal(true);
+    
+    console.log('After setState - selectedEntry should be:', entry.date);
+    console.log('After setState - showEntryModal should be: true');
+    console.log('=== END ENTRY PRESS DEBUG ===');
   };
 
   const handleDeleteEntry = (dateString: string, event?: any) => {
@@ -300,6 +309,15 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
     }
   }, [visible, savedEntries]);
 
+  // Debug state changes
+  React.useEffect(() => {
+    console.log('selectedEntry changed to:', selectedEntry?.date || 'null');
+  }, [selectedEntry]);
+
+  React.useEffect(() => {
+    console.log('showEntryModal changed to:', showEntryModal);
+  }, [showEntryModal]);
+
   return (
     <>
       <Modal
@@ -316,7 +334,11 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
             <View style={styles.placeholder} />
           </View>
 
-          <ScrollView style={styles.content}>
+          <ScrollView 
+            style={styles.content}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ flexGrow: 1 }}
+          >
             {savedEntries.length === 0 ? (
               <View style={styles.emptyState}>
                 <Calendar color={Colors.light.muted} size={48} />
@@ -327,18 +349,25 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
               </View>
             ) : (
               <View style={styles.entriesList}>
-                {savedEntries.map((entry) => (
-                  <TouchableOpacity
-                    key={entry.date}
-                    style={styles.entryCard}
-                    onPress={() => {
-                      console.log('Entry pressed:', entry.date);
-                      console.log('Platform:', Platform.OS);
-                      console.log('Touch event registered successfully');
-                      handleEntryPress(entry);
-                    }}
-                    activeOpacity={0.7}
-                  >
+                {savedEntries.map((entry, index) => {
+                  console.log(`Rendering entry ${index}:`, entry.date);
+                  return (
+                    <TouchableOpacity
+                      key={entry.date}
+                      style={styles.entryCard}
+                      onPress={() => {
+                        console.log('=== TOUCHABLE ONPRESS FIRED ===');
+                        console.log('Entry pressed:', entry.date);
+                        console.log('Platform:', Platform.OS);
+                        console.log('Touch event registered successfully');
+                        console.log('Entry index:', index);
+                        console.log('Entry object:', JSON.stringify(entry, null, 2));
+                        handleEntryPress(entry);
+                      }}
+                      activeOpacity={0.7}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      testID={`saved-entry-${entry.date}`}
+                    >
                     <View style={styles.entryHeader}>
                       <View style={styles.entryDateContainer}>
                         <Text style={styles.entryDateText}>
@@ -355,8 +384,9 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
                         Tap to view full review
                       </Text>
                     </View>
-                  </TouchableOpacity>
-                ))}
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
             )}
           </ScrollView>

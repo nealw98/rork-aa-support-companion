@@ -451,6 +451,7 @@ export default function EveningReview() {
                     placeholderTextColor={Colors.light.muted}
                     returnKeyType="done"
                     blurOnSubmit={true}
+                    enablesReturnKeyAutomatically={true}
                   />
                 ) : (
                   <>
@@ -491,6 +492,7 @@ export default function EveningReview() {
                         placeholderTextColor={Colors.light.muted}
                         returnKeyType="done"
                         blurOnSubmit={true}
+                        enablesReturnKeyAutomatically={true}
                       />
                     )}
                   </>
