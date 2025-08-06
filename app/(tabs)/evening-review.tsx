@@ -101,7 +101,7 @@ export default function EveningReview() {
       placeholder: 'Whom have you harmed?'
     },
     {
-      text: '5. Was I of service or kind to others today?',
+      text: '5. Was I loving and kind to others today?',
       flag: kindnessFlag,
       setFlag: setKindnessFlag,
       note: kindnessNote,
