@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  ScrollView,
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
@@ -13,7 +14,7 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { Stack } from 'expo-router';
-import { Heart, Share as ShareIcon, Save, Archive } from 'lucide-react-native';
+import { Heart, Share as ShareIcon, Save, Archive, Calendar, CheckCircle } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useGratitudeStore } from '@/hooks/use-gratitude-store';
 import SavedGratitudeLists from '@/components/SavedGratitudeLists';
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 8
   },
-  buttonContainer: {
+  mainButtonContainer: {
     padding: 20,
     gap: 12
   },
@@ -222,6 +223,126 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: adjustFontWeight('500'),
   },
+  
+  // Completion screen styles
+  completionContent: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+  },
+  completionHeader: {
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  completionTitle: {
+    fontSize: 28,
+    fontWeight: adjustFontWeight('700', true),
+    color: Colors.light.text,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  completionSubtitle: {
+    fontSize: 16,
+    color: Colors.light.tint,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  completionDescription: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  completionCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: adjustFontWeight('600', true),
+    color: Colors.light.tint,
+    marginLeft: 8,
+  },
+  confirmationText: {
+    fontSize: 16,
+    color: Colors.light.text,
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  weeklyProgress: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  dayContainer: {
+    alignItems: 'center',
+  },
+  dayName: {
+    fontSize: 12,
+    color: Colors.light.muted,
+    marginBottom: 8,
+  },
+  dayCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e9ecef',
+    borderWidth: 2,
+    borderColor: 'rgba(108, 117, 125, 0.2)',
+  },
+  dayCircleCompleted: {
+    backgroundColor: Colors.light.tint,
+    borderColor: Colors.light.tint,
+  },
+  dayCircleToday: {
+    backgroundColor: Colors.light.tint,
+    borderColor: Colors.light.tint,
+    borderWidth: 3,
+  },
+  dayCircleFuture: {
+    backgroundColor: '#e9ecef',
+    borderColor: 'rgba(108, 117, 125, 0.2)',
+  },
+  streakText: {
+    fontSize: 14,
+    color: Colors.light.muted,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    gap: 12,
+    marginBottom: 16,
+  },
+  outlineButton: {
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    paddingVertical: 12,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginHorizontal: 32,
+    marginBottom: 16,
+  },
+  outlineButtonText: {
+    color: Colors.light.tint,
+    fontSize: 16,
+    fontWeight: adjustFontWeight('500'),
+  },
+  privacyText: {
+    fontSize: 12,
+    color: Colors.light.muted,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
 
 });
 
@@ -229,6 +350,7 @@ export default function GratitudeListScreen() {
   const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [showSavedLists, setShowSavedLists] = useState(false);
+  const [showCompletion, setShowCompletion] = useState(false);
   const inputRef = useRef<TextInput>(null);
   
   const gratitudeStore = useGratitudeStore();
@@ -253,7 +375,8 @@ export default function GratitudeListScreen() {
   const {
     getTodaysItems,
     addItemsToToday,
-    saveGratitudeEntry
+    saveGratitudeEntry,
+    getCompletedDaysInLast30
   } = gratitudeStore;
 
   const handleAddGratitude = () => {
@@ -279,21 +402,10 @@ export default function GratitudeListScreen() {
     }
 
     saveGratitudeEntry(gratitudeItems);
+    setShowSavedLists(false);
     
-    Alert.alert(
-      'List Saved',
-      'Your gratitude list has been saved successfully.',
-      [
-        { 
-          text: 'View Saved Lists', 
-          onPress: () => {
-            console.log('Opening saved lists');
-            setShowSavedLists(true);
-          }
-        },
-        { text: 'OK' }
-      ]
-    );
+    // Navigate to completion screen by setting a completion state
+    setShowCompletion(true);
   };
 
   const canSave = () => {
@@ -327,7 +439,7 @@ export default function GratitudeListScreen() {
       .map((item) => `• ${item}`)
       .join('\n');
 
-    const shareMessage = `${today}\n\nToday I'm grateful for:\n${gratitudeText}`;
+    const shareMessage = `${today}\n\nToday I&apos;m grateful for:\n${gratitudeText}`;
 
     try {
       console.log('Attempting to share:', Platform.OS);
@@ -382,6 +494,137 @@ export default function GratitudeListScreen() {
       <Text style={styles.gratitudeText}>{item}</Text>
     </View>
   );
+
+  const formatDateDisplay = (date: Date): string => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const getWeeklyProgress = () => {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(startOfWeek.getDate() + i);
+      weekDays.push({
+        date: day.toISOString().split('T')[0],
+        completed: false // For now, we'll show basic progress
+      });
+    }
+    return weekDays;
+  };
+
+  const handleEditGratitude = () => {
+    setShowCompletion(false);
+  };
+
+  if (showCompletion) {
+    const today = new Date();
+    const weeklyProgress = getWeeklyProgress();
+    const completedDays = getCompletedDaysInLast30();
+    
+    return (
+      <ScreenContainer noPadding>
+        <Stack.Screen options={{ title: 'Gratitude Complete' }} />
+        
+        <View style={styles.container}>
+          <LinearGradient
+            colors={['rgba(74, 144, 226, 0.3)', 'rgba(92, 184, 92, 0.1)']}
+            style={styles.backgroundGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            locations={[0, 1]}
+          />
+          
+          <ScrollView style={styles.completionContent} showsVerticalScrollIndicator={false}>
+            {/* Header */}
+            <View style={styles.completionHeader}>
+              <Text style={styles.completionTitle}>Gratitude Complete</Text>
+              <Text style={styles.completionSubtitle}>{formatDateDisplay(today)}</Text>
+              <Text style={styles.completionDescription}>
+                Gratitude practice helps us stay connected to our recovery
+              </Text>
+            </View>
+
+            {/* Confirmation Message */}
+            <View style={styles.completionCard}>
+              <Text style={styles.confirmationText}>
+                Thanks for taking time to reflect on gratitude. These moments of appreciation strengthen your recovery.
+              </Text>
+            </View>
+
+            {/* Weekly Progress */}
+            <View style={styles.completionCard}>
+              <View style={styles.cardHeader}>
+                <Calendar color={Colors.light.tint} size={20} />
+                <Text style={styles.cardTitle}>This Week&apos;s Progress</Text>
+              </View>
+              
+              <View style={styles.weeklyProgress}>
+                {weeklyProgress.map((day, index) => {
+                  const dayDate = new Date(day.date);
+                  const today = new Date();
+                  const isToday = day.date === today.toISOString().split('T')[0];
+                  const isFuture = dayDate > today;
+                  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                  const dayName = dayNames[dayDate.getDay()];
+                  
+                  return (
+                    <View key={index} style={styles.dayContainer}>
+                      <Text style={styles.dayName}>{dayName}</Text>
+                      <View style={[
+                        styles.dayCircle,
+                        isToday && styles.dayCircleToday,
+                        isFuture && styles.dayCircleFuture
+                      ]}>
+                        {isToday && (
+                          <CheckCircle color="white" size={16} />
+                        )}
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+              
+              <Text style={styles.streakText}>
+                1 day this week — keep it going!
+              </Text>
+            </View>
+
+            {/* Privacy Notice */}
+            <Text style={styles.privacyText}>
+              Your responses are saved only on your device. Nothing is uploaded or shared.
+            </Text>
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.outlineButton} onPress={handleEditGratitude}>
+                <Text style={styles.outlineButtonText}>Edit Gratitude</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.secondaryButton} 
+                onPress={() => setShowSavedLists(true)}
+              >
+                <Archive size={20} color={Colors.light.tint} />
+                <Text style={styles.secondaryButtonText}>View Saved Lists</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
+        
+        <SavedGratitudeLists 
+          visible={showSavedLists}
+          onClose={() => setShowSavedLists(false)}
+        />
+      </ScreenContainer>
+    );
+  }
 
   return (
     <ScreenContainer noPadding>
