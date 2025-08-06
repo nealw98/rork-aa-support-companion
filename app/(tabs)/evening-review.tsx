@@ -109,7 +109,7 @@ export default function EveningReview() {
       placeholder: 'What did you do?'
     },
     {
-      text: '6. Was I spiritually connected today?',
+      text: '6. How was my spiritual connection today?',
       flag: spiritualFlag,
       setFlag: setSpiritualFlag,
       note: spiritualNote,
