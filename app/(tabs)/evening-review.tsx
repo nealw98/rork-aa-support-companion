@@ -449,6 +449,8 @@ export default function EveningReview() {
                     onChangeText={question.setNote}
                     multiline
                     placeholderTextColor={Colors.light.muted}
+                    returnKeyType="done"
+                    blurOnSubmit={true}
                   />
                 ) : (
                   <>
@@ -487,6 +489,8 @@ export default function EveningReview() {
                         onChangeText={question.setNote}
                         multiline
                         placeholderTextColor={Colors.light.muted}
+                        returnKeyType="done"
+                        blurOnSubmit={true}
                       />
                     )}
                   </>
