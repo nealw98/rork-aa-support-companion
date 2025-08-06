@@ -42,7 +42,6 @@ const formatDateShort = (dateString: string): string => {
 export default function SavedEveningReviews({ visible, onClose }: SavedEveningReviewsProps) {
   const { savedEntries, deleteSavedEntry } = useEveningReviewStore();
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
-  const [showEntryModal, setShowEntryModal] = useState(false);
 
   // Debug logging
   console.log('SavedEveningReviews - Total saved entries:', savedEntries.length);
@@ -72,15 +71,10 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
     console.log('Touch event registered successfully');
     console.log('Entry data:', JSON.stringify(entry, null, 2));
     console.log('Current selectedEntry:', selectedEntry?.date || 'none');
-    console.log('Current showEntryModal:', showEntryModal);
     
-    // Use setTimeout to ensure state updates properly on iOS
-    setTimeout(() => {
-      setSelectedEntry(entry);
-      setShowEntryModal(true);
-      console.log('After setState - selectedEntry should be:', entry.date);
-      console.log('After setState - showEntryModal should be: true');
-    }, 0);
+    // Direct state update - no nested modal needed
+    setSelectedEntry(entry);
+    console.log('After setState - selectedEntry should be:', entry.date);
     
     console.log('=== END ENTRY PRESS DEBUG ===');
   };
@@ -226,87 +220,79 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
     ];
 
     return (
-      <Modal
-        visible={showEntryModal}
-        animationType="slide"
-        presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
-        onRequestClose={() => setShowEntryModal(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                console.log('Closing entry modal');
-                setShowEntryModal(false);
-                setSelectedEntry(null);
-              }}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <X color={Colors.light.text} size={24} />
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Evening Review</Text>
-            <View style={styles.headerSpacer} />
-          </View>
+      <View style={styles.entryDetailContainer}>
+        <View style={styles.entryDetailHeader}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              console.log('Going back to list');
+              setSelectedEntry(null);
+            }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <X color={Colors.light.text} size={24} />
+          </TouchableOpacity>
+          <Text style={styles.modalTitle}>Evening Review</Text>
+          <View style={styles.headerSpacer} />
+        </View>
 
-          <ScrollView style={styles.modalContent}>
-            <Text style={styles.entryDate}>{formatDateDisplay(date)}</Text>
-            
-            <View style={styles.questionsContainer}>
-              {questions.map((question, index) => (
-                <View key={index} style={styles.questionContainer}>
-                  <Text style={styles.questionText}>{question.text}</Text>
-                  {question.inputOnly ? (
-                    question.note ? (
-                      <Text style={styles.answerText}>{question.note}</Text>
+        <ScrollView style={styles.entryDetailContent}>
+          <Text style={styles.entryDate}>{formatDateDisplay(date)}</Text>
+          
+          <View style={styles.questionsContainer}>
+            {questions.map((question, index) => (
+              <View key={index} style={styles.questionContainer}>
+                <Text style={styles.questionText}>{question.text}</Text>
+                {question.inputOnly ? (
+                  question.note ? (
+                    <Text style={styles.answerText}>{question.note}</Text>
+                  ) : (
+                    <Text style={styles.noAnswerText}>No response</Text>
+                  )
+                ) : (
+                  <>
+                    {question.flag ? (
+                      <Text style={[
+                        styles.answerText,
+                        question.flag === 'yes' ? styles.yesAnswer : styles.noAnswer
+                      ]}>
+                        {question.flag === 'yes' ? 'Yes' : 'No'}
+                      </Text>
                     ) : (
                       <Text style={styles.noAnswerText}>No response</Text>
-                    )
-                  ) : (
-                    <>
-                      {question.flag ? (
-                        <Text style={[
-                          styles.answerText,
-                          question.flag === 'yes' ? styles.yesAnswer : styles.noAnswer
-                        ]}>
-                          {question.flag === 'yes' ? 'Yes' : 'No'}
-                        </Text>
-                      ) : (
-                        <Text style={styles.noAnswerText}>No response</Text>
-                      )}
-                      {question.flag === 'yes' && question.note && (
-                        <Text style={styles.noteText}>{question.note}</Text>
-                      )}
-                    </>
-                  )}
-                </View>
-              ))}
-            </View>
+                    )}
+                    {question.flag === 'yes' && question.note && (
+                      <Text style={styles.noteText}>{question.note}</Text>
+                    )}
+                  </>
+                )}
+              </View>
+            ))}
+          </View>
+          
+          {/* Action Buttons */}
+          <View style={styles.modalActions}>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => {
+                setSelectedEntry(null);
+                handleDeleteEntry(selectedEntry.date);
+              }}
+            >
+              <Trash2 color="white" size={20} />
+              <Text style={styles.deleteButtonText}>Delete</Text>
+            </TouchableOpacity>
             
-            {/* Action Buttons */}
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => {
-                  setShowEntryModal(false);
-                  handleDeleteEntry(selectedEntry.date);
-                }}
-              >
-                <Trash2 color="white" size={20} />
-                <Text style={styles.deleteButtonText}>Delete</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={styles.shareEntryButton}
-                onPress={() => handleShareEntry(selectedEntry)}
-              >
-                <ShareIcon color="white" size={20} />
-                <Text style={styles.shareEntryButtonText}>Share</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </View>
-      </Modal>
+            <TouchableOpacity
+              style={styles.shareEntryButton}
+              onPress={() => handleShareEntry(selectedEntry)}
+            >
+              <ShareIcon color="white" size={20} />
+              <Text style={styles.shareEntryButtonText}>Share</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
     );
   };
 
@@ -323,90 +309,97 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
     console.log('selectedEntry changed to:', selectedEntry?.date || 'null');
   }, [selectedEntry]);
 
-  React.useEffect(() => {
-    console.log('showEntryModal changed to:', showEntryModal);
-  }, [showEntryModal]);
-
   return (
-    <>
-      <Modal
-        visible={visible}
-        animationType="slide"
-        presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
-      >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <X color={Colors.light.text} size={24} />
-            </TouchableOpacity>
-            <Text style={styles.title}>Saved Reviews</Text>
-            <View style={styles.placeholder} />
-          </View>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
+      onRequestClose={() => {
+        if (selectedEntry) {
+          setSelectedEntry(null);
+        } else {
+          onClose();
+        }
+      }}
+    >
+      <View style={styles.container}>
+        {selectedEntry ? (
+          renderEntryDetail()
+        ) : (
+          <>
+            <View style={styles.header}>
+              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                <X color={Colors.light.text} size={24} />
+              </TouchableOpacity>
+              <Text style={styles.title}>Saved Reviews</Text>
+              <View style={styles.placeholder} />
+            </View>
 
-          <ScrollView 
-            style={styles.content}
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ flexGrow: 1 }}
-            scrollEnabled={true}
-            showsVerticalScrollIndicator={false}
-          >
-            {savedEntries.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Calendar color={Colors.light.muted} size={48} />
-                <Text style={styles.emptyTitle}>No Saved Reviews</Text>
-                <Text style={styles.emptyDescription}>
-                  Your saved evening reviews will appear here.
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.entriesList}>
-                {savedEntries.map((entry, index) => {
-                  console.log(`Rendering entry ${index}:`, entry.date);
-                  return (
-                    <TouchableOpacity
-                      key={entry.date}
-                      style={styles.entryCard}
-                      onPress={() => {
-                        console.log('=== TOUCHABLE ONPRESS FIRED ===');
-                        console.log('Entry pressed:', entry.date);
-                        console.log('Platform:', Platform.OS);
-                        console.log('Touch event registered successfully');
-                        console.log('Entry index:', index);
-                        console.log('Entry object:', JSON.stringify(entry, null, 2));
-                        handleEntryPress(entry);
-                      }}
-                      activeOpacity={0.6}
-                      hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-                      testID={`saved-entry-${entry.date}`}
-                      delayPressIn={0}
-                      delayPressOut={0}
-                    >
-                    <View style={styles.entryHeader}>
-                      <View style={styles.entryDateContainer}>
-                        <Text style={styles.entryDateText}>
-                          {formatDateShort(entry.date)}
-                        </Text>
-                        <Text style={styles.entryFullDate}>
-                          {formatDateDisplay(entry.date)}
+            <ScrollView 
+              style={styles.content}
+              keyboardShouldPersistTaps="always"
+              contentContainerStyle={{ flexGrow: 1 }}
+              scrollEnabled={true}
+              showsVerticalScrollIndicator={false}
+            >
+              {savedEntries.length === 0 ? (
+                <View style={styles.emptyState}>
+                  <Calendar color={Colors.light.muted} size={48} />
+                  <Text style={styles.emptyTitle}>No Saved Reviews</Text>
+                  <Text style={styles.emptyDescription}>
+                    Your saved evening reviews will appear here.
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.entriesList}>
+                  {savedEntries.map((entry, index) => {
+                    console.log(`Rendering entry ${index}:`, entry.date);
+                    return (
+                      <TouchableOpacity
+                        key={entry.date}
+                        style={styles.entryCard}
+                        onPress={() => {
+                          console.log('=== TOUCHABLE ONPRESS FIRED ===');
+                          console.log('Entry pressed:', entry.date);
+                          console.log('Platform:', Platform.OS);
+                          console.log('Touch event registered successfully');
+                          console.log('Entry index:', index);
+                          console.log('Entry object:', JSON.stringify(entry, null, 2));
+                          handleEntryPress(entry);
+                        }}
+                        activeOpacity={0.6}
+                        hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+                        testID={`saved-entry-${entry.date}`}
+                        accessible={true}
+                        accessibilityRole="button"
+                        accessibilityLabel={`View review for ${formatDateDisplay(entry.date)}`}
+                      >
+                      <View style={styles.entryHeader}>
+                        <View style={styles.entryDateContainer}>
+                          <Text style={styles.entryDateText}>
+                            {formatDateShort(entry.date)}
+                          </Text>
+                          <Text style={styles.entryFullDate}>
+                            {formatDateDisplay(entry.date)}
+                          </Text>
+                        </View>
+                      </View>
+                      
+                      <View style={styles.entryPreview}>
+                        <Text style={styles.previewText}>
+                          Tap to view full review
                         </Text>
                       </View>
-                    </View>
-                    
-                    <View style={styles.entryPreview}>
-                      <Text style={styles.previewText}>
-                        Tap to view full review
-                      </Text>
-                    </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            )}
-          </ScrollView>
-        </View>
-      </Modal>
-      {renderEntryDetail()}
-    </>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
+            </ScrollView>
+          </>
+        )}
+      </View>
+    </Modal>
   );
 }
 
@@ -501,11 +494,11 @@ const styles = StyleSheet.create({
     color: Colors.light.muted,
     fontStyle: 'italic',
   },
-  modalContainer: {
+  entryDetailContainer: {
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-  modalHeader: {
+  entryDetailHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -513,6 +506,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.border,
+  },
+  backButton: {
+    padding: 8,
   },
   modalTitle: {
     fontSize: 18,
@@ -522,7 +518,7 @@ const styles = StyleSheet.create({
   headerSpacer: {
     width: 40,
   },
-  modalContent: {
+  entryDetailContent: {
     flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 16,
