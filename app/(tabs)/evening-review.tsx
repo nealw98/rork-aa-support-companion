@@ -176,9 +176,7 @@ export default function EveningReview() {
     setShowSavedReviews(false);
   };
 
-  const handleUnsubmit = () => {
-    uncompleteToday();
-    
+  const handleEditReview = () => {
     // Try to load today's saved entry for editing
     const todayString = getTodayDateString();
     const savedEntry = eveningReviewStore.getSavedEntry(todayString);
@@ -190,6 +188,9 @@ export default function EveningReview() {
       // No saved entry, start fresh
       handleStartNew();
     }
+    
+    // Don't affect completion status - just go back to form
+    setShowConfirmation(false);
   };
 
   const handleShare = async () => {
@@ -415,7 +416,7 @@ export default function EveningReview() {
 
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.outlineButton} onPress={handleUnsubmit}>
+            <TouchableOpacity style={styles.outlineButton} onPress={handleEditReview}>
               <Text style={styles.outlineButtonText}>Edit Review</Text>
             </TouchableOpacity>
             <TouchableOpacity 
