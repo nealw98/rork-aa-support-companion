@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Pressable,
   Modal,
   Alert,
   Platform,
@@ -329,18 +328,16 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
             ) : (
               <View style={styles.entriesList}>
                 {savedEntries.map((entry) => (
-                  <Pressable
+                  <TouchableOpacity
                     key={entry.date}
-                    style={({ pressed }) => [
-                      styles.entryCard,
-                      pressed && styles.entryCardPressed
-                    ]}
+                    style={styles.entryCard}
                     onPress={() => {
                       console.log('Entry pressed:', entry.date);
                       console.log('Platform:', Platform.OS);
+                      console.log('Touch event registered successfully');
                       handleEntryPress(entry);
                     }}
-                    android_ripple={{ color: '#f0f0f0' }}
+                    activeOpacity={0.7}
                   >
                     <View style={styles.entryHeader}>
                       <View style={styles.entryDateContainer}>
@@ -358,7 +355,7 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
                         Tap to view full review
                       </Text>
                     </View>
-                  </Pressable>
+                  </TouchableOpacity>
                 ))}
               </View>
             )}
@@ -434,10 +431,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     padding: 16,
   },
-  entryCardPressed: {
-    backgroundColor: '#f8f9fa',
-    transform: [{ scale: 0.98 }],
-  },
+
   entryHeader: {
     marginBottom: 8,
   },
