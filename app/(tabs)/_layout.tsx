@@ -78,6 +78,7 @@ export default function TabLayout() {
           headerTitle: "Daily Reflections",
           headerLeft: () => <BackButton />,
           tabBarIcon: ({ color }) => <BookOpen color={color} size={22} style={styles.tabIcon} />,
+          href: null,
         }}
       />
       <Tabs.Screen
