@@ -34,6 +34,7 @@ export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showSavedReviews, setShowSavedReviews] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<any>(null);
 
   // Form state - matching web app structure
   const [resentfulFlag, setResentfulFlag] = useState('');
@@ -145,6 +146,26 @@ export default function EveningReview() {
     setSpiritualNote('');
     setPrayerMeditationFlag('');
     setShowConfirmation(false);
+    setEditingEntry(null);
+  };
+
+  const handleEditEntry = (entry: any) => {
+    const { data } = entry;
+    setResentfulFlag(data.resentfulFlag || '');
+    setResentfulNote(data.resentfulNote || '');
+    setSelfishFlag(data.selfishFlag || '');
+    setSelfishNote(data.selfishNote || '');
+    setFearfulFlag(data.fearfulFlag || '');
+    setFearfulNote(data.fearfulNote || '');
+    setApologyFlag(data.apologyFlag || '');
+    setApologyName(data.apologyName || '');
+    setKindnessFlag(data.kindnessFlag || '');
+    setKindnessNote(data.kindnessNote || '');
+    setSpiritualFlag(data.spiritualFlag || '');
+    setSpiritualNote(data.spiritualNote || '');
+    setPrayerMeditationFlag(data.prayerMeditationFlag || '');
+    setEditingEntry(entry);
+    setShowSavedReviews(false);
   };
 
   const handleUnsubmit = () => {
@@ -270,13 +291,24 @@ export default function EveningReview() {
       prayerMeditationFlag
     };
 
-    saveDetailedEntry(detailedEntry);
+    // If editing an existing entry, save with the original date
+    const dateToSave = editingEntry ? editingEntry.date : undefined;
+    saveDetailedEntry(detailedEntry, dateToSave);
+    
+    const message = editingEntry 
+      ? 'Your evening review has been updated successfully.'
+      : 'Your evening review has been saved successfully.';
     
     Alert.alert(
-      'Review Saved',
-      'Your evening review has been saved successfully.',
+      editingEntry ? 'Review Updated' : 'Review Saved',
+      message,
       [{ text: 'OK' }]
     );
+    
+    // Clear editing state after save
+    if (editingEntry) {
+      setEditingEntry(null);
+    }
   };
 
   const canSave = () => {
@@ -401,15 +433,25 @@ export default function EveningReview() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Evening Review</Text>
+          <Text style={styles.title}>
+            {editingEntry ? 'Edit Evening Review' : 'Evening Review'}
+          </Text>
           <Text style={styles.description}>
-            Nightly inventory based on AA&apos;s &apos;When We Retire at Night&apos; guidance
+            {editingEntry 
+              ? `Editing review from ${formatDateDisplay(new Date(editingEntry.date + 'T00:00:00'))}`
+              : "Nightly inventory based on AA's 'When We Retire at Night' guidance"
+            }
           </Text>
         </View>
 
         {/* Questions */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>{formatDateDisplay(today)}</Text>
+          <Text style={styles.cardTitle}>
+            {editingEntry 
+              ? formatDateDisplay(new Date(editingEntry.date + 'T00:00:00'))
+              : formatDateDisplay(today)
+            }
+          </Text>
           
           <View style={styles.questionsContainer}>
             {questions.map((question, index) => (
@@ -515,6 +557,7 @@ export default function EveningReview() {
       <SavedEveningReviews 
         visible={showSavedReviews}
         onClose={() => setShowSavedReviews(false)}
+        onEditEntry={handleEditEntry}
       />
     </ScreenContainer>
   );

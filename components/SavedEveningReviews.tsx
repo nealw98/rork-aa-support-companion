@@ -11,7 +11,7 @@ import {
   Share
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { Calendar, Share as ShareIcon, Trash2, X } from 'lucide-react-native';
+import { Calendar, Share as ShareIcon, Trash2, X, Edit } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -19,6 +19,7 @@ import { adjustFontWeight } from '@/constants/fonts';
 interface SavedEveningReviewsProps {
   visible: boolean;
   onClose: () => void;
+  onEditEntry?: (entry: any) => void;
 }
 
 const formatDateDisplay = (dateString: string): string => {
@@ -39,7 +40,7 @@ const formatDateShort = (dateString: string): string => {
   });
 };
 
-export default function SavedEveningReviews({ visible, onClose }: SavedEveningReviewsProps) {
+export default function SavedEveningReviews({ visible, onClose, onEditEntry }: SavedEveningReviewsProps) {
   const { savedEntries, deleteSavedEntry } = useEveningReviewStore();
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
   const [showEntryModal, setShowEntryModal] = useState(false);
@@ -197,12 +198,25 @@ export default function SavedEveningReviews({ visible, onClose }: SavedEveningRe
               <X color={Colors.light.text} size={24} />
             </TouchableOpacity>
             <Text style={styles.modalTitle}>Evening Review</Text>
-            <TouchableOpacity
-              style={styles.shareButton}
-              onPress={() => handleShareEntry(selectedEntry)}
-            >
-              <ShareIcon color={Colors.light.tint} size={24} />
-            </TouchableOpacity>
+            <View style={styles.headerActions}>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => {
+                  if (onEditEntry && selectedEntry) {
+                    onEditEntry(selectedEntry);
+                    setShowEntryModal(false);
+                  }
+                }}
+              >
+                <Edit color={Colors.light.tint} size={24} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.shareButton}
+                onPress={() => handleShareEntry(selectedEntry)}
+              >
+                <ShareIcon color={Colors.light.tint} size={24} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <ScrollView style={styles.modalContent}>
@@ -419,6 +433,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: adjustFontWeight('600', true),
     color: Colors.light.text,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  editButton: {
+    padding: 8,
   },
   shareButton: {
     padding: 8,
