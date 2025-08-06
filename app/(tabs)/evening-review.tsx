@@ -13,8 +13,9 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import ScreenContainer from "@/components/ScreenContainer";
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle, Calendar, Share as ShareIcon } from 'lucide-react-native';
+import { CheckCircle, Calendar, Share as ShareIcon, Save, Archive } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
+import SavedEveningReviews from '@/components/SavedEveningReviews';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 
@@ -32,6 +33,7 @@ const formatDateDisplay = (date: Date): string => {
 export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showSavedReviews, setShowSavedReviews] = useState(false);
 
   // Form state - matching web app structure
   const [resentfulFlag, setResentfulFlag] = useState('');
@@ -59,7 +61,7 @@ export default function EveningReview() {
     );
   }
   
-  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak } = eveningReviewStore;
+  const { isCompletedToday, uncompleteToday, getWeeklyProgress, getWeeklyStreak, saveDetailedEntry } = eveningReviewStore;
   
   const today = new Date();
   const isCompleted = isCompletedToday();
@@ -251,6 +253,36 @@ export default function EveningReview() {
 
   const answeredCount = getAnsweredCount();
 
+  const handleSaveEntry = () => {
+    const detailedEntry = {
+      resentfulFlag,
+      resentfulNote,
+      selfishFlag,
+      selfishNote,
+      fearfulFlag,
+      fearfulNote,
+      apologyFlag,
+      apologyName,
+      kindnessFlag,
+      kindnessNote,
+      spiritualFlag,
+      spiritualNote,
+      prayerMeditationFlag
+    };
+
+    saveDetailedEntry(detailedEntry);
+    
+    Alert.alert(
+      'Review Saved',
+      'Your evening review has been saved successfully.',
+      [{ text: 'OK' }]
+    );
+  };
+
+  const canSave = () => {
+    return answeredCount > 0;
+  };
+
   // Show friendly message if no data found and not editing
   if (!isCompleted && answeredCount === 0) {
     // This is the initial state - show the form
@@ -341,6 +373,13 @@ export default function EveningReview() {
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.outlineButton} onPress={handleUnsubmit}>
               <Text style={styles.outlineButtonText}>Edit Review</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.secondaryButton} 
+              onPress={() => setShowSavedReviews(true)}
+            >
+              <Archive size={20} color={Colors.light.tint} />
+              <Text style={styles.secondaryButtonText}>View Saved Reviews</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -433,15 +472,40 @@ export default function EveningReview() {
 
 
 
-        {/* Share Button */}
+        {/* Action Buttons */}
+        <View style={styles.actionButtons}>
+          <TouchableOpacity 
+            style={[
+              styles.saveButton,
+              !canSave() && styles.saveButtonDisabled
+            ]} 
+            onPress={handleSaveEntry}
+            disabled={!canSave()}
+          >
+            <Save size={20} color="white" />
+            <Text style={styles.saveButtonText}>
+              Save Review
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.shareButton} 
+            onPress={handleShare}
+          >
+            <ShareIcon size={20} color="white" />
+            <Text style={styles.shareButtonText}>
+              Share Review
+            </Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* View Saved Reviews Button */}
         <TouchableOpacity 
-          style={styles.shareButton} 
-          onPress={handleShare}
+          style={styles.secondaryButton} 
+          onPress={() => setShowSavedReviews(true)}
         >
-          <ShareIcon size={20} color="white" />
-          <Text style={styles.shareButtonText}>
-            Share Nightly Review
-          </Text>
+          <Archive size={20} color={Colors.light.tint} />
+          <Text style={styles.secondaryButtonText}>View Saved Reviews</Text>
         </TouchableOpacity>
 
 
@@ -451,6 +515,11 @@ export default function EveningReview() {
           Your responses are saved only on your device. Nothing is uploaded or shared.
         </Text>
       </ScrollView>
+      
+      <SavedEveningReviews 
+        visible={showSavedReviews}
+        onClose={() => setShowSavedReviews(false)}
+      />
     </ScreenContainer>
   );
 }
@@ -816,5 +885,49 @@ const styles = StyleSheet.create({
   },
   shareButtonTextDisabled: {
     color: 'rgba(255, 255, 255, 0.7)',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginHorizontal: 32,
+    marginBottom: 16,
+  },
+  saveButton: {
+    flex: 1,
+    backgroundColor: '#28a745',
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  saveButtonDisabled: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.6,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600'),
+  },
+  secondaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    backgroundColor: 'transparent',
+    marginHorizontal: 32,
+    marginBottom: 16,
+    gap: 8,
+  },
+  secondaryButtonText: {
+    color: Colors.light.tint,
+    fontSize: 16,
+    fontWeight: adjustFontWeight('500'),
   },
 });

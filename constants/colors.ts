@@ -15,5 +15,6 @@ export default {
     chatBubbleBot: "rgba(92, 184, 92, 0.1)", // Exact light green from daily reflection gradient
     chatBubbleGrace: "rgba(186, 85, 211, 0.1)", // Light lavender for Grace
     chatBubbleSalty: "rgba(255, 191, 0, 0.1)", // Light amber for Salty Sam
+    border: "#e9ecef",
   },
 };

@@ -30,26 +30,40 @@ interface WeeklyProgressDay {
 }
 
 interface DetailedEveningEntry {
-  emotionFlag: boolean;
-  emotionNote: string;
-  apologyFlag: boolean;
+  resentfulFlag: string;
+  resentfulNote: string;
+  selfishFlag: string;
+  selfishNote: string;
+  fearfulFlag: string;
+  fearfulNote: string;
+  apologyFlag: string;
   apologyName: string;
-  kindnessFlag: boolean;
+  kindnessFlag: string;
   kindnessNote: string;
-  spiritualFlag: boolean;
+  spiritualFlag: string;
   spiritualNote: string;
-  aaTalkFlag: boolean;
-  prayerFlag: boolean;
+  prayerMeditationFlag: string;
+}
+
+interface SavedEveningEntry {
+  date: string;
+  timestamp: number;
+  data: DetailedEveningEntry;
 }
 
 const STORAGE_KEY = 'evening_review_entries';
 
+const SAVED_ENTRIES_KEY = 'saved_evening_review_entries';
+const MAX_SAVED_ENTRIES = 30;
+
 export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(() => {
   const [entries, setEntries] = useState<EveningReviewEntry[]>([]);
+  const [savedEntries, setSavedEntries] = useState<SavedEveningEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadEntries();
+    loadSavedEntries();
   }, []);
 
   const loadEntries = async () => {
@@ -62,6 +76,26 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
       console.error('Error loading evening review entries:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadSavedEntries = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(SAVED_ENTRIES_KEY);
+      if (stored) {
+        setSavedEntries(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Error loading saved evening review entries:', error);
+    }
+  };
+
+  const saveSavedEntries = async (newSavedEntries: SavedEveningEntry[]) => {
+    try {
+      await AsyncStorage.setItem(SAVED_ENTRIES_KEY, JSON.stringify(newSavedEntries));
+      setSavedEntries(newSavedEntries);
+    } catch (error) {
+      console.error('Error saving saved evening review entries:', error);
     }
   };
 
@@ -159,40 +193,50 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     }
   };
 
-  const saveEntry = (detailedEntry: DetailedEveningEntry) => {
-    const todayString = getTodayDateString();
-    const existingIndex = entries.findIndex(entry => entry.date === todayString);
+  const saveDetailedEntry = (detailedEntry: DetailedEveningEntry, dateString?: string) => {
+    const targetDate = dateString || getTodayDateString();
     
-    const newEntry: EveningReviewEntry = {
-      date: todayString,
+    // Remove existing entry for this date if it exists
+    const filteredEntries = savedEntries.filter(entry => entry.date !== targetDate);
+    
+    // Add new entry
+    const newEntry: SavedEveningEntry = {
+      date: targetDate,
       timestamp: Date.now(),
-      answers: {
-        resentful: detailedEntry.emotionFlag,
-        selfish: detailedEntry.emotionFlag,
-        fearful: detailedEntry.emotionFlag,
-        apology: detailedEntry.apologyFlag,
-        kindness: detailedEntry.kindnessFlag,
-        spiritual: detailedEntry.spiritualFlag,
-        aaTalk: detailedEntry.aaTalkFlag,
-        prayerMeditation: detailedEntry.prayerFlag
-      },
-      notes: JSON.stringify({
-        emotionNote: detailedEntry.emotionNote,
-        apologyName: detailedEntry.apologyName,
-        kindnessNote: detailedEntry.kindnessNote,
-        spiritualNote: detailedEntry.spiritualNote
-      })
+      data: detailedEntry
     };
-
-    let newEntries: EveningReviewEntry[];
-    if (existingIndex >= 0) {
-      newEntries = [...entries];
-      newEntries[existingIndex] = newEntry;
-    } else {
-      newEntries = [...entries, newEntry];
+    
+    // Keep only the most recent MAX_SAVED_ENTRIES entries
+    const updatedEntries = [newEntry, ...filteredEntries]
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, MAX_SAVED_ENTRIES);
+    
+    saveSavedEntries(updatedEntries);
+    
+    // Also update the completion tracking
+    const answers: ReviewAnswers = {
+      resentful: detailedEntry.resentfulFlag === 'yes',
+      selfish: detailedEntry.selfishFlag === 'yes',
+      fearful: detailedEntry.fearfulFlag === 'yes',
+      apology: detailedEntry.apologyFlag === 'yes',
+      kindness: detailedEntry.kindnessFlag === 'yes',
+      spiritual: detailedEntry.spiritualFlag !== '',
+      aaTalk: false,
+      prayerMeditation: detailedEntry.prayerMeditationFlag === 'yes'
+    };
+    
+    if (targetDate === getTodayDateString()) {
+      completeToday(answers);
     }
+  };
 
-    saveEntries(newEntries);
+  const getSavedEntry = (dateString: string): SavedEveningEntry | null => {
+    return savedEntries.find(entry => entry.date === dateString) || null;
+  };
+
+  const deleteSavedEntry = (dateString: string) => {
+    const filteredEntries = savedEntries.filter(entry => entry.date !== dateString);
+    saveSavedEntries(filteredEntries);
   };
 
   const getTodaysAnswers = (): ReviewAnswers | null => {
@@ -247,7 +291,10 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
     isLoading,
     uncompleteToday,
     getWeeklyStreak,
-    saveEntry,
-    getTodayEntry
+    saveDetailedEntry,
+    getTodayEntry,
+    savedEntries,
+    getSavedEntry,
+    deleteSavedEntry
   };
 });
