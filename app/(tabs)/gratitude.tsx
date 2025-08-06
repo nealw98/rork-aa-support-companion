@@ -13,9 +13,10 @@ import {
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { Stack } from 'expo-router';
-import { Heart, Share as ShareIcon } from 'lucide-react-native';
+import { Heart, Share as ShareIcon, Save, Archive } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useGratitudeStore } from '@/hooks/useGratitudeStore';
+import { useGratitudeStore } from '@/hooks/use-gratitude-store';
+import SavedGratitudeLists from '@/components/SavedGratitudeLists';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
 import ScreenContainer from '@/components/ScreenContainer';
@@ -153,15 +154,44 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 12
   },
-  shareButton: {
-    backgroundColor: Colors.light.tint,
-    borderRadius: 12,
-    padding: 16,
-    margin: 20,
+  actionButtons: {
     flexDirection: 'row',
+    gap: 12,
+    marginHorizontal: 20,
+    marginBottom: 16,
+  },
+  saveButton: {
+    flex: 1,
+    backgroundColor: '#28a745',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'center',
-    gap: 8
+    gap: 8,
+    height: 48,
+  },
+  saveButtonDisabled: {
+    backgroundColor: Colors.light.muted,
+    opacity: 0.6,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600', true),
+  },
+  shareButton: {
+    flex: 1,
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    height: 48,
   },
   shareButtonDisabled: {
     backgroundColor: Colors.light.muted,
@@ -172,6 +202,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: adjustFontWeight('600', true)
   },
+  secondaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.light.tint,
+    backgroundColor: 'transparent',
+    marginHorizontal: 20,
+    marginBottom: 16,
+    gap: 8,
+    height: 48,
+  },
+  secondaryButtonText: {
+    color: Colors.light.tint,
+    fontSize: 16,
+    fontWeight: adjustFontWeight('500'),
+  },
 
 });
 
@@ -179,11 +229,13 @@ export default function GratitudeListScreen() {
   const gratitudeStore = useGratitudeStore();
   const {
     getTodaysItems,
-    addItemsToToday
+    addItemsToToday,
+    saveGratitudeEntry
   } = gratitudeStore;
   
   const [gratitudeItems, setGratitudeItems] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const [showSavedLists, setShowSavedLists] = useState(false);
   const inputRef = useRef<TextInput>(null);
   
   useEffect(() => {
@@ -199,6 +251,29 @@ export default function GratitudeListScreen() {
       setInputValue('');
       inputRef.current?.blur();
     }
+  };
+
+  const handleSaveEntry = () => {
+    if (gratitudeItems.length === 0) {
+      Alert.alert(
+        'Save Gratitude List',
+        'Please add at least one gratitude item before saving.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    saveGratitudeEntry(gratitudeItems);
+    
+    Alert.alert(
+      'List Saved',
+      'Your gratitude list has been saved successfully.',
+      [{ text: 'OK' }]
+    );
+  };
+
+  const canSave = () => {
+    return gratitudeItems.length > 0;
   };
 
 
@@ -348,19 +423,47 @@ export default function GratitudeListScreen() {
           )}
         </View>
 
-        <TouchableOpacity
-          style={[
-            styles.shareButton,
-            gratitudeItems.length === 0 && styles.shareButtonDisabled
-          ]}
-          onPress={handleShare}
-          disabled={gratitudeItems.length === 0}
-          activeOpacity={0.7}
+        {/* Action Buttons */}
+        <View style={styles.actionButtons}>
+          <TouchableOpacity 
+            style={[
+              styles.saveButton,
+              !canSave() && styles.saveButtonDisabled
+            ]} 
+            onPress={handleSaveEntry}
+            disabled={!canSave()}
+          >
+            <Save size={20} color="white" />
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[
+              styles.shareButton,
+              gratitudeItems.length === 0 && styles.shareButtonDisabled
+            ]} 
+            onPress={handleShare}
+            disabled={gratitudeItems.length === 0}
+          >
+            <ShareIcon size={20} color="white" />
+            <Text style={styles.shareButtonText}>Share</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* View Saved Lists Button */}
+        <TouchableOpacity 
+          style={styles.secondaryButton} 
+          onPress={() => setShowSavedLists(true)}
         >
-          <ShareIcon size={20} color="white" />
-          <Text style={styles.shareButtonText}>Share Gratitude List</Text>
+          <Archive size={20} color={Colors.light.tint} />
+          <Text style={styles.secondaryButtonText}>View Saved Lists</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
+      
+      <SavedGratitudeLists 
+        visible={showSavedLists}
+        onClose={() => setShowSavedLists(false)}
+      />
     </ScreenContainer>
   );
 }
