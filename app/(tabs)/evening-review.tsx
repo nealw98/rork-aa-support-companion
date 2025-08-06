@@ -30,6 +30,14 @@ const formatDateDisplay = (date: Date): string => {
   });
 };
 
+const getTodayDateString = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0');
+  const day = today.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export default function EveningReview() {
   const eveningReviewStore = useEveningReviewStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -170,7 +178,18 @@ export default function EveningReview() {
 
   const handleUnsubmit = () => {
     uncompleteToday();
-    handleStartNew();
+    
+    // Try to load today's saved entry for editing
+    const todayString = getTodayDateString();
+    const savedEntry = eveningReviewStore.getSavedEntry(todayString);
+    
+    if (savedEntry) {
+      // Load the saved data into the form
+      handleEditEntry(savedEntry);
+    } else {
+      // No saved entry, start fresh
+      handleStartNew();
+    }
   };
 
   const handleShare = async () => {
