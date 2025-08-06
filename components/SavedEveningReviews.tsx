@@ -11,7 +11,7 @@ import {
   Share
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { Calendar, Share as ShareIcon, Trash2, X, Edit3 } from 'lucide-react-native';
+import { Calendar, Share as ShareIcon, Trash2, X } from 'lucide-react-native';
 import { useEveningReviewStore } from '@/hooks/use-evening-review-store';
 import Colors from '@/constants/colors';
 import { adjustFontWeight } from '@/constants/fonts';
@@ -19,7 +19,6 @@ import { adjustFontWeight } from '@/constants/fonts';
 interface SavedEveningReviewsProps {
   visible: boolean;
   onClose: () => void;
-  onEditReview?: (entry: any) => void;
 }
 
 const formatDateDisplay = (dateString: string): string => {
@@ -40,7 +39,7 @@ const formatDateShort = (dateString: string): string => {
   });
 };
 
-export default function SavedEveningReviews({ visible, onClose, onEditReview }: SavedEveningReviewsProps) {
+export default function SavedEveningReviews({ visible, onClose }: SavedEveningReviewsProps) {
   const { savedEntries, deleteSavedEntry } = useEveningReviewStore();
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
   const [showEntryModal, setShowEntryModal] = useState(false);
@@ -151,7 +150,7 @@ export default function SavedEveningReviews({ visible, onClose, onEditReview }: 
           'Sharing failed, but your evening review has been copied to the clipboard.',
           [{ text: 'OK' }]
         );
-      } catch (clipboardError) {
+      } catch {
         Alert.alert(
           'Share Error',
           'Unable to share your evening review. Please try again.',
@@ -219,12 +218,7 @@ export default function SavedEveningReviews({ visible, onClose, onEditReview }: 
               <X color={Colors.light.text} size={24} />
             </TouchableOpacity>
             <Text style={styles.modalTitle}>Evening Review</Text>
-            <TouchableOpacity
-              style={styles.shareButton}
-              onPress={() => handleShareEntry(selectedEntry)}
-            >
-              <ShareIcon color={Colors.light.tint} size={24} />
-            </TouchableOpacity>
+            <View style={styles.headerSpacer} />
           </View>
 
           <ScrollView style={styles.modalContent}>
@@ -259,6 +253,28 @@ export default function SavedEveningReviews({ visible, onClose, onEditReview }: 
                   )}
                 </View>
               ))}
+            </View>
+            
+            {/* Action Buttons */}
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => {
+                  setShowEntryModal(false);
+                  handleDeleteEntry(selectedEntry.date);
+                }}
+              >
+                <Trash2 color="white" size={20} />
+                <Text style={styles.deleteButtonText}>Delete</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={styles.shareEntryButton}
+                onPress={() => handleShareEntry(selectedEntry)}
+              >
+                <ShareIcon color="white" size={20} />
+                <Text style={styles.shareEntryButtonText}>Share</Text>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </View>
@@ -317,17 +333,6 @@ export default function SavedEveningReviews({ visible, onClose, onEditReview }: 
                         </Text>
                       </View>
                       <View style={styles.entryActions}>
-                        {onEditReview && (
-                          <TouchableOpacity
-                            style={styles.actionButton}
-                            onPress={() => {
-                              onEditReview(entry);
-                              onClose();
-                            }}
-                          >
-                            <Edit3 color={Colors.light.tint} size={18} />
-                          </TouchableOpacity>
-                        )}
                         <TouchableOpacity
                           style={styles.actionButton}
                           onPress={() => handleDeleteEntry(entry.date)}
@@ -339,7 +344,7 @@ export default function SavedEveningReviews({ visible, onClose, onEditReview }: 
                     
                     <View style={styles.entryPreview}>
                       <Text style={styles.previewText}>
-                        Tap to view full review and share
+                        Tap to view full review
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -467,8 +472,8 @@ const styles = StyleSheet.create({
     fontWeight: adjustFontWeight('600', true),
     color: Colors.light.text,
   },
-  shareButton: {
-    padding: 8,
+  headerSpacer: {
+    width: 40,
   },
   modalContent: {
     flex: 1,
@@ -522,5 +527,45 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     borderLeftWidth: 3,
     borderLeftColor: Colors.light.border,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+    paddingBottom: 24,
+  },
+  deleteButton: {
+    flex: 1,
+    backgroundColor: '#dc3545',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 25,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    height: 48,
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600'),
+  },
+  shareEntryButton: {
+    flex: 1,
+    backgroundColor: Colors.light.tint,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 25,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    height: 48,
+  },
+  shareEntryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: adjustFontWeight('600'),
   },
 });

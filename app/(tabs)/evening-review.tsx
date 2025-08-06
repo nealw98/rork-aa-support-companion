@@ -182,33 +182,7 @@ export default function EveningReview() {
     setShowConfirmation(false);
   };
   
-  const handleEditSavedReview = (entry: any) => {
-    // Load the selected entry data into the form
-    const data = entry.data;
-    setResentfulFlag(data.resentfulFlag);
-    setResentfulNote(data.resentfulNote);
-    setSelfishFlag(data.selfishFlag);
-    setSelfishNote(data.selfishNote);
-    setFearfulFlag(data.fearfulFlag);
-    setFearfulNote(data.fearfulNote);
-    setApologyFlag(data.apologyFlag);
-    setApologyName(data.apologyName);
-    setKindnessFlag(data.kindnessFlag);
-    setKindnessNote(data.kindnessNote);
-    setSpiritualFlag(data.spiritualFlag);
-    setSpiritualNote(data.spiritualNote);
-    setPrayerMeditationFlag(data.prayerMeditationFlag);
-    
-    // If editing today's entry, uncomplete it to show the form
-    const todayString = getTodayDateString();
-    if (entry.date === todayString) {
-      uncompleteToday();
-      setShowConfirmation(false);
-    }
-    
-    // Close the saved reviews modal
-    setShowSavedReviews(false);
-  };
+
 
   const handleShare = async () => {
     console.log('Share button pressed');
@@ -567,7 +541,6 @@ export default function EveningReview() {
       <SavedEveningReviews 
         visible={showSavedReviews}
         onClose={() => setShowSavedReviews(false)}
-        onEditReview={handleEditSavedReview}
       />
     </ScreenContainer>
   );
