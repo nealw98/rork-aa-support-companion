@@ -314,20 +314,13 @@ export default function EveningReview() {
     const dateToSave = editingEntry ? editingEntry.date : undefined;
     saveDetailedEntry(detailedEntry, dateToSave);
     
-    const message = editingEntry 
-      ? 'Your evening review has been updated successfully.'
-      : 'Your evening review has been saved successfully.';
-    
-    Alert.alert(
-      editingEntry ? 'Review Updated' : 'Review Saved',
-      message,
-      [{ text: 'OK' }]
-    );
-    
     // Clear editing state after save
     if (editingEntry) {
       setEditingEntry(null);
     }
+    
+    // Navigate to completion screen
+    setShowConfirmation(true);
   };
 
   const canSave = () => {
