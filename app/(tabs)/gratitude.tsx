@@ -268,7 +268,9 @@ export default function GratitudeListScreen() {
     Alert.alert(
       'List Saved',
       'Your gratitude list has been saved successfully.',
-      [{ text: 'OK' }]
+      [
+        { text: 'OK', onPress: () => setShowSavedLists(true) }
+      ]
     );
   };
 
