@@ -211,13 +211,12 @@ export const bigBookData: BigBookCategory[] = [
 export const aaPrayers = [
   {
     title: "Morning Prayer",
-    content: `As I begin this day, I ask the God of my understanding:
+    content: `As I begin this day, I ask my Higher Power:
 Direct my thinking and remove from me self-centered fear and selfish motives. Help me walk with clarity, courage, and purpose.
 
 When I don't know what to do, grant me inspiration. Give me an intuitive thought, a gentle nudge, or the patience to wait. Teach me to trust that Your guidance will come.
 
-Help me relax and take it easy. Keep me from forcing outcomes or trying to run the show.
-Let me remember that I'm not in charge — You are. As I go about my day, show me the next right action. Give me what I need to handle whatever comes my way.
+Help me relax and take it easy. Keep me from forcing outcomes or trying to run the show. Let me remember that I'm not in charge — You are. As I go about my day, show me the next right action. Give me what I need to handle whatever comes my way.
 
 Remove my fear. Direct my attention to what You would have me be. Give me faith in Your plan and the courage to act.
 
@@ -256,13 +255,11 @@ that where there are shadows, I may bring light;
 
 that where there is sadness, I may bring joy.
 
-
 Lord, grant that I may seek rather to comfort than to be comforted,
 
 to understand, than to be understood,
 
 to love, than to be loved.
-
 
 For it is by giving that we receive,
 
@@ -289,7 +286,7 @@ And wisdom to know the difference.`,
     title: "Evening Prayer",
     content: `As this day closes:
 
-I thank the God of my understanding for the gifts, lessons, and people You placed in my path today, and for the strength to stay sober and the moments of grace I noticed.
+I thank my Higher Power for the gifts, lessons, and people You placed in my path today, and for the strength to stay sober and the moments of grace I noticed.
 
 I look honestly at my day and ask forgiveness for the times I was selfish, afraid, or unkind. Place on my heart any amends I need to make, and give me willingness.
 

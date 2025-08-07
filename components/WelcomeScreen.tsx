@@ -85,7 +85,7 @@ export default function WelcomeScreen() {
               <Text style={styles.link} onPress={handlePrivacyPress}>
                 Privacy Policy
               </Text>
-              <Text>.</Text>
+              .
             </Text>
 
             <TouchableOpacity

@@ -110,8 +110,8 @@ export default function PrayersScreen() {
               <View style={styles.prayerContent}>
                 {prayer.title === "Morning Prayer" ? (
                   <View>
-                    <Text style={[styles.prayerText, styles.italicText]}>As I begin this day, I ask the God of my understanding:</Text>
-                    <Text style={styles.prayerText}>{prayer.content.split('As I begin this day, I ask the God of my understanding:')[1]}</Text>
+                    <Text style={[styles.prayerText, styles.italicText]}>As I begin this day, I ask my Higher Power:</Text>
+                    <Text style={styles.prayerText}>{prayer.content.split('As I begin this day, I ask my Higher Power:')[1]}</Text>
                   </View>
                 ) : prayer.title === "Evening Prayer" ? (
                   <View>

@@ -110,10 +110,13 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
 
   const getTodayDateString = () => {
     const today = new Date();
+    // Ensure we're working in local timezone
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = today.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const dateString = `${year}-${month}-${day}`;
+    console.log('getTodayDateString:', dateString, 'timezone offset:', today.getTimezoneOffset());
+    return dateString;
   };
 
   const isCompletedToday = () => {
@@ -145,40 +148,59 @@ export const [EveningReviewProvider, useEveningReviewStore] = createContextHook(
 
   const getWeeklyProgress = (): WeeklyProgressDay[] => {
     const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay()); // Start from Sunday
+    const todayString = getTodayDateString();
+    console.log('getWeeklyProgress - Today string:', todayString);
+    console.log('getWeeklyProgress - Today timezone offset:', today.getTimezoneOffset());
     
-    return Array.from({ length: 7 }, (_, index) => {
+    // Create start of week in local timezone - ensure we're working with local dates
+    const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Start from Sunday
+    
+    const weekDays = Array.from({ length: 7 }, (_, index) => {
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + index);
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const day = date.getDate().toString().padStart(2, '0');
       const dateString = `${year}-${month}-${day}`;
-      const todayString = getTodayDateString();
       
       const entry = entries.find(entry => entry.date === dateString);
       const completed = !!entry;
       const yesCount = entry ? Object.values(entry.answers).filter(Boolean).length : 0;
+      
+      // Compare date strings instead of Date objects to avoid time zone issues
+      const isFuture = dateString > todayString;
+      const isToday = dateString === todayString;
+      
+      console.log(`getWeeklyProgress - Day ${index} (${date.toLocaleDateString('en-US', { weekday: 'short' })}):`, {
+        dateString,
+        completed,
+        isToday,
+        isFuture,
+        hasEntry: !!entry,
+        todayString,
+        comparison: `${dateString} vs ${todayString}`
+      });
       
       return {
         date: dateString,
         completed,
         yesCount,
         dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        isFuture: date > today,
-        isToday: dateString === todayString
+        isFuture,
+        isToday
       };
     });
+    
+    console.log('getWeeklyProgress - All entries dates:', entries.map(e => e.date));
+    console.log('getWeeklyProgress - Today\'s entry exists:', entries.some(e => e.date === todayString));
+    return weekDays;
   };
 
   const getWeeklyStreak = (): number => {
     const weeklyProgress = getWeeklyProgress();
-    const today = new Date();
     return weeklyProgress.filter(day => {
-      const dayDate = new Date(day.date);
-      const isFuture = dayDate > today;
-      return day.completed && !isFuture;
+      return day.completed && !day.isFuture;
     }).length;
   };
 

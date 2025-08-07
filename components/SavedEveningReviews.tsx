@@ -22,7 +22,9 @@ interface SavedEveningReviewsProps {
 }
 
 const formatDateDisplay = (dateString: string): string => {
-  const date = new Date(dateString + 'T00:00:00');
+  // Parse date string as local date to avoid timezone issues
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-indexed
   return date.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -32,7 +34,9 @@ const formatDateDisplay = (dateString: string): string => {
 };
 
 const formatDateShort = (dateString: string): string => {
-  const date = new Date(dateString + 'T00:00:00');
+  // Parse date string as local date to avoid timezone issues
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-indexed
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric'

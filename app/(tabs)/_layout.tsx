@@ -1,5 +1,5 @@
 import { Tabs, router } from "expo-router";
-import { Home, MessageCircle, Heart, Smile, Moon, ArrowLeft, BookOpen } from "lucide-react-native";
+import { Home, MessageCircle, Heart, Smile, Moon, ChevronLeft, BookOpen } from "lucide-react-native";
 import React from "react";
 import { Text, View, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import SunIcon from "@/components/SunIcon";
@@ -29,8 +29,15 @@ const styles = StyleSheet.create({
     ...(Platform.OS === 'android' ? { marginTop: 2 } : {})
   },
   backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 8,
     marginLeft: 4
+  },
+  backText: {
+    fontSize: 17,
+    color: Colors.light.tint,
+    marginLeft: 4,
   }
 });
 
@@ -40,7 +47,8 @@ const BackButton = () => (
     onPress={() => router.push('/')}
     testID="back-button"
   >
-    <ArrowLeft color={Colors.light.tint} size={24} />
+    <ChevronLeft color={Colors.light.tint} size={20} />
+    <Text style={styles.backText}>Back</Text>
   </TouchableOpacity>
 );
 

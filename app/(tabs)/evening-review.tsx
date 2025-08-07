@@ -65,10 +65,13 @@ export default function EveningReview() {
   
   const getTodayDateString = () => {
     const today = new Date();
+    // Ensure we're working in local timezone
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = today.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    const dateString = `${year}-${month}-${day}`;
+    console.log('evening-review getTodayDateString:', dateString, 'timezone offset:', today.getTimezoneOffset());
+    return dateString;
   };
   
   const today = new Date();
@@ -366,23 +369,18 @@ export default function EveningReview() {
             
             <View style={styles.weeklyProgress}>
               {weeklyProgress.map((day, index) => {
-                const dayDate = new Date(day.date);
-                const today = new Date();
-                const isToday = day.date === today.toISOString().split('T')[0];
-                const isFuture = dayDate > today;
-                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                const dayName = dayNames[dayDate.getDay()];
+                console.log('Rendering day:', day.date, 'completed:', day.completed, 'isToday:', day.isToday, 'isFuture:', day.isFuture);
                 
                 return (
                   <View key={index} style={styles.dayContainer}>
-                    <Text style={styles.dayName}>{dayName}</Text>
+                    <Text style={styles.dayName}>{day.dayName}</Text>
                     <View style={[
                       styles.dayCircle,
-                      day.completed && !isFuture && styles.dayCircleCompleted,
-                      isToday && styles.dayCircleToday,
-                      isFuture && styles.dayCircleFuture
+                      day.completed && !day.isFuture && styles.dayCircleCompleted,
+                      day.isToday && styles.dayCircleToday,
+                      day.isFuture && styles.dayCircleFuture
                     ]}>
-                      {day.completed && !isFuture && (
+                      {day.completed && !day.isFuture && (
                         <CheckCircle color="white" size={16} />
                       )}
                     </View>

@@ -2,6 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useCallback } from "react";
+import { Text, View, StyleSheet } from "react-native";
+import { ChevronLeft } from "lucide-react-native";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -10,6 +12,7 @@ import { OnboardingProvider, useOnboarding } from "@/hooks/useOnboardingStore";
 import { SobrietyProvider } from "@/hooks/useSobrietyStore";
 import { EveningReviewProvider } from "@/hooks/use-evening-review-store";
 import { adjustFontWeight } from "@/constants/fonts";
+import Colors from "@/constants/colors";
 import WelcomeScreen from "@/components/WelcomeScreen";
 import CustomSplashScreen from "@/components/CustomSplashScreen";
 
@@ -49,12 +52,28 @@ function RootLayoutNav() {
 
   return (
     <Stack screenOptions={{ 
-      headerBackTitle: "Back",
+      headerBackTitle: "",
+      headerTitleAlign: 'center',
+      headerLeft: ({ canGoBack }) => canGoBack ? (
+        <View style={styles.backButton}>
+          <ChevronLeft color={Colors.light.tint} size={20} />
+          <Text style={styles.backText}>Back</Text>
+        </View>
+      ) : null,
+      headerLeftContainerStyle: {
+        paddingLeft: 16,
+        minWidth: 80, // Reserve space for consistent centering
+      },
+      headerRightContainerStyle: {
+        paddingRight: 16,
+        minWidth: 80, // Balance the left side
+      },
       headerStyle: {
         backgroundColor: "#f8f9fa",
       },
       headerTitleStyle: {
         fontWeight: adjustFontWeight("600", true),
+        textAlign: 'center',
       },
     }}>
       <Stack.Screen 
@@ -81,6 +100,19 @@ function RootLayoutNav() {
     </Stack>
   );
 }
+
+const styles = StyleSheet.create({
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 0, // Remove extra padding since we handle it in container
+  },
+  backText: {
+    fontSize: 17,
+    color: Colors.light.tint,
+    marginLeft: 4,
+  },
+});
 
 export default function RootLayout() {
   return (
