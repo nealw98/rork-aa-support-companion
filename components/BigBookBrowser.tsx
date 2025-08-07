@@ -195,8 +195,10 @@ function BigBookBrowserContent() {
   const [currentPdf, setCurrentPdf] = useState<{ url: string; title: string } | null>(null);
 
   const handleOpenPDF = (url: string, title: string) => {
+    console.log('handleOpenPDF called with:', { url, title });
     setCurrentPdf({ url, title });
     setPdfViewerVisible(true);
+    console.log('PDF viewer should now be visible:', true);
   };
 
   const handleClosePDF = () => {
