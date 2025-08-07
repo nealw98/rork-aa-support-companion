@@ -279,7 +279,7 @@ And wisdom to know the difference.`,
   },
   {
     title: "Set Aside Prayer",
-    content: `Dear God, please help me to set aside everything I think I know about myself, my disease, the 12 Steps, and especially You; so that I may have an open mind and a new experience with all these things. Please help me see the truth.`,
+    content: `God, please help me set aside everything I think I know about You, everything I think I know about myself, everything I think I know about others, and everything I think I know about my own recovery so I may have an open mind and a new experience with all these things. Please help me see the truth.`,
     source: "Commonly used in AA meetings"
   },
   {
