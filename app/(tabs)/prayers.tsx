@@ -22,22 +22,30 @@ export default function PrayersScreen() {
   const prayerRefs = useRef<{ [key: number]: View | null }>({});
   const prayerPositions = useRef<{ [key: number]: number }>({});
 
+  // Track if we came from a deep link or tab navigation
+  const isFromDeepLink = useRef(false);
+  
   // Reset expanded prayer when screen comes into focus via tab navigation
   useFocusEffect(
     useCallback(() => {
-      // Only reset if there's no prayer parameter (i.e., coming from tab navigation)
-      if (!prayer) {
+      // If we're not coming from a deep link, always reset to collapsed state
+      if (!isFromDeepLink.current) {
         setExpandedPrayer(null);
         // Scroll to top
         setTimeout(() => {
           scrollViewRef.current?.scrollTo({ y: 0, animated: true });
         }, 100);
       }
-    }, [prayer])
+      // Reset the deep link flag after handling
+      isFromDeepLink.current = false;
+    }, [])
   );
 
   useEffect(() => {
     if (prayer) {
+      // Mark that we came from a deep link
+      isFromDeepLink.current = true;
+      
       const prayerParam = prayer.toString().toLowerCase();
       const prayerIndex = aaPrayers.findIndex(p => {
         const title = p.title.toLowerCase();
