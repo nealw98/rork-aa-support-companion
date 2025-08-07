@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useCallback } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ChevronLeft } from "lucide-react-native";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -55,10 +55,14 @@ function RootLayoutNav() {
       headerBackTitle: "",
       headerTitleAlign: 'center',
       headerLeft: ({ canGoBack }) => canGoBack ? (
-        <View style={styles.backButton}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+        >
           <ChevronLeft color={Colors.light.tint} size={20} />
           <Text style={styles.backText}>Back</Text>
-        </View>
+        </TouchableOpacity>
       ) : null,
       headerLeftContainerStyle: {
         paddingLeft: 16,
