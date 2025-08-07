@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Send, RotateCcw } from "lucide-react-native";
@@ -135,8 +136,26 @@ const SponsorToggle = ({
 export default function ChatInterface() {
   const { messages, isLoading, sendMessage, clearChat, sponsorType, changeSponsor } = useChatStore();
   const [inputText, setInputText] = useState<string>("");
+  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
   const flatListRef = useRef<FlatList>(null);
   const insets = useSafeAreaInsets();
+
+  // Handle keyboard events for Android
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+      });
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardHeight(0);
+      });
+
+      return () => {
+        keyboardDidShowListener?.remove();
+        keyboardDidHideListener?.remove();
+      };
+    }
+  }, []);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -186,10 +205,14 @@ export default function ChatInterface() {
     }
   };
 
+  const containerStyle = Platform.OS === 'android' && keyboardHeight > 0 
+    ? [styles.container, { paddingBottom: keyboardHeight }]
+    : styles.container;
+
   return (
     <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={containerStyle}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
       <View style={styles.headerContainer}>
