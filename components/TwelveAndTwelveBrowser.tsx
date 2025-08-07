@@ -5,8 +5,7 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Linking,
-  Alert,
+  Modal,
 } from "react-native";
 import {
   ChevronDown,
@@ -25,25 +24,15 @@ import { BigBookStoreProvider, useBigBookStore } from "@/hooks/use-bigbook-store
 import { TwelveAndTwelveCategory, BigBookSection } from "@/types/bigbook";
 import { adjustFontWeight } from "@/constants/fonts";
 import BookSelector from "@/components/BookSelector";
+import PDFViewer from "@/components/PDFViewer";
 
-const SectionItem = ({ section, categoryId }: { section: BigBookSection; categoryId: string }) => {
+const SectionItem = ({ section, categoryId, onOpenPDF }: { section: BigBookSection; categoryId: string; onOpenPDF: (url: string, title: string) => void }) => {
   const { addBookmark, removeBookmark, isBookmarked, addToRecent } = useBigBookStore();
   const bookmarked = isBookmarked(section.id);
 
-  const handlePress = async () => {
-    try {
-      addToRecent(section.id, section.title, section.url);
-      const supported = await Linking.canOpenURL(section.url);
-      
-      if (supported) {
-        await Linking.openURL(section.url);
-      } else {
-        Alert.alert("Error", "Unable to open this document");
-      }
-    } catch (error) {
-      console.error("Error opening URL:", error);
-      Alert.alert("Error", "Unable to open this document");
-    }
+  const handlePress = () => {
+    addToRecent(section.id, section.title, section.url);
+    onOpenPDF(section.url, section.title);
   };
 
   const toggleBookmark = () => {
@@ -75,7 +64,7 @@ const SectionItem = ({ section, categoryId }: { section: BigBookSection; categor
   );
 };
 
-const CategorySection = ({ category }: { category: TwelveAndTwelveCategory }) => {
+const CategorySection = ({ category, onOpenPDF }: { category: TwelveAndTwelveCategory; onOpenPDF: (url: string, title: string) => void }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
@@ -100,7 +89,7 @@ const CategorySection = ({ category }: { category: TwelveAndTwelveCategory }) =>
       {expanded && (
         <View style={styles.sectionsContainer}>
           {category.sections.map((section) => (
-            <SectionItem key={section.id} section={section} categoryId={category.id} />
+            <SectionItem key={section.id} section={section} categoryId={category.id} onOpenPDF={onOpenPDF} />
           ))}
         </View>
       )}
@@ -108,23 +97,12 @@ const CategorySection = ({ category }: { category: TwelveAndTwelveCategory }) =>
   );
 };
 
-const BookmarksSection = () => {
+const BookmarksSection = ({ onOpenPDF }: { onOpenPDF: (url: string, title: string) => void }) => {
   const { bookmarks, removeBookmark, addToRecent } = useBigBookStore();
 
-  const handleBookmarkPress = async (bookmark: any) => {
-    try {
-      addToRecent(bookmark.sectionId, bookmark.title, bookmark.url);
-      const supported = await Linking.canOpenURL(bookmark.url);
-      
-      if (supported) {
-        await Linking.openURL(bookmark.url);
-      } else {
-        Alert.alert("Error", "Unable to open this document");
-      }
-    } catch (error) {
-      console.error("Error opening URL:", error);
-      Alert.alert("Error", "Unable to open this document");
-    }
+  const handleBookmarkPress = (bookmark: any) => {
+    addToRecent(bookmark.sectionId, bookmark.title, bookmark.url);
+    onOpenPDF(bookmark.url, bookmark.title);
   };
 
   if (bookmarks.length === 0) {
@@ -165,23 +143,12 @@ const BookmarksSection = () => {
   );
 };
 
-const RecentSection = () => {
+const RecentSection = ({ onOpenPDF }: { onOpenPDF: (url: string, title: string) => void }) => {
   const { recentlyViewed, clearRecent, addToRecent } = useBigBookStore();
 
-  const handleRecentPress = async (recent: any) => {
-    try {
-      addToRecent(recent.sectionId, recent.title, recent.url);
-      const supported = await Linking.canOpenURL(recent.url);
-      
-      if (supported) {
-        await Linking.openURL(recent.url);
-      } else {
-        Alert.alert("Error", "Unable to open this document");
-      }
-    } catch (error) {
-      console.error("Error opening URL:", error);
-      Alert.alert("Error", "Unable to open this document");
-    }
+  const handleRecentPress = (recent: any) => {
+    addToRecent(recent.sectionId, recent.title, recent.url);
+    onOpenPDF(recent.url, recent.title);
   };
 
   if (recentlyViewed.length === 0) {
@@ -222,6 +189,18 @@ const RecentSection = () => {
 
 function TwelveAndTwelveBrowserContent() {
   const [activeTab, setActiveTab] = useState<"browse" | "bookmarks" | "recent">("browse");
+  const [pdfViewerVisible, setPdfViewerVisible] = useState<boolean>(false);
+  const [currentPdf, setCurrentPdf] = useState<{ url: string; title: string } | null>(null);
+
+  const handleOpenPDF = (url: string, title: string) => {
+    setCurrentPdf({ url, title });
+    setPdfViewerVisible(true);
+  };
+
+  const handleClosePDF = () => {
+    setPdfViewerVisible(false);
+    setCurrentPdf(null);
+  };
 
   return (
     <View style={styles.container}>
@@ -272,7 +251,7 @@ function TwelveAndTwelveBrowserContent() {
             </View>
             
             {twelveAndTwelveData.map((category) => (
-              <CategorySection key={category.id} category={category} />
+              <CategorySection key={category.id} category={category} onOpenPDF={handleOpenPDF} />
             ))}
             
             <View style={styles.copyrightContainer}>
@@ -283,9 +262,24 @@ function TwelveAndTwelveBrowserContent() {
           </View>
         )}
         
-        {activeTab === "bookmarks" && <BookmarksSection />}
-        {activeTab === "recent" && <RecentSection />}
+        {activeTab === "bookmarks" && <BookmarksSection onOpenPDF={handleOpenPDF} />}
+        {activeTab === "recent" && <RecentSection onOpenPDF={handleOpenPDF} />}
       </ScrollView>
+      
+      <Modal
+        visible={pdfViewerVisible}
+        animationType="slide"
+        presentationStyle="fullScreen"
+        onRequestClose={handleClosePDF}
+      >
+        {currentPdf && (
+          <PDFViewer
+            url={currentPdf.url}
+            title={currentPdf.title}
+            onClose={handleClosePDF}
+          />
+        )}
+      </Modal>
     </View>
   );
 }
