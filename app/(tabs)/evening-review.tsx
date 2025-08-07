@@ -8,7 +8,8 @@ import {
   TextInput,
   Alert,
   Platform,
-  Share
+  Share,
+  KeyboardAvoidingView
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import ScreenContainer from "@/components/ScreenContainer";
@@ -420,13 +421,17 @@ export default function EveningReview() {
         style={styles.gradient}
       />
       
-
-      
-      <ScrollView 
-        style={styles.content} 
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       >
+        <ScrollView 
+          style={styles.content} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContent}
+        >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Evening Review</Text>
@@ -540,11 +545,12 @@ export default function EveningReview() {
 
 
 
-        {/* Privacy Notice */}
-        <Text style={styles.privacyText}>
-          Your responses are saved only on your device. Nothing is uploaded or shared.
-        </Text>
-      </ScrollView>
+          {/* Privacy Notice */}
+          <Text style={styles.privacyText}>
+            Your responses are saved only on your device. Nothing is uploaded or shared.
+          </Text>
+        </ScrollView>
+      </KeyboardAvoidingView>
       
       <SavedEveningReviews 
         visible={showSavedReviews}
@@ -555,6 +561,13 @@ export default function EveningReview() {
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

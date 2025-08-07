@@ -10,6 +10,7 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Send, RotateCcw } from "lucide-react-native";
 
 import Colors from "@/constants/colors";
@@ -135,6 +136,7 @@ export default function ChatInterface() {
   const { messages, isLoading, sendMessage, clearChat, sponsorType, changeSponsor } = useChatStore();
   const [inputText, setInputText] = useState<string>("");
   const flatListRef = useRef<FlatList>(null);
+  const insets = useSafeAreaInsets();
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -187,7 +189,7 @@ export default function ChatInterface() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
       <View style={styles.headerContainer}>
@@ -226,7 +228,7 @@ export default function ChatInterface() {
         </View>
       )}
       
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, 12) }]}>
         <TextInput
           style={styles.input}
           value={inputText}
