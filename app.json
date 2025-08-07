@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "AA Sober Dailies",
-    "slug": "aa-sober-dailies",
+    "owner": "nealw98",
+    "name": "AA Support Companion",
+    "slug": "aa-support-companion",
     "version": "1.5.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
