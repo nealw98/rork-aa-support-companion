@@ -33,7 +33,7 @@
     ],
     "experiments": { "typedRoutes": true },
     "extra": {
-      "eas": { "projectId": "PUT-AA-SOBER-DAILIES-UUID-HERE" }
+      "eas": { "projectId": "3805b9ec-be59-4752-bd95-686988e42a18" }
     }
   }
 }
