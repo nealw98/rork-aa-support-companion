@@ -7,9 +7,12 @@ export default function BigBookScreen() {
   return (
     <>
       <Stack.Screen options={{ 
-        title: "Back", 
+        headerBackTitle: "Back",
         headerTitle: "Alcoholics Anonymous",
-        headerTitleAlign: "center"
+        headerTitleAlign: "center",
+        headerBackTitleStyle: {
+          fontSize: 14
+        }
       }} />
       <ScreenContainer style={styles.container}>
         <BigBookBrowser />

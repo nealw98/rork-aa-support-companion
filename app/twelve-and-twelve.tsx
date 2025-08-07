@@ -7,9 +7,12 @@ export default function TwelveAndTwelveScreen() {
   return (
     <>
       <Stack.Screen options={{ 
-        title: "Back", 
+        headerBackTitle: "Back",
         headerTitle: "Twelve Steps and Twelve Traditions",
-        headerTitleAlign: "center"
+        headerTitleAlign: "center",
+        headerBackTitleStyle: {
+          fontSize: 14
+        }
       }} />
       <ScreenContainer style={styles.container}>
         <TwelveAndTwelveBrowser />
