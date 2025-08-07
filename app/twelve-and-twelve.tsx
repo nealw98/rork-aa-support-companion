@@ -6,7 +6,11 @@ import ScreenContainer from "@/components/ScreenContainer";
 export default function TwelveAndTwelveScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: "Twelve & Twelve", headerTitle: "Twelve Steps and Twelve Traditions" }} />
+      <Stack.Screen options={{ 
+        title: "Back", 
+        headerTitle: "Twelve Steps and Twelve Traditions",
+        headerTitleAlign: "center"
+      }} />
       <ScreenContainer style={styles.container}>
         <TwelveAndTwelveBrowser />
       </ScreenContainer>

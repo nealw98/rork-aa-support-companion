@@ -6,7 +6,11 @@ import ScreenContainer from "@/components/ScreenContainer";
 export default function BigBookScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: "Big Book", headerTitle: "Alcoholics Anonymous" }} />
+      <Stack.Screen options={{ 
+        title: "Back", 
+        headerTitle: "Alcoholics Anonymous",
+        headerTitleAlign: "center"
+      }} />
       <ScreenContainer style={styles.container}>
         <BigBookBrowser />
       </ScreenContainer>
